@@ -82,6 +82,12 @@
     .side-drawer { position:fixed; top:0; left:-280px; width:280px; height:100vh; background:#fff; z-index:400; transition:left .25s ease; display:flex; flex-direction:column; box-shadow:4px 0 20px rgba(0,0,0,.15); }
     .side-drawer.open { left:0; }
     .drawer-header { background:#2563eb; color:#fff; padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
+  
+    @media (max-width:640px) {
+      .step-form { padding:1.25rem; }
+      .step-indicators { gap:.5rem; }
+      .form-row { grid-template-columns:1fr !important; }
+    }
   </style>
 </head>
 <body>

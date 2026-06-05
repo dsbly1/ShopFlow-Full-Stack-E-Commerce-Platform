@@ -36,6 +36,14 @@
     .filter-btn { padding:.45rem 1rem; border-radius:20px; border:1.5px solid #e2e8f0; background:#fff; font-size:.82rem; font-weight:600; cursor:pointer; color:#64748b; transition:all .15s; }
     .filter-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
     .back-link { display:inline-flex; align-items:center; gap:.4rem; color:#2563eb; font-size:.9rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
+  
+    @media (max-width:640px) {
+      .page { padding:1rem .75rem 3rem; }
+      .order-header { flex-direction:column; align-items:flex-start; }
+      .filters { gap:.5rem; }
+      .filter-btn { font-size:.78rem; padding:.35rem .75rem; }
+      .order-item img { width:44px; height:44px; }
+    }
   </style>
 </head>
 <body>
