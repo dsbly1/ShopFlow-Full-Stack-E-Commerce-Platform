@@ -76,6 +76,12 @@
 
     /* Section divider */
     .section-title { font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin:1.25rem 0 .75rem; }
+
+    .side-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:300; }
+    .side-overlay.open { display:block; }
+    .side-drawer { position:fixed; top:0; left:-280px; width:280px; height:100vh; background:#fff; z-index:400; transition:left .25s ease; display:flex; flex-direction:column; box-shadow:4px 0 20px rgba(0,0,0,.15); }
+    .side-drawer.open { left:0; }
+    .drawer-header { background:#2563eb; color:#fff; padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between; }
   </style>
 </head>
 <body>
