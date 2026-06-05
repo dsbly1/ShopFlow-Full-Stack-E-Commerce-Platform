@@ -31,37 +31,153 @@
       line-height: 1.6;
     }
 
-    /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
+    /* ── NAVBAR ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 200;
       background: var(--white);
       border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 64px;
       box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .navbar-top {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0 1.5rem; height: 64px;
     }
     .nav-logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1.5rem; font-weight: 900;
-      color: var(--brand);
-      text-decoration: none;
-      letter-spacing: -.5px;
+      font-size: 1.6rem; font-weight: 900;
+      color: var(--brand); text-decoration: none;
+      letter-spacing: -.5px; white-space: nowrap;
+      margin-right: .5rem;
     }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      text-decoration: none; color: var(--muted);
-      font-size: .9rem; font-weight: 500;
-      transition: color .2s;
+    .nav-search {
+      flex: 1; max-width: 480px;
+      display: flex; align-items: center;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: border-color .2s;
     }
-    .nav-links a:hover, .nav-links a.active { color: var(--brand); }
+    .nav-search:focus-within { border-color: var(--brand); }
+    .nav-search input {
+      flex: 1; border: none; background: transparent;
+      padding: .55rem 1rem; font-size: .9rem;
+      font-family: inherit; outline: none; color: var(--text);
+    }
+    .nav-search button {
+      background: var(--brand); border: none; cursor: pointer;
+      padding: .55rem .9rem; color: var(--white);
+      display: flex; align-items: center;
+      transition: background .2s;
+    }
+    .nav-search button:hover { background: var(--brand-dark); }
+    .nav-search svg { width: 16px; height: 16px; }
+
+    .nav-actions {
+      display: flex; align-items: center; gap: .75rem;
+      margin-left: auto;
+    }
+    .nav-icon-btn {
+      position: relative;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); padding: .4rem;
+      border-radius: 8px; display: flex; align-items: center;
+      transition: color .2s, background .2s;
+    }
+    .nav-icon-btn:hover { color: var(--brand); background: #eff6ff; }
+    .nav-icon-btn svg { width: 22px; height: 22px; }
+    .cart-badge {
+      position: absolute; top: 0; right: 0;
+      background: var(--brand); color: var(--white);
+      font-size: .6rem; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--white);
+    }
+    .nav-divider {
+      width: 1px; height: 24px;
+      background: var(--border); margin: 0 .25rem;
+    }
+    .nav-link-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: .875rem; font-weight: 500;
+      font-family: inherit; padding: .4rem .6rem;
+      border-radius: 8px; text-decoration: none;
+      transition: color .2s, background .2s;
+      white-space: nowrap;
+    }
+    .nav-link-btn:hover { color: var(--brand); background: #eff6ff; }
     .nav-cta {
       background: var(--brand); color: var(--white);
-      padding: .5rem 1.25rem; border-radius: 8px;
+      padding: .5rem 1.2rem; border-radius: 8px;
       font-size: .875rem; font-weight: 600;
-      text-decoration: none; transition: background .2s;
+      text-decoration: none; border: none; cursor: pointer;
+      font-family: inherit; white-space: nowrap;
+      transition: background .2s;
     }
     .nav-cta:hover { background: var(--brand-dark); }
+    .hamburger {
+      display: none; flex-direction: column;
+      gap: 5px; background: none; border: none;
+      cursor: pointer; padding: .4rem;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Drawer */
+    .nav-drawer {
+      position: fixed; top: 64px; left: 0; bottom: 0;
+      width: 280px; background: var(--white);
+      border-right: 1px solid var(--border);
+      box-shadow: 4px 0 20px rgba(0,0,0,.1);
+      transform: translateX(-100%);
+      transition: transform .3s ease;
+      z-index: 190; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: .5rem;
+    }
+    .nav-drawer.open { transform: translateX(0); }
+    .drawer-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.3); z-index: 180;
+    }
+    .drawer-overlay.open { display: block; }
+    .drawer-link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .8rem 1rem; border-radius: 10px;
+      color: var(--text); text-decoration: none;
+      font-weight: 500; font-size: .95rem;
+      transition: background .2s, color .2s;
+    }
+    .drawer-link:hover, .drawer-link.active {
+      background: #eff6ff; color: var(--brand);
+    }
+    .drawer-link svg { width: 18px; height: 18px; opacity: .7; }
+    .drawer-divider {
+      height: 1px; background: var(--border);
+      margin: .5rem 0;
+    }
+    .drawer-cta {
+      display: block; text-align: center;
+      background: var(--brand); color: var(--white);
+      padding: .8rem; border-radius: 10px;
+      font-weight: 600; text-decoration: none;
+      margin-top: auto; transition: background .2s;
+    }
+    .drawer-cta:hover { background: var(--brand-dark); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-search { display: none; }
+      .nav-divider, .nav-link-btn { display: none; }
+      .hamburger { display: flex; }
+    }
+    @media (max-width: 480px) {
+      .nav-cta { display: none; }
+    }
 
     /* ── HERO ── */
     .hero {
@@ -307,21 +423,96 @@
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .story-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <a class="nav-logo" href="../index.html">ShopFlow</a>
-    <ul class="nav-links">
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="login.html">Login</a></li>
-    </ul>
-    <a class="nav-cta" href="register.html">Get Started</a>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="navbar-top">
+      <!-- Hamburger -->
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <!-- Logo -->
+      <a class="nav-logo" href="../index.html">ShopFlow</a>
+
+      <!-- Search -->
+      <div class="nav-search">
+        <input type="text" placeholder="Search products…" id="nav-search-input" />
+        <button onclick="handleSearch()" aria-label="Search">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right actions -->
+      <div class="nav-actions">
+        <a href="login.html" class="nav-link-btn">Login</a>
+        <div class="nav-divider"></div>
+
+        <!-- Cart -->
+        <button class="nav-icon-btn" onclick="window.location.href='../index.html#cart'" aria-label="Cart">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+          <span class="cart-badge" id="cart-count" style="display:none">0</span>
+        </button>
+
+        <!-- Profile -->
+        <button class="nav-icon-btn" onclick="window.location.href='profile.html'" aria-label="Profile">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </button>
+
+        <a class="nav-cta" href="register.html">Get Started</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer overlay -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+  <!-- Side Drawer -->
+  <nav class="nav-drawer" id="nav-drawer">
+    <a class="drawer-link" href="../index.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a class="drawer-link active" href="about.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About
+    </a>
+    <a class="drawer-link" href="purchases.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      My Orders
+    </a>
+    <a class="drawer-link" href="profile.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+    <a class="drawer-link" href="dashboard.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="drawer-link" href="seller-dashboard.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      Seller Dashboard
+    </a>
+    <a class="drawer-link" href="settings.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Settings
+    </a>
+    <div class="drawer-divider"></div>
+    <a class="drawer-link" href="login.html">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Login
+    </a>
+    <a class="drawer-cta" href="register.html">Create Account</a>
   </nav>
 
   <!-- HERO -->
@@ -514,8 +705,45 @@
         }
       });
     }, { threshold: 0.12 });
-
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Drawer
+    const hamburger = document.getElementById('hamburger');
+    const drawer    = document.getElementById('nav-drawer');
+    const overlay   = document.getElementById('drawer-overlay');
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      hamburger.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    hamburger.addEventListener('click', () => {
+      drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+
+    // Search
+    function handleSearch() {
+      const q = document.getElementById('nav-search-input').value.trim();
+      if (q) window.location.href = `../index.html?search=${encodeURIComponent(q)}`;
+    }
+    document.getElementById('nav-search-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSearch();
+    });
+
+    // Cart count from localStorage (matches your existing cart logic)
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      const badge = document.getElementById('cart-count');
+      if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+    } catch(e) {}
   </script>
 </body>
 </html>
