@@ -79,8 +79,36 @@
   </style>
 </head>
 <body>
+  <!-- SIDE OVERLAY -->
+  <div class="side-overlay" id="sideOverlay"></div>
+  <div class="side-drawer" id="sideDrawer">
+    <div class="drawer-header">
+      <span style="font-size:1.3rem;font-weight:700;">ShopFlow</span>
+      <button id="drawerClose" style="background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="drawerUser" style="display:none;padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;cursor:pointer;" onclick="window.location.href='profile.html'">
+      <strong id="drawerName" style="display:block;color:#1e293b;font-size:1rem;"></strong>
+      <span id="drawerEmail" style="font-size:.9rem;color:#64748b;"></span>
+    </div>
+    <nav style="flex:1;overflow-y:auto;padding:.5rem 0;">
+      <a href="dashboard.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">My Dashboard</a>
+      <a href="profile.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">My Profile</a>
+      <a href="purchases.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">Purchases</a>
+      <a href="seller.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">Become a Seller</a>
+      <hr style="border:none;border-top:1px solid #e2e8f0;margin:.4rem 0;" />
+      <a href="about.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">About Us</a>
+      <a href="settings.html" style="display:flex;padding:.9rem 1.5rem;color:#1e293b;text-decoration:none;font-size:.95rem;font-weight:500;">Settings</a>
+    </nav>
+    <div style="padding:1rem 1.5rem;border-top:1px solid #e2e8f0;">
+      <button id="logoutBtn" style="display:none;width:100%;padding:.75rem;background:#fff;border:1.5px solid #ef4444;color:#ef4444;border-radius:8px;font-weight:600;font-size:.95rem;cursor:pointer;">Logout</button>
+    </div>
+  </div>
+
   <nav class="navbar">
-    <a class="logo" href="../index.html">ShopFlow</a>
+    <div style="display:flex;align-items:center;gap:.25rem;">
+      <button id="menuBtn" style="background:none;border:none;cursor:pointer;color:#fff;font-size:1.4rem;line-height:1;padding:0 .5rem 0 0;">☰</button>
+      <a class="logo" href="../index.html">ShopFlow</a>
+    </div>
     <div class="nav-links"><a href="../index.html" style="color:#fff">← Back to Shop</a></div>
   </nav>
 
@@ -403,6 +431,29 @@
       localStorage.setItem('sf_user', JSON.stringify(user));
       window.location.href = 'seller-dashboard.html';
     });
+
+    // Drawer
+    const drawer  = document.getElementById('sideDrawer');
+    const overlay = document.getElementById('sideOverlay');
+    function openDrawer()  { drawer.classList.add('open'); overlay.classList.add('open'); }
+    function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('open'); }
+    document.getElementById('menuBtn').addEventListener('click', openDrawer);
+    document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+    const storedUser = localStorage.getItem('sf_user');
+    if (storedUser) {
+      const u = JSON.parse(storedUser);
+      document.getElementById('drawerUser').style.display = 'block';
+      document.getElementById('drawerName').textContent  = u.name;
+      document.getElementById('drawerEmail').textContent = u.email;
+      const lb = document.getElementById('logoutBtn');
+      lb.style.display = 'block';
+      lb.addEventListener('click', () => {
+        localStorage.removeItem('sf_token');
+        localStorage.removeItem('sf_user');
+        window.location.href = '../index.html';
+      });
+    }
   </script>
 </body>
 </html>
