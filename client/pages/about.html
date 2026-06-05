@@ -759,7 +759,7 @@
         document.querySelector('.nav-divider').style.display = 'none';
         navAuthBtn.textContent = 'Logout';
         navAuthBtn.href = '#';
-        navAuthBtn.style.background = '#dc2626';
+        navAuthBtn.style.background = 'transparent'; navAuthBtn.style.color = '#dc2626'; navAuthBtn.style.border = '2px solid #dc2626';
         navAuthBtn.addEventListener('click', e => { e.preventDefault(); handleLogout(); });
 
         // Drawer: swap Login link → Logout, swap Create Account → Go to Dashboard
