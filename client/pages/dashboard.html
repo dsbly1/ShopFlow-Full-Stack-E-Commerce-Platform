@@ -367,12 +367,15 @@
       document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
       document.getElementById('totalFees').textContent  = `-$${totalFees.toFixed(2)}`;
       document.getElementById('totalNet').textContent   = `$${totalNet.toFixed(2)}`;
-      document.getElementById('statSales').textContent  = `$${totalNet.toFixed(2)}`;
+      if (mockSales.length > 0) document.getElementById('statSales').textContent = `$${totalNet.toFixed(2)}`;
       // Tax summary
-      document.getElementById('taxGross').textContent    = `$${totalSales.toFixed(2)}`;
-      document.getElementById('taxFeesPaid').textContent = `$${totalFees.toFixed(2)}`;
-      document.getElementById('taxNet').textContent      = `$${totalNet.toFixed(2)}`;
-      document.getElementById('dedFees').textContent     = `$${totalFees.toFixed(2)}`;
+      // Only update tax summary if there are real sales
+      if (mockSales.length > 0) {
+        document.getElementById('taxGross').textContent    = `$${totalSales.toFixed(2)}`;
+        document.getElementById('taxFeesPaid').textContent = `$${totalFees.toFixed(2)}`;
+        document.getElementById('taxNet').textContent      = `$${totalNet.toFixed(2)}`;
+        document.getElementById('dedFees').textContent     = `$${totalFees.toFixed(2)}`;
+      }
     }
 
     function exportCSV() {
