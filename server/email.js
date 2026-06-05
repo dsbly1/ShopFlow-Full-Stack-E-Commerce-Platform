@@ -2,9 +2,9 @@ const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendVerificationEmail(toEmail, userName, token) {
-  const verifyUrl = `http://127.0.0.1:5500/pages/verify-email.html?token=${token}`;
+  const verifyUrl = `https://shopflow-client.vercel.app/pages/verify-email.html?token=${token}`;
   await resend.emails.send({
-    from: 'ShopFlow <onboarding@resend.dev>',
+    from: 'onboarding@resend.dev',
     to: toEmail,
     subject: 'Verify your ShopFlow email address',
     html: `
@@ -20,7 +20,7 @@ async function sendVerificationEmail(toEmail, userName, token) {
 
 async function sendVerificationSuccessEmail(toEmail, userName) {
   await resend.emails.send({
-    from: 'ShopFlow <onboarding@resend.dev>',
+    from: 'onboarding@resend.dev',
     to: toEmail,
     subject: 'Your ShopFlow email has been verified',
     html: `

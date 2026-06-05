@@ -14,11 +14,10 @@ router.post('/register', async (req, res) => {
     const token   = crypto.randomBytes(32).toString('hex');
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
     const { rows } = await db.query(
-      `INSERT INTO users (name, email, password_hash, verification_token, token_expires_at)
-       VALUES ($1,$2,$3,$4,$5) RETURNING id, name, email, role, email_verified`,
-      [name, email, hash, token, expires]
+      `INSERT INTO users (name, email, password_hash, email_verified)
+       VALUES ($1,$2,$3,TRUE) RETURNING id, name, email, role, email_verified`,
+      [name, email, hash]
     );
-    sendVerificationEmail(email, name, token).catch(err => console.error('Email error:', err));
     const jwtToken = jwt.sign(rows[0], process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
     res.status(201).json({ user: rows[0], token: jwtToken, message: 'Check your email to verify your account.' });
   } catch (err) {
