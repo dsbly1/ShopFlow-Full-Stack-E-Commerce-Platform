@@ -776,9 +776,9 @@
     
     try {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-      const badge = document.getElementById('cart-count');
-      if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+      
+      
+      
     } catch(e) {}
   </script>
 </body>
