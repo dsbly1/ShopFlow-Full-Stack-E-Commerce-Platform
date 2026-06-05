@@ -143,10 +143,10 @@
   <div class="page">
     <div class="welcome">
       <div>
-        <h1 id="welcomeName">Welcome back!</h1>
+        <h1 id="welcomeName" style="cursor:pointer;" onclick="switchTab('profile', document.querySelector('.tab-btn:nth-child(2)'))">Welcome back!</h1>
         <p id="welcomeEmail"></p>
       </div>
-      <div class="avatar" id="avatarInitial">?</div>
+      <div class="avatar" id="avatarInitial" style="cursor:pointer;" onclick="switchTab('profile', document.querySelector('.tab-btn:nth-child(2)'))">?</div>
     </div>
 
     <div class="stats">
