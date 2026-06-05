@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .cart-container { max-width:800px; margin:2rem auto; padding:0 1rem; }
+    .cart-item { display:flex; gap:1rem; align-items:center; background:#fff; border-radius:10px; padding:1rem; margin-bottom:1rem; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+    .cart-item img { width:80px; height:80px; object-fit:cover; border-radius:6px; background:#e2e8f0; }
+    .cart-item-info { flex:1; }
+    .cart-item-info h3 { font-size:.95rem; }
+    .cart-total { text-align:right; font-size:1.3rem; font-weight:700; margin:1.5rem 0; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="logo" href="../index.html">ShopFlow</a>
+    <div class="nav-links"><a href="../index.html">← Shop</a></div>
+  </nav>
+  <div class="cart-container">
+    <h2 style="margin-bottom:1.5rem;">Your Cart</h2>
+    <div id="cartItems"><p class="loading">Loading cart…</p></div>
+    <div class="cart-total" id="cartTotal"></div>
+    <button class="btn-primary" id="checkoutBtn" style="display:none;width:100%;padding:.85rem;">Checkout</button>
+  </div>
+  <script src="../js/api.js"></script>
+  <script>
+    async function loadCart() {
+      if (!getToken()) { window.location.href='login.html'; return; }
+      const items = await api.get('/cart');
+      const el = document.getElementById('cartItems');
+      if (!items.length) { el.innerHTML='<p>Your cart is empty.</p>'; return; }
+      el.innerHTML = items.map(i => `
+        <div class="cart-item">
+          <img src="${i.image_url||''}" alt="${i.name}" />
+          <div class="cart-item-info">
+            <h3>${i.name}</h3>
+            <p>$${parseFloat(i.unit_price||i.price).toFixed(2)} × ${i.quantity}</p>
+          </div>
+          <strong>$${parseFloat(i.subtotal).toFixed(2)}</strong>
+          <button onclick="removeItem(${i.id})" style="border:none;background:none;cursor:pointer;color:#ef4444;font-size:1.2rem;">✕</button>
+        </div>
+      `).join('');
+      const total = items.reduce((s,i) => s + parseFloat(i.subtotal), 0);
+      document.getElementById('cartTotal').textContent = `Total: $${total.toFixed(2)}`;
+      document.getElementById('checkoutBtn').style.display='block';
+    }
+    async function removeItem(id) {
+      await api.delete(`/cart/${id}`);
+      loadCart();
+    }
+    loadCart();
+  </script>
+</body>
+</html>

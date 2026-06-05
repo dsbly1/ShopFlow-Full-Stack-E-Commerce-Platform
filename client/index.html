@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopFlow — E-Commerce Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="logo" href="index.html">ShopFlow</a>
+    <div class="nav-search">
+      <input id="searchInput" type="text" placeholder="Search products…" />
+      <button id="searchBtn">Search</button>
+    </div>
+    <div class="nav-links">
+      <a href="pages/cart.html">🛒 <span id="cartCount">0</span></a>
+      <a href="pages/login.html" id="authLink">Login</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Shop the Best Products</h1>
+    <p>Electronics, Clothing, Books &amp; More</p>
+    <a href="#products" class="btn-primary">Browse Now</a>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="filters" id="products">
+    <select id="categoryFilter"><option value="">All Categories</option></select>
+    <select id="sortFilter">
+      <option value="created_at">Newest</option>
+      <option value="price">Price</option>
+      <option value="name">Name</option>
+    </select>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <main class="product-grid" id="productGrid">
+    <p class="loading">Loading products…</p>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 ShopFlow. Built with Node.js + PostgreSQL.</p>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
