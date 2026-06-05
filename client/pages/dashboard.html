@@ -112,7 +112,7 @@
       <span class="logo-text">ShopFlow</span>
       <button class="drawer-close" id="drawerClose">✕</button>
     </div>
-    <div class="drawer-user" id="drawerUser" style="display:none;cursor:pointer;" onclick="closeDrawer();switchTab('profile',document.querySelectorAll('.tab-btn')[1])">
+    <div class="drawer-user" id="drawerUser" style="display:none;cursor:pointer;" onclick="window.location.href='profile.html'">
       <strong id="drawerName"></strong>
       <span id="drawerEmail"></span>
     </div>
@@ -144,10 +144,10 @@
   <div class="page">
     <div class="welcome">
       <div>
-        <h1 id="welcomeName" style="cursor:pointer;" onclick="switchTab('profile', document.querySelector('.tab-btn:nth-child(2)'))">Welcome back!</h1>
+        <h1 id="welcomeName" style="cursor:pointer;" onclick="window.location.href='profile.html'">Welcome back!</h1>
         <p id="welcomeEmail"></p>
       </div>
-      <div class="avatar" id="avatarInitial" style="cursor:pointer;" onclick="switchTab('profile', document.querySelector('.tab-btn:nth-child(2)'))">?</div>
+      <div class="avatar" id="avatarInitial" style="cursor:pointer;" onclick="window.location.href='profile.html'">?</div>
     </div>
 
     <div class="stats">
@@ -162,33 +162,11 @@
       <button class="tab-btn active" onclick="switchTab('orders',this)">My Orders</button>
       
       <button class="tab-btn" onclick="switchTab('security',this)">Security</button>
-      <button class="tab-btn seller-only" onclick="switchTab('products',this)" style="display:none">My Products</button>
       <button class="tab-btn" onclick="switchTab('banking',this)">Banking</button>
       <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">Products Sold</button>
       <button class="tab-btn seller-only" onclick="switchTab('tax',this)" style="display:none">Tax & 1099</button>
       <button class="tab-btn" onclick="switchTab('preferences',this)">Preferences</button>
     </div>
-
-
-    <!-- MY PRODUCTS -->
-    <div class="tab-panel" id="tab-products">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
-        <div>
-          <h1 style="font-size:1.4rem;">My Products</h1>
-          <p style="color:#64748b;font-size:.9rem;">Manage your active listings from your dashboard.</p>
-        </div>
-        <a href="seller-dashboard.html" class="btn-save" style="text-decoration:none;padding:.65rem 1.25rem;font-size:.88rem;">+ Add New Product</a>
-      </div>
-      <div class="card">
-        <table>
-          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="myProductsBody">
-            <tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:2.5rem;">No products listed yet. <a href="seller-dashboard.html" style="color:#2563eb;">Add your first product →</a></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- ORDERS -->
     <div class="tab-panel active" id="tab-orders">
       <div class="card">
@@ -201,7 +179,7 @@
     </div>
 
     <!-- SECURITY -->
-    <div class="tab-panel" id="tab-security">
+    <div class="tab-panel" id="tab-security" style="display:flex;justify-content:center;">
       <div class="card" style="max-width:480px;">
         <h2>Change Password</h2>
         <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
@@ -348,7 +326,7 @@
     </div>
 
     <!-- PREFERENCES -->
-    <div class="tab-panel" id="tab-preferences">
+    <div class="tab-panel" id="tab-preferences" style="display:flex;justify-content:center;">
       <div class="card" style="max-width:480px;">
         <h2>Preferences</h2>
         <div style="display:flex;flex-direction:column;gap:.85rem;">
@@ -380,7 +358,6 @@
     // Show seller-only tabs
     if (user.isSeller) {
       document.querySelectorAll('.seller-only').forEach(el => el.style.display = 'block');
-      loadMyProducts();
       loadSoldProducts();
     }
 
@@ -399,14 +376,6 @@
     loadOrders();
 
 
-    function loadMyProducts() {
-      // Connect to seller API when backend is ready
-      const products = [];
-      const tbody = document.getElementById('myProductsBody');
-      if (!products.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:2.5rem;">No products listed yet. <a href="seller-dashboard.html" style="color:#2563eb;">Add your first product →</a></td></tr>';
-        return;
-      }
       tbody.innerHTML = products.map(p => `
         <tr>
           <td><strong>${p.name}</strong></td>
