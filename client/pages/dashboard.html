@@ -112,7 +112,7 @@
       <span class="logo-text">ShopFlow</span>
       <button class="drawer-close" id="drawerClose">✕</button>
     </div>
-    <div class="drawer-user" id="drawerUser" style="display:none">
+    <div class="drawer-user" id="drawerUser" style="display:none;cursor:pointer;" onclick="closeDrawer();switchTab('profile',document.querySelectorAll('.tab-btn')[1])">
       <strong id="drawerName"></strong>
       <span id="drawerEmail"></span>
     </div>
