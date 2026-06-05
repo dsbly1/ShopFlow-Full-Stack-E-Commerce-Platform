@@ -68,7 +68,7 @@ async function updateCartCount() {
   const badge = document.getElementById('cartCount');
   if (badge && total > 0) {
     badge.textContent = total;
-    badge.style.display = 'flex';
+    badge.style.display = "flex";
   }
 }
 updateCartCount();
