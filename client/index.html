@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- NAVBAR -->
   <nav class="navbar">
     <a class="logo" href="index.html">ShopFlow</a>
     <div class="nav-search">
@@ -20,14 +19,15 @@
     </div>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
     <h1>Shop the Best Products</h1>
     <p>Electronics, Clothing, Books &amp; More</p>
-    <a href="#products" class="btn-primary">Browse Now</a>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">Browse Now</a>
+      <a href="pages/register.html" class="btn-secondary">Create Account</a>
+    </div>
   </section>
 
-  <!-- FILTERS -->
   <section class="filters" id="products">
     <select id="categoryFilter"><option value="">All Categories</option></select>
     <select id="sortFilter">
@@ -37,7 +37,6 @@
     </select>
   </section>
 
-  <!-- PRODUCT GRID -->
   <main class="product-grid" id="productGrid">
     <p class="loading">Loading products…</p>
   </main>
