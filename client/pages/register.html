@@ -8,37 +8,171 @@
     .auth-box { max-width:420px; margin:4rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,.1); }
     .auth-box h2 { margin-bottom:1.5rem; }
     .form-group { margin-bottom:1rem; display:flex; flex-direction:column; gap:.35rem; }
-    .form-group input { padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem; }
+    .form-group label { font-weight:500; font-size:.9rem; }
+    .input-wrap { position:relative; display:flex; }
+    .input-wrap input { flex:1; padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem; outline:none; transition:border .2s; }
+    .input-wrap input:focus { border-color:#2563eb; }
+    .input-wrap input.valid   { border-color:#22c55e; }
+    .input-wrap input.invalid { border-color:#ef4444; }
+    .toggle-pw { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:1.1rem; color:#64748b; }
+    .hint { font-size:.78rem; margin-top:.25rem; min-height:1rem; }
+    .hint.ok  { color:#22c55e; }
+    .hint.err { color:#ef4444; }
     .btn-primary { width:100%; padding:.75rem; font-size:1rem; }
+    .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
     .switch { text-align:center; margin-top:1rem; font-size:.9rem; color:#64748b; }
     .switch a { color:#2563eb; }
-    #error { color:red; font-size:.9rem; margin-bottom:.5rem; }
+    #globalError { color:red; font-size:.9rem; margin-bottom:.5rem; min-height:1.2rem; }
   </style>
 </head>
 <body>
   <nav class="navbar"><a class="logo" href="../index.html">ShopFlow</a></nav>
   <div class="auth-box">
     <h2>Create Account</h2>
-    <div class="form-group"><label>Name</label><input id="name" type="text" placeholder="Your name" /></div>
-    <div class="form-group"><label>Email</label><input id="email" type="email" placeholder="you@example.com" /></div>
-    <div class="form-group"><label>Password</label><input id="password" type="password" placeholder="••••••••" /></div>
-    <p id="error"></p>
-    <button class="btn-primary" id="registerBtn">Create Account</button>
+
+    <!-- Name -->
+    <div class="form-group">
+      <label>Name</label>
+      <div class="input-wrap">
+        <input id="name" type="text" placeholder="Your name" />
+      </div>
+      <span class="hint" id="nameHint"></span>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label>Email</label>
+      <div class="input-wrap">
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <span class="hint" id="emailHint"></span>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input id="password" type="password" placeholder="Min 8 characters" />
+        <button class="toggle-pw" type="button" data-target="password">👁</button>
+      </div>
+      <span class="hint" id="passwordHint"></span>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <div class="input-wrap">
+        <input id="confirm" type="password" placeholder="Re-enter password" />
+        <button class="toggle-pw" type="button" data-target="confirm">👁</button>
+      </div>
+      <span class="hint" id="confirmHint"></span>
+    </div>
+
+    <p id="globalError"></p>
+    <button class="btn-primary" id="registerBtn" disabled>Create Account</button>
     <p class="switch">Already have an account? <a href="login.html">Login</a></p>
   </div>
+
   <script src="../js/api.js"></script>
   <script>
+    const fields = {
+      name:     { el: document.getElementById('name'),     hint: document.getElementById('nameHint') },
+      email:    { el: document.getElementById('email'),    hint: document.getElementById('emailHint') },
+      password: { el: document.getElementById('password'), hint: document.getElementById('passwordHint') },
+      confirm:  { el: document.getElementById('confirm'),  hint: document.getElementById('confirmHint') },
+    };
+    const btn = document.getElementById('registerBtn');
+    const globalError = document.getElementById('globalError');
+
+    // Email regex
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+    function validate() {
+      let allOk = true;
+
+      // Name
+      if (fields.name.el.value.trim().length < 2) {
+        setField('name', false, 'Enter your full name');
+        allOk = false;
+      } else {
+        setField('name', true, '✓ Looks good');
+      }
+
+      // Email — real-time format check
+      const emailVal = fields.email.el.value.trim();
+      if (!emailVal) {
+        setField('email', null, '');
+        allOk = false;
+      } else if (!emailRe.test(emailVal)) {
+        setField('email', false, 'Enter a valid email address');
+        allOk = false;
+      } else {
+        setField('email', true, '✓ Valid email');
+      }
+
+      // Password
+      const pw = fields.password.el.value;
+      if (pw.length === 0) {
+        setField('password', null, '');
+        allOk = false;
+      } else if (pw.length < 8) {
+        setField('password', false, 'Password must be at least 8 characters');
+        allOk = false;
+      } else {
+        setField('password', true, '✓ Strong enough');
+      }
+
+      // Confirm
+      const conf = fields.confirm.el.value;
+      if (conf.length === 0) {
+        setField('confirm', null, '');
+        allOk = false;
+      } else if (conf !== pw) {
+        setField('confirm', false, 'Passwords do not match');
+        allOk = false;
+      } else {
+        setField('confirm', true, '✓ Passwords match');
+      }
+
+      btn.disabled = !allOk;
+    }
+
+    function setField(name, ok, msg) {
+      const { el, hint } = fields[name];
+      el.classList.remove('valid', 'invalid');
+      hint.classList.remove('ok', 'err');
+      if (ok === true)  { el.classList.add('valid');   hint.classList.add('ok');  }
+      if (ok === false) { el.classList.add('invalid');  hint.classList.add('err'); }
+      hint.textContent = msg;
+    }
+
+    // Attach live validation
+    Object.values(fields).forEach(f => f.el.addEventListener('input', validate));
+
+    // Show/hide password toggles
+    document.querySelectorAll('.toggle-pw').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        btn.textContent = isHidden ? '🙈' : '👁';
+      });
+    });
+
+    // Submit
     document.getElementById('registerBtn').addEventListener('click', async () => {
-      const name     = document.getElementById('name').value;
-      const email    = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const res = await api.post('/auth/register', { name, email, password });
+      globalError.textContent = '';
+      const res = await api.post('/auth/register', {
+        name:     fields.name.el.value.trim(),
+        email:    fields.email.el.value.trim(),
+        password: fields.password.el.value,
+      });
       if (res.token) {
         localStorage.setItem('sf_token', res.token);
         localStorage.setItem('sf_user', JSON.stringify(res.user));
         window.location.href = '../index.html';
       } else {
-        document.getElementById('error').textContent = res.error || 'Registration failed';
+        globalError.textContent = res.error || 'Registration failed';
       }
     });
   </script>
