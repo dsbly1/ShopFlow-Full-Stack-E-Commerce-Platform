@@ -2,7 +2,7 @@
 // ShopFlow — API Client
 // All fetch calls to the backend live here
 // ============================================================
-const API = 'http://127.0.0.1:3000/api';
+const API = 'https://shopflow-full-stack-e-commerce-platform.onrender.com/api';
 
 function getToken() { return localStorage.getItem('sf_token'); }
 function getHeaders() {

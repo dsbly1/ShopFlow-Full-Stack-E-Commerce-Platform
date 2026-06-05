@@ -5,7 +5,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'http://localhost:5500', 'http://127.0.0.1:5501', 'http://localhost:5501'],
+  origin: ['http://127.0.0.1:5500', 'http://localhost:5500', 'http://127.0.0.1:5501', 'http://localhost:5501', 'https://shopflow-client.vercel.app', 'https://shopflow-client-13hmeou16-damonbly-101.vercel.app'],
   credentials: true
 }));
 app.use(express.json());
