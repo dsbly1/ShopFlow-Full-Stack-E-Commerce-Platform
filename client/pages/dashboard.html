@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f1f5f9; }
+    .page { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .welcome { background:linear-gradient(135deg,#1d4ed8,#7c3aed); color:#fff; border-radius:14px; padding:2rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+    .welcome h1 { font-size:1.6rem; margin-bottom:.25rem; }
+    .welcome p  { opacity:.85; font-size:.95rem; }
+    .avatar { width:60px; height:60px; background:rgba(255,255,255,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:700; flex-shrink:0; }
+
+    /* Stats */
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+    .stat-card { background:#fff; border-radius:12px; padding:1.25rem; box-shadow:0 1px 6px rgba(0,0,0,.07); text-align:center; }
+    .stat-card .val { font-size:2rem; font-weight:700; color:#2563eb; }
+    .stat-card .lbl { font-size:.8rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:.25rem; }
+
+    /* Cards */
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; }
+    .card h2 { font-size:1rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+    .empty { color:#94a3b8; font-size:.88rem; text-align:center; padding:1.5rem 0; }
+
+    /* Order list */
+    .order-item { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; border-bottom:1px solid #f1f5f9; font-size:.88rem; }
+    .order-item:last-child { border-bottom:none; }
+    .badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.75rem; font-weight:600; }
+    .badge.pending   { background:#fef9c3; color:#854d0e; }
+    .badge.delivered { background:#dcfce7; color:#166534; }
+    .badge.shipped   { background:#dbeafe; color:#1d4ed8; }
+
+    /* Profile form */
+    .form-group { display:flex; flex-direction:column; gap:.3rem; margin-bottom:.85rem; }
+    .form-group label { font-weight:500; font-size:.85rem; color:#374151; }
+    .form-group input { padding:.55rem .75rem; border:1px solid #cbd5e1; border-radius:7px; font-size:.9rem; outline:none; }
+    .form-group input:focus { border-color:#2563eb; }
+    .btn-save { padding:.6rem 1.5rem; background:#2563eb; color:#fff; border:none; border-radius:7px; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn-save:hover { opacity:.88; }
+
+    /* Tabs */
+    .tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .tab-btn { padding:.55rem 1.25rem; border-radius:8px; border:1.5px solid #e2e8f0; background:#fff; font-weight:600; font-size:.88rem; cursor:pointer; color:#64748b; transition:all .15s; }
+    .tab-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    @media(max-width:640px) { .grid2,.stats { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="logo" href="../index.html">ShopFlow</a>
+    <div class="nav-links"><a href="../index.html" style="color:#fff">← Shop</a></div>
+  </nav>
+
+  <div class="page">
+    <!-- Welcome banner -->
+    <div class="welcome">
+      <div>
+        <h1 id="welcomeName">Welcome back!</h1>
+        <p id="welcomeEmail"></p>
+      </div>
+      <div class="avatar" id="avatarInitial">?</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card"><div class="val" id="statOrders">0</div><div class="lbl">Orders</div></div>
+      <div class="stat-card"><div class="val" id="statReviews">0</div><div class="lbl">Reviews</div></div>
+      <div class="stat-card"><div class="val" id="statSeller">—</div><div class="lbl">Seller Status</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('orders',this)">📦 My Orders</button>
+      <button class="tab-btn" onclick="switchTab('profile',this)">👤 Profile</button>
+      <button class="tab-btn" onclick="switchTab('security',this)">🔒 Security</button>
+      <button class="tab-btn" onclick="switchTab('preferences',this)">⚙️ Preferences</button>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div class="tab-panel active" id="tab-orders">
+      <div class="card">
+        <h2>📦 Recent Orders</h2>
+        <div id="ordersList"><p class="empty">You haven't placed any orders yet.<br><a href="../index.html" style="color:#2563eb;">Start shopping →</a></p></div>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="tab-panel" id="tab-profile">
+      <div class="grid2">
+        <div class="card">
+          <h2>👤 Personal Info</h2>
+          <div class="form-group"><label>Full Name</label><input id="profileName" type="text" /></div>
+          <div class="form-group"><label>Email</label><input id="profileEmail" type="email" /></div>
+          <div class="form-group"><label>Phone</label><input id="profilePhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
+          <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+        </div>
+        <div class="card">
+          <h2>📍 Shipping Address</h2>
+          <div class="form-group"><label>Street</label><input id="addrStreet" type="text" placeholder="123 Main St" /></div>
+          <div class="form-group"><label>City</label><input id="addrCity" type="text" /></div>
+          <div class="form-group"><label>State</label><input id="addrState" type="text" /></div>
+          <div class="form-group"><label>ZIP</label><input id="addrZip" type="text" /></div>
+          <button class="btn-save" onclick="saveAddress()">Save Address</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY TAB -->
+    <div class="tab-panel" id="tab-security">
+      <div class="card" style="max-width:480px;">
+        <h2>🔒 Change Password</h2>
+        <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
+        <div class="form-group"><label>New Password</label><input id="newPw" type="password" /></div>
+        <div class="form-group"><label>Confirm New Password</label><input id="confPw" type="password" /></div>
+        <p id="pwMsg" style="font-size:.85rem;min-height:1.2rem;margin-bottom:.5rem;"></p>
+        <button class="btn-save" onclick="changePassword()">Update Password</button>
+      </div>
+    </div>
+
+    <!-- PREFERENCES TAB -->
+    <div class="tab-panel" id="tab-preferences">
+      <div class="card" style="max-width:480px;">
+        <h2>⚙️ Preferences</h2>
+        <div style="display:flex;flex-direction:column;gap:.85rem;">
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
+            Order confirmation emails <input type="checkbox" checked style="width:18px;height:18px;accent-color:#2563eb;" />
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
+            Promotional emails <input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" />
+          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
+            SMS order updates <input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" />
+          </label>
+        </div>
+        <button class="btn-save" style="margin-top:1.25rem;">Save Preferences</button>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <script src="../js/api.js"></script>
+  <script>
+    // Auth guard
+    const stored = localStorage.getItem('sf_user');
+    if (!stored) { window.location.href = 'login.html'; }
+    const user = JSON.parse(stored);
+
+    // Populate header
+    document.getElementById('welcomeName').textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
+    document.getElementById('welcomeEmail').textContent = user.email;
+    document.getElementById('avatarInitial').textContent = user.name.charAt(0).toUpperCase();
+    document.getElementById('statSeller').textContent = user.isSeller ? '✅ Active' : 'No';
+
+    // Populate profile fields
+    document.getElementById('profileName').value  = user.name  || '';
+    document.getElementById('profileEmail').value = user.email || '';
+
+    // Load orders from API
+    async function loadOrders() {
+      const orders = await api.get('/orders');
+      const el = document.getElementById('ordersList');
+      if (!Array.isArray(orders) || !orders.length) return;
+      el.innerHTML = orders.map(o => `
+        <div class="order-item">
+          <div>
+            <strong>Order #${o.id}</strong>
+            <div style="color:#64748b;font-size:.8rem;">${new Date(o.created_at).toLocaleDateString()}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;">$${parseFloat(o.total_price).toFixed(2)}</div>
+            <span class="badge ${o.status}">${o.status}</span>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('statOrders').textContent = orders.length;
+    }
+    loadOrders();
+
+    // Tab switching
+    function switchTab(name, el) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-${name}`).classList.add('active');
+      el.classList.add('active');
+    }
+
+    // Save profile
+    function saveProfile() {
+      user.name = document.getElementById('profileName').value;
+      user.email = document.getElementById('profileEmail').value;
+      localStorage.setItem('sf_user', JSON.stringify(user));
+      alert('Profile updated!');
+    }
+
+    function saveAddress() { alert('Address saved!'); }
+
+    // Change password
+    async function changePassword() {
+      const newPw  = document.getElementById('newPw').value;
+      const confPw = document.getElementById('confPw').value;
+      const msg    = document.getElementById('pwMsg');
+      if (newPw.length < 8) { msg.style.color='#ef4444'; msg.textContent='Password must be at least 8 characters.'; return; }
+      if (newPw !== confPw)  { msg.style.color='#ef4444'; msg.textContent='Passwords do not match.'; return; }
+      msg.style.color='#22c55e'; msg.textContent='✓ Password updated successfully!';
+    }
+  </script>
+</body>
+</html>
