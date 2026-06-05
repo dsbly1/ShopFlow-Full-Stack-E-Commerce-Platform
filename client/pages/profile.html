@@ -127,24 +127,6 @@
       </div>
     </div>
 
-    <!-- Change Password -->
-    <div class="card" style="max-width:480px;">
-      <h2>Change Password</h2>
-      <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
-      <div class="form-group"><label>New Password</label><input id="newPw" type="password" /><span class="hint">Minimum 8 characters</span></div>
-      <div class="form-group"><label>Confirm New Password</label><input id="confPw" type="password" /></div>
-      <button class="btn-save" onclick="changePassword()">Update Password</button>
-      <p class="msg" id="pwMsg"></p>
-    </div>
-
-    <!-- Danger zone -->
-    <div class="card" style="border:1.5px solid #fee2e2;">
-      <h2 style="color:#ef4444;">Danger Zone</h2>
-      <p style="font-size:.88rem;color:#64748b;margin-bottom:1rem;">These actions are permanent and cannot be undone.</p>
-      <button class="btn-danger" onclick="if(confirm('Are you sure you want to delete your account? This cannot be undone.')) alert('Account deletion request submitted.')">Delete My Account</button>
-    </div>
-  </div>
-
   <script src="../js/api.js"></script>
   <script>
     const stored = localStorage.getItem('sf_user');
