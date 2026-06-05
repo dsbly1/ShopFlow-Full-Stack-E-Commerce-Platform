@@ -33,7 +33,7 @@
       if (res.token) {
         localStorage.setItem('sf_token', res.token);
         localStorage.setItem('sf_user', JSON.stringify(res.user));
-        window.location.href = '../index.html';
+        window.location.href = '/index.html';
       } else {
         document.getElementById('error').textContent = res.error || 'Login failed';
       }

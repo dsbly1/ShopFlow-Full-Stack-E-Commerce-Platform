@@ -1,15 +1,13 @@
-// ============================================================
-// ShopFlow — Homepage: product listing + search + filters
-// ============================================================
+const PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
 
-const grid     = document.getElementById('productGrid');
-const search   = document.getElementById('searchInput');
-const sortSel  = document.getElementById('sortFilter');
-const catSel   = document.getElementById('categoryFilter');
+const grid    = document.getElementById('productGrid');
+const search  = document.getElementById('searchInput');
+const sortSel = document.getElementById('sortFilter');
+const catSel  = document.getElementById('categoryFilter');
 
 async function loadCategories() {
-  // Stub — replace with real API call when backend is running
-  ['Electronics','Clothing','Books','Home & Garden','Sports'].forEach(c => {
+  const cats = ['Electronics','Clothing','Books','Home & Garden','Sports'];
+  cats.forEach(c => {
     const opt = document.createElement('option');
     opt.textContent = c;
     catSel.appendChild(opt);
@@ -20,7 +18,9 @@ function renderProducts(products) {
   if (!products.length) { grid.innerHTML = '<p class="loading">No products found.</p>'; return; }
   grid.innerHTML = products.map(p => `
     <div class="product-card">
-      <img src="${p.image_url || '/public/images/placeholder.png'}" alt="${p.name}" loading="lazy" />
+      <img src="${p.image_url || PLACEHOLDER}"
+           onerror="this.src='${PLACEHOLDER}'"
+           alt="${p.name}" loading="lazy" />
       <div class="card-body">
         <h3>${p.name}</h3>
         <div class="card-price">$${parseFloat(p.price).toFixed(2)}</div>
@@ -48,12 +48,10 @@ async function addToCart(productId) {
   alert('Added to cart!');
 }
 
-// Event listeners
 document.getElementById('searchBtn')?.addEventListener('click', loadProducts);
 search?.addEventListener('keydown', e => e.key === 'Enter' && loadProducts());
 sortSel?.addEventListener('change', loadProducts);
 catSel?.addEventListener('change', loadProducts);
 
-// Init
 loadCategories();
 loadProducts();
