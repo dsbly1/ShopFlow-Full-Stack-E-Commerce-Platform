@@ -451,7 +451,7 @@
 
       <!-- Right actions -->
       <div class="nav-actions">
-        <a href="login.html" class="nav-link-btn">Login</a>
+        <a href="login.html" class="nav-link-btn" id="nav-login-link">Login</a>
         <div class="nav-divider"></div>
 
         <!-- Cart -->
@@ -508,11 +508,11 @@
       Settings
     </a>
     <div class="drawer-divider"></div>
-    <a class="drawer-link" href="login.html">
+    <a class="drawer-link" href="login.html" id="drawer-login-link">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
       Login
     </a>
-    <a class="drawer-cta" href="register.html">Create Account</a>
+    <a class="drawer-cta" href="register.html" id="drawer-cta-btn">Create Account</a>
   </nav>
 
   <!-- HERO -->
@@ -737,7 +737,43 @@
       if (e.key === 'Enter') handleSearch();
     });
 
-    // Cart count from localStorage (matches your existing cart logic)
+    // Auth-aware navbar
+    function handleLogout() {
+      localStorage.removeItem('sf_token');
+      localStorage.removeItem('sf_user');
+      sessionStorage.removeItem('sf_token');
+      sessionStorage.removeItem('sf_user');
+      window.location.href = 'login.html';
+    }
+
+    (function updateNavAuth() {
+      const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+      const navAuthBtn     = document.getElementById('nav-auth-btn');
+      const navLoginLink   = document.getElementById('nav-login-link');
+      const drawerLoginLink = document.getElementById('drawer-login-link');
+      const drawerCtaBtn   = document.getElementById('drawer-cta-btn');
+
+      if (token) {
+        // Navbar: hide Login, swap Get Started → Logout
+        navLoginLink.style.display = 'none';
+        document.querySelector('.nav-divider').style.display = 'none';
+        navAuthBtn.textContent = 'Logout';
+        navAuthBtn.href = '#';
+        navAuthBtn.style.background = '#dc2626';
+        navAuthBtn.addEventListener('click', e => { e.preventDefault(); handleLogout(); });
+
+        // Drawer: swap Login link → Logout, swap Create Account → Go to Dashboard
+        drawerLoginLink.innerHTML = `
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout`;
+        drawerLoginLink.href = '#';
+        drawerLoginLink.addEventListener('click', e => { e.preventDefault(); handleLogout(); });
+        drawerCtaBtn.textContent = 'Go to Dashboard';
+        drawerCtaBtn.href = 'dashboard.html';
+      }
+    })();
+
+    
     try {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
