@@ -2,7 +2,7 @@
 // ShopFlow — API Client
 // All fetch calls to the backend live here
 // ============================================================
-const API = 'http://localhost:3000/api';
+const API = 'http://127.0.0.1:3000/api';
 
 function getToken() { return localStorage.getItem('sf_token'); }
 function getHeaders() {
