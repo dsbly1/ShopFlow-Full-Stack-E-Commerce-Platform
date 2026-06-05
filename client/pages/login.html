@@ -8,24 +8,47 @@
     .auth-box { max-width:420px; margin:4rem auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,.1); }
     .auth-box h2 { margin-bottom:1.5rem; }
     .form-group { margin-bottom:1rem; display:flex; flex-direction:column; gap:.35rem; }
-    .form-group input { padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem; }
+    .form-group label { font-weight:500; font-size:.9rem; }
+    .input-wrap { position:relative; display:flex; }
+    .input-wrap input { flex:1; padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:6px; font-size:1rem; outline:none; transition:border .2s; }
+    .input-wrap input:focus { border-color:#2563eb; }
+    .toggle-pw { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:1.1rem; color:#64748b; }
     .btn-primary { width:100%; padding:.75rem; font-size:1rem; }
     .switch { text-align:center; margin-top:1rem; font-size:.9rem; color:#64748b; }
     .switch a { color:#2563eb; }
+    #error { color:red; font-size:.9rem; margin-bottom:.5rem; min-height:1.2rem; }
   </style>
 </head>
 <body>
   <nav class="navbar"><a class="logo" href="../index.html">ShopFlow</a></nav>
   <div class="auth-box">
     <h2>Login</h2>
-    <div class="form-group"><label>Email</label><input id="email" type="email" placeholder="you@example.com" /></div>
-    <div class="form-group"><label>Password</label><input id="password" type="password" placeholder="••••••••" /></div>
-    <p id="error" style="color:red;font-size:.9rem;margin-bottom:.5rem;"></p>
+    <div class="form-group">
+      <label>Email</label>
+      <div class="input-wrap">
+        <input id="email" type="email" placeholder="you@example.com" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input id="password" type="password" placeholder="••••••••" />
+        <button class="toggle-pw" type="button" data-target="password">👁</button>
+      </div>
+    </div>
+    <p id="error"></p>
     <button class="btn-primary" id="loginBtn">Login</button>
     <p class="switch">No account? <a href="register.html">Register</a></p>
   </div>
   <script src="../js/api.js"></script>
   <script>
+    document.querySelector('.toggle-pw').addEventListener('click', function() {
+      const input = document.getElementById(this.dataset.target);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      this.textContent = isHidden ? '🙈' : '👁';
+    });
+
     document.getElementById('loginBtn').addEventListener('click', async () => {
       const email    = document.getElementById('email').value;
       const password = document.getElementById('password').value;
