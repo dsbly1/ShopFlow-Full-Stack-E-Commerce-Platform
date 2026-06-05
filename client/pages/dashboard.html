@@ -6,49 +6,81 @@
   <link rel="stylesheet" href="../css/style.css" />
   <style>
     body { background:#f1f5f9; }
-    .page { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .page { max-width:1000px; margin:0 auto; padding:2rem 1.5rem 4rem; }
     .welcome { background:linear-gradient(135deg,#1d4ed8,#7c3aed); color:#fff; border-radius:14px; padding:2rem; margin-bottom:2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
     .welcome h1 { font-size:1.6rem; margin-bottom:.25rem; }
     .welcome p  { opacity:.85; font-size:.95rem; }
     .avatar { width:60px; height:60px; background:rgba(255,255,255,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:700; flex-shrink:0; }
 
-    /* Stats */
-    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
     .stat-card { background:#fff; border-radius:12px; padding:1.25rem; box-shadow:0 1px 6px rgba(0,0,0,.07); text-align:center; }
-    .stat-card .val { font-size:2rem; font-weight:700; color:#2563eb; }
-    .stat-card .lbl { font-size:.8rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:.25rem; }
+    .stat-card .val { font-size:1.8rem; font-weight:700; color:#2563eb; }
+    .stat-card .lbl { font-size:.75rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-top:.25rem; }
 
-    /* Cards */
     .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
-    .card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
     .card h2 { font-size:1rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+    .card h2 span { font-size:1.15rem; }
     .empty { color:#94a3b8; font-size:.88rem; text-align:center; padding:1.5rem 0; }
 
-    /* Order list */
     .order-item { display:flex; align-items:center; justify-content:space-between; padding:.75rem 0; border-bottom:1px solid #f1f5f9; font-size:.88rem; }
     .order-item:last-child { border-bottom:none; }
     .badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.75rem; font-weight:600; }
     .badge.pending   { background:#fef9c3; color:#854d0e; }
     .badge.delivered { background:#dcfce7; color:#166534; }
     .badge.shipped   { background:#dbeafe; color:#1d4ed8; }
+    .badge.active    { background:#dcfce7; color:#166534; }
+    .badge.verified  { background:#dbeafe; color:#1d4ed8; }
+    .badge.pending-review { background:#fef9c3; color:#854d0e; }
 
-    /* Profile form */
     .form-group { display:flex; flex-direction:column; gap:.3rem; margin-bottom:.85rem; }
     .form-group label { font-weight:500; font-size:.85rem; color:#374151; }
-    .form-group input { padding:.55rem .75rem; border:1px solid #cbd5e1; border-radius:7px; font-size:.9rem; outline:none; }
-    .form-group input:focus { border-color:#2563eb; }
+    .form-group input, .form-group select { padding:.55rem .75rem; border:1px solid #cbd5e1; border-radius:7px; font-size:.9rem; outline:none; transition:border .2s; }
+    .form-group input:focus, .form-group select:focus { border-color:#2563eb; }
+    .form-group .hint { font-size:.78rem; color:#64748b; margin-top:.15rem; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .form-group.full { grid-column:1/-1; }
+
     .btn-save { padding:.6rem 1.5rem; background:#2563eb; color:#fff; border:none; border-radius:7px; font-weight:600; cursor:pointer; font-size:.9rem; }
     .btn-save:hover { opacity:.88; }
+    .btn-outline { padding:.6rem 1.5rem; background:#fff; color:#2563eb; border:1.5px solid #2563eb; border-radius:7px; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn-outline:hover { background:#eff6ff; }
 
-    /* Tabs */
     .tabs { display:flex; gap:.5rem; margin-bottom:1.5rem; flex-wrap:wrap; }
-    .tab-btn { padding:.55rem 1.25rem; border-radius:8px; border:1.5px solid #e2e8f0; background:#fff; font-weight:600; font-size:.88rem; cursor:pointer; color:#64748b; transition:all .15s; }
+    .tab-btn { padding:.55rem 1.1rem; border-radius:8px; border:1.5px solid #e2e8f0; background:#fff; font-weight:600; font-size:.82rem; cursor:pointer; color:#64748b; transition:all .15s; }
     .tab-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
-
     .tab-panel { display:none; }
     .tab-panel.active { display:block; }
 
-    @media(max-width:640px) { .grid2,.stats { grid-template-columns:1fr; } }
+    /* Tax / 1099 */
+    .tax-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+    .tax-card { background:#fff; border-radius:12px; padding:1.25rem; box-shadow:0 1px 6px rgba(0,0,0,.07); }
+    .tax-card .tax-label { font-size:.75rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .tax-card .tax-val { font-size:1.6rem; font-weight:700; color:#1e293b; margin:.2rem 0; }
+    .tax-card .tax-sub { font-size:.78rem; color:#94a3b8; }
+
+    .callout { display:flex; gap:.75rem; padding:1rem 1.25rem; border-radius:8px; font-size:.83rem; margin-bottom:1.25rem; line-height:1.6; }
+    .callout.amber { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+    .callout.blue  { background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; }
+    .callout.green { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+    .callout .ci { font-size:1.1rem; flex-shrink:0; margin-top:.1rem; }
+
+    table { width:100%; border-collapse:collapse; font-size:.86rem; }
+    th { text-align:left; padding:.6rem .75rem; color:#64748b; font-weight:600; border-bottom:2px solid #f1f5f9; font-size:.78rem; text-transform:uppercase; }
+    td { padding:.75rem; border-bottom:1px solid #f1f5f9; color:#1e293b; vertical-align:middle; }
+    tr:hover td { background:#f8fafc; }
+    tfoot td { font-weight:700; background:#f8fafc; border-top:2px solid #e2e8f0; }
+
+    .section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin:1.25rem 0 .75rem; }
+    .doc-row { display:flex; align-items:center; justify-content:space-between; padding:.9rem 1rem; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:.6rem; }
+    .doc-row .doc-info { display:flex; align-items:center; gap:.75rem; }
+    .doc-icon { font-size:1.4rem; }
+    .doc-name { font-weight:600; font-size:.9rem; }
+    .doc-desc { font-size:.78rem; color:#64748b; }
+    .lock-overlay { text-align:center; padding:3rem 1rem; color:#94a3b8; }
+    .lock-overlay .lock-icon { font-size:3rem; margin-bottom:1rem; }
+
+    @media(max-width:640px) { .grid2,.stats,.tax-summary,.form-row { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -58,7 +90,6 @@
   </nav>
 
   <div class="page">
-    <!-- Welcome banner -->
     <div class="welcome">
       <div>
         <h1 id="welcomeName">Welcome back!</h1>
@@ -67,41 +98,44 @@
       <div class="avatar" id="avatarInitial">?</div>
     </div>
 
-    <!-- Stats -->
     <div class="stats">
       <div class="stat-card"><div class="val" id="statOrders">0</div><div class="lbl">Orders</div></div>
       <div class="stat-card"><div class="val" id="statReviews">0</div><div class="lbl">Reviews</div></div>
+      <div class="stat-card"><div class="val" id="statSales">$0</div><div class="lbl">Total Sales</div></div>
       <div class="stat-card"><div class="val" id="statSeller">—</div><div class="lbl">Seller Status</div></div>
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
+    <!-- TABS -->
+    <div class="tabs" id="tabBar">
       <button class="tab-btn active" onclick="switchTab('orders',this)">📦 My Orders</button>
       <button class="tab-btn" onclick="switchTab('profile',this)">👤 Profile</button>
       <button class="tab-btn" onclick="switchTab('security',this)">🔒 Security</button>
+      <button class="tab-btn" onclick="switchTab('banking',this)">🏦 Banking</button>
+      <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">🛒 Products Sold</button>
+      <button class="tab-btn seller-only" onclick="switchTab('tax',this)" style="display:none">🧾 Tax & 1099</button>
       <button class="tab-btn" onclick="switchTab('preferences',this)">⚙️ Preferences</button>
     </div>
 
-    <!-- ORDERS TAB -->
+    <!-- ORDERS -->
     <div class="tab-panel active" id="tab-orders">
       <div class="card">
-        <h2>📦 Recent Orders</h2>
+        <h2><span>📦</span> Recent Orders</h2>
         <div id="ordersList"><p class="empty">You haven't placed any orders yet.<br><a href="../index.html" style="color:#2563eb;">Start shopping →</a></p></div>
       </div>
     </div>
 
-    <!-- PROFILE TAB -->
+    <!-- PROFILE -->
     <div class="tab-panel" id="tab-profile">
       <div class="grid2">
         <div class="card">
-          <h2>👤 Personal Info</h2>
+          <h2><span>👤</span> Personal Info</h2>
           <div class="form-group"><label>Full Name</label><input id="profileName" type="text" /></div>
           <div class="form-group"><label>Email</label><input id="profileEmail" type="email" /></div>
           <div class="form-group"><label>Phone</label><input id="profilePhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
           <button class="btn-save" onclick="saveProfile()">Save Changes</button>
         </div>
         <div class="card">
-          <h2>📍 Shipping Address</h2>
+          <h2><span>📍</span> Default Shipping Address</h2>
           <div class="form-group"><label>Street</label><input id="addrStreet" type="text" placeholder="123 Main St" /></div>
           <div class="form-group"><label>City</label><input id="addrCity" type="text" /></div>
           <div class="form-group"><label>State</label><input id="addrState" type="text" /></div>
@@ -111,10 +145,10 @@
       </div>
     </div>
 
-    <!-- SECURITY TAB -->
+    <!-- SECURITY -->
     <div class="tab-panel" id="tab-security">
       <div class="card" style="max-width:480px;">
-        <h2>🔒 Change Password</h2>
+        <h2><span>🔒</span> Change Password</h2>
         <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
         <div class="form-group"><label>New Password</label><input id="newPw" type="password" /></div>
         <div class="form-group"><label>Confirm New Password</label><input id="confPw" type="password" /></div>
@@ -123,92 +157,279 @@
       </div>
     </div>
 
-    <!-- PREFERENCES TAB -->
+    <!-- BANKING -->
+    <div class="tab-panel" id="tab-banking">
+      <div class="callout blue"><span class="ci">🔒</span> Banking information is encrypted with AES-256. ShopFlow uses this solely for seller payouts and tax reporting. We never share your banking details with third parties.</div>
+      <div class="grid2">
+        <div class="card">
+          <h2><span>🏦</span> Bank Account</h2>
+          <div class="form-group"><label>Account Holder Name</label><input id="bankHolder" type="text" placeholder="Name on bank account" /></div>
+          <div class="form-group"><label>Account Type</label>
+            <select id="bankType"><option>Checking</option><option>Savings</option><option>Business Checking</option></select>
+          </div>
+          <div class="form-group"><label>Routing Number (ABA)</label><input id="bankRouting" type="text" placeholder="9-digit routing number" maxlength="9" /></div>
+          <div class="form-group"><label>Account Number</label><input id="bankAccount" type="password" placeholder="••••••••••••" /><span class="hint">Stored encrypted — not visible after saving.</span></div>
+          <div class="form-group"><label>Confirm Account Number</label><input id="bankAccountConf" type="password" placeholder="Re-enter account number" /></div>
+          <button class="btn-save" onclick="saveBanking()">Save Banking Info</button>
+          <p id="bankMsg" style="font-size:.83rem;margin-top:.5rem;min-height:1rem;"></p>
+        </div>
+        <div class="card">
+          <h2><span>💳</span> Payout Summary</h2>
+          <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.88rem;">
+            <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Payout Schedule</span><strong>Every 14 days</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">ShopFlow Fee</span><strong>10% per sale</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Next Payout</span><strong>$0.00</strong></div>
+            <div style="display:flex;justify-content:space-between;padding:.6rem 0;"><span style="color:#64748b;">Lifetime Earnings</span><strong>$0.00</strong></div>
+          </div>
+          <div class="callout amber" style="margin-top:1rem;"><span class="ci">⚠️</span> Payouts are held for 7 days after delivery confirmation before release.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span>🪪</span> Identity Verification</h2>
+        <p style="font-size:.88rem;color:#64748b;margin-bottom:1rem;">Required by FinCEN (Financial Crimes Enforcement Network) regulations for sellers processing over $600/year. Verification is handled by our KYC partner.</p>
+        <div style="display:flex;flex-direction:column;gap:.75rem;">
+          <div class="doc-row">
+            <div class="doc-info"><span class="doc-icon">🪪</span><div><div class="doc-name">Government-Issued Photo ID</div><div class="doc-desc">Driver's license, passport, or state ID</div></div></div>
+            <span class="badge pending-review">Not Submitted</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-info"><span class="doc-icon">🏠</span><div><div class="doc-name">Proof of Address</div><div class="doc-desc">Utility bill or bank statement (last 90 days)</div></div></div>
+            <span class="badge pending-review">Not Submitted</span>
+          </div>
+          <div class="doc-row">
+            <div class="doc-info"><span class="doc-icon">📄</span><div><div class="doc-name">W-9 / W-8BEN Form</div><div class="doc-desc">IRS taxpayer certification form</div></div></div>
+            <span class="badge pending-review">Not Submitted</span>
+          </div>
+        </div>
+        <button class="btn-outline" style="margin-top:1.25rem;">📤 Upload Documents</button>
+      </div>
+    </div>
+
+    <!-- PRODUCTS SOLD (seller only) -->
+    <div class="tab-panel" id="tab-sold">
+      <div class="callout green"><span class="ci">✅</span> This report shows all completed sales from your store. Use this alongside the Tax & 1099 tab for accurate income reporting.</div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
+          <h2 style="margin:0;"><span>🛒</span> Products Sold</h2>
+          <div style="display:flex;gap:.75rem;align-items:center;">
+            <select id="soldYear" style="padding:.45rem .75rem;border:1px solid #cbd5e1;border-radius:6px;font-size:.85rem;">
+              <option>2024</option><option>2025</option><option selected>2026</option>
+            </select>
+            <button class="btn-outline" style="padding:.45rem 1rem;font-size:.82rem;" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+        <table id="soldTable">
+          <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Sale Price</th><th>ShopFlow Fee (10%)</th><th>Net Earnings</th><th>Status</th></tr></thead>
+          <tbody id="soldBody"></tbody>
+          <tfoot><tr><td colspan="3">Totals</td><td id="totalSales">$0.00</td><td id="totalFees">$0.00</td><td id="totalNet">$0.00</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAX & 1099 (seller only) -->
+    <div class="tab-panel" id="tab-tax">
+      <div class="callout amber"><span class="ci">⚠️</span> <div><strong>Tax Disclaimer:</strong> ShopFlow provides this information as a convenience tool only. It does not constitute tax advice. Consult a licensed CPA or tax professional for guidance specific to your situation. You are solely responsible for filing accurate tax returns.</div></div>
+
+      <div class="tax-summary">
+        <div class="tax-card"><div class="tax-label">Gross Sales (YTD)</div><div class="tax-val" id="taxGross">$0.00</div><div class="tax-sub" id="taxYear">Tax Year 2026</div></div>
+        <div class="tax-card"><div class="tax-label">ShopFlow Fees Paid</div><div class="tax-val" id="taxFeesPaid">$0.00</div><div class="tax-sub">Deductible business expense</div></div>
+        <div class="tax-card"><div class="tax-label">Net Taxable Income</div><div class="tax-val" id="taxNet">$0.00</div><div class="tax-sub">Gross minus deductible fees</div></div>
+      </div>
+
+      <!-- 1099-K Info -->
+      <div class="card">
+        <h2><span>📋</span> IRS Form 1099-K</h2>
+        <div style="font-size:.88rem;color:#374151;line-height:1.7;margin-bottom:1rem;">
+          ShopFlow is required by the IRS to issue a <strong>Form 1099-K</strong> if your gross sales exceed <strong>$600 in a calendar year</strong> (effective tax year 2024 per IRS Notice 2023-74). This form reports the total amount processed through ShopFlow on your behalf.
+        </div>
+        <div class="doc-row">
+          <div class="doc-info"><span class="doc-icon">📄</span><div><div class="doc-name">1099-K — Tax Year 2024</div><div class="doc-desc">Available January 31, 2025 · Gross sales threshold not yet met</div></div></div>
+          <button class="btn-outline" style="padding:.4rem .9rem;font-size:.8rem;" disabled>Not Available</button>
+        </div>
+        <div class="doc-row">
+          <div class="doc-info"><span class="doc-icon">📄</span><div><div class="doc-name">1099-K — Tax Year 2025</div><div class="doc-desc">Available January 31, 2026</div></div></div>
+          <button class="btn-outline" style="padding:.4rem .9rem;font-size:.8rem;" disabled>Not Available</button>
+        </div>
+      </div>
+
+      <!-- Deductions guide -->
+      <div class="card">
+        <h2><span>💡</span> Common Tax Deductions for Online Sellers</h2>
+        <p style="font-size:.83rem;color:#64748b;margin-bottom:1rem;">These are commonly deductible business expenses for self-employed online sellers. Consult a tax professional to confirm eligibility for your situation.</p>
+        <table>
+          <thead><tr><th>Expense Category</th><th>Examples</th><th>Est. Your Amount</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Platform Fees</strong></td><td>ShopFlow referral fees, listing fees</td><td id="dedFees">$0.00</td></tr>
+            <tr><td><strong>Shipping & Postage</strong></td><td>Postage, packing materials, shipping labels</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+            <tr><td><strong>Cost of Goods Sold (COGS)</strong></td><td>Purchase price of items you resold</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+            <tr><td><strong>Home Office</strong></td><td>Dedicated workspace (IRS Form 8829)</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+            <tr><td><strong>Internet & Phone</strong></td><td>Business-use % of monthly bill</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+            <tr><td><strong>Advertising</strong></td><td>Promoted listings, social media ads</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+            <tr><td><strong>Vehicle / Mileage</strong></td><td>Trips to post office, supply runs (67¢/mile 2024)</td><td><input type="number" placeholder="0.00" style="width:90px;padding:.3rem;border:1px solid #e2e8f0;border-radius:5px;font-size:.85rem;" /></td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="2"><strong>Total Estimated Deductions</strong></td><td id="totalDeductions">$0.00</td></tr>
+          </tfoot>
+        </table>
+        <div class="callout blue" style="margin-top:1.25rem;"><span class="ci">📎</span> Keep receipts for all deductions. The IRS recommends retaining records for at least 3 years from the date you file.</div>
+      </div>
+
+      <!-- Quarterly estimates -->
+      <div class="card">
+        <h2><span>📅</span> Estimated Quarterly Tax Payments (Self-Employed)</h2>
+        <p style="font-size:.83rem;color:#64748b;margin-bottom:1rem;">If you expect to owe $1,000+ in taxes this year, the IRS requires quarterly estimated payments (Form 1040-ES). Missing payments may result in underpayment penalties.</p>
+        <table>
+          <thead><tr><th>Quarter</th><th>Period</th><th>Due Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Q1 2026</td><td>Jan 1 – Mar 31</td><td>April 15, 2026</td><td><span class="badge delivered">Due</span></td></tr>
+            <tr><td>Q2 2026</td><td>Apr 1 – May 31</td><td>June 16, 2026</td><td><span class="badge pending">Upcoming</span></td></tr>
+            <tr><td>Q3 2026</td><td>Jun 1 – Aug 31</td><td>September 15, 2026</td><td><span class="badge pending">Upcoming</span></td></tr>
+            <tr><td>Q4 2026</td><td>Sep 1 – Dec 31</td><td>January 15, 2027</td><td><span class="badge pending">Upcoming</span></td></tr>
+          </tbody>
+        </table>
+        <a href="https://www.irs.gov/payments/direct-pay" target="_blank" class="btn-outline" style="display:inline-block;margin-top:1rem;text-decoration:none;">Pay IRS Direct Pay →</a>
+      </div>
+    </div>
+
+    <!-- PREFERENCES -->
     <div class="tab-panel" id="tab-preferences">
       <div class="card" style="max-width:480px;">
-        <h2>⚙️ Preferences</h2>
+        <h2><span>⚙️</span> Preferences</h2>
         <div style="display:flex;flex-direction:column;gap:.85rem;">
-          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
-            Order confirmation emails <input type="checkbox" checked style="width:18px;height:18px;accent-color:#2563eb;" />
-          </label>
-          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
-            Promotional emails <input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" />
-          </label>
-          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">
-            SMS order updates <input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" />
-          </label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">Order confirmation emails<input type="checkbox" checked style="width:18px;height:18px;accent-color:#2563eb;" /></label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">Promotional emails<input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" /></label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">SMS order updates<input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" /></label>
+          <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">Seller sale notifications<input type="checkbox" checked style="width:18px;height:18px;accent-color:#2563eb;" /></label>
         </div>
         <button class="btn-save" style="margin-top:1.25rem;">Save Preferences</button>
       </div>
     </div>
 
-  </div><!-- /page -->
+  </div>
 
   <script src="../js/api.js"></script>
   <script>
-    // Auth guard
     const stored = localStorage.getItem('sf_user');
-    if (!stored) { window.location.href = 'login.html'; }
+    if (!stored) window.location.href = 'login.html';
     const user = JSON.parse(stored);
 
     // Populate header
-    document.getElementById('welcomeName').textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
+    document.getElementById('welcomeName').textContent  = `Welcome back, ${user.name.split(' ')[0]}!`;
     document.getElementById('welcomeEmail').textContent = user.email;
     document.getElementById('avatarInitial').textContent = user.name.charAt(0).toUpperCase();
-    document.getElementById('statSeller').textContent = user.isSeller ? '✅ Active' : 'No';
+    document.getElementById('statSeller').textContent   = user.isSeller ? '✅ Active' : '—';
+    document.getElementById('profileName').value        = user.name  || '';
+    document.getElementById('profileEmail').value       = user.email || '';
 
-    // Populate profile fields
-    document.getElementById('profileName').value  = user.name  || '';
-    document.getElementById('profileEmail').value = user.email || '';
+    // Show seller-only tabs
+    if (user.isSeller) {
+      document.querySelectorAll('.seller-only').forEach(el => el.style.display = 'block');
+      loadSoldProducts();
+    }
 
-    // Load orders from API
+    // Load orders
     async function loadOrders() {
       const orders = await api.get('/orders');
       const el = document.getElementById('ordersList');
       if (!Array.isArray(orders) || !orders.length) return;
       el.innerHTML = orders.map(o => `
         <div class="order-item">
-          <div>
-            <strong>Order #${o.id}</strong>
-            <div style="color:#64748b;font-size:.8rem;">${new Date(o.created_at).toLocaleDateString()}</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-weight:700;">$${parseFloat(o.total_price).toFixed(2)}</div>
-            <span class="badge ${o.status}">${o.status}</span>
-          </div>
-        </div>
-      `).join('');
+          <div><strong>Order #${o.id}</strong><div style="color:#64748b;font-size:.8rem;">${new Date(o.created_at).toLocaleDateString()}</div></div>
+          <div style="text-align:right;"><div style="font-weight:700;">$${parseFloat(o.total_price).toFixed(2)}</div><span class="badge ${o.status}">${o.status}</span></div>
+        </div>`).join('');
       document.getElementById('statOrders').textContent = orders.length;
     }
     loadOrders();
+
+    // Mock sold products (replace with real API when seller backend is built)
+    function loadSoldProducts() {
+      const mockSales = [
+        { date:'2026-05-12', product:'Sony WH-1000XM5', qty:1, price:349.99, status:'delivered' },
+        { date:'2026-05-20', product:'MacBook Pro 14"',  qty:1, price:1999.99, status:'delivered' },
+        { date:'2026-06-01', product:'Classic Chino',    qty:2, price:119.98, status:'shipped' },
+      ];
+      let totalSales=0, totalFees=0, totalNet=0;
+      document.getElementById('soldBody').innerHTML = mockSales.map(s => {
+        const fee = s.price * 0.10;
+        const net = s.price - fee;
+        totalSales += s.price; totalFees += fee; totalNet += net;
+        return `<tr>
+          <td>${new Date(s.date).toLocaleDateString()}</td>
+          <td>${s.product}</td><td>${s.qty}</td>
+          <td>$${s.price.toFixed(2)}</td>
+          <td style="color:#ef4444;">-$${fee.toFixed(2)}</td>
+          <td style="color:#16a34a;font-weight:600;">$${net.toFixed(2)}</td>
+          <td><span class="badge ${s.status}">${s.status}</span></td>
+        </tr>`;
+      }).join('');
+      document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+      document.getElementById('totalFees').textContent  = `-$${totalFees.toFixed(2)}`;
+      document.getElementById('totalNet').textContent   = `$${totalNet.toFixed(2)}`;
+      document.getElementById('statSales').textContent  = `$${totalNet.toFixed(2)}`;
+      // Tax summary
+      document.getElementById('taxGross').textContent    = `$${totalSales.toFixed(2)}`;
+      document.getElementById('taxFeesPaid').textContent = `$${totalFees.toFixed(2)}`;
+      document.getElementById('taxNet').textContent      = `$${totalNet.toFixed(2)}`;
+      document.getElementById('dedFees').textContent     = `$${totalFees.toFixed(2)}`;
+    }
+
+    function exportCSV() {
+      const rows = [['Date','Product','Qty','Sale Price','ShopFlow Fee','Net Earnings','Status']];
+      document.querySelectorAll('#soldBody tr').forEach(tr => {
+        rows.push([...tr.querySelectorAll('td')].map(td => td.textContent.trim()));
+      });
+      const csv = rows.map(r => r.join(',')).join('\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = `shopflow-sales-${new Date().getFullYear()}.csv`;
+      a.click();
+    }
 
     // Tab switching
     function switchTab(name, el) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(`tab-${name}`).classList.add('active');
-      el.classList.add('active');
+      if (el) el.classList.add('active');
     }
 
-    // Save profile
     function saveProfile() {
       user.name = document.getElementById('profileName').value;
       user.email = document.getElementById('profileEmail').value;
       localStorage.setItem('sf_user', JSON.stringify(user));
       alert('Profile updated!');
     }
-
     function saveAddress() { alert('Address saved!'); }
 
-    // Change password
-    async function changePassword() {
-      const newPw  = document.getElementById('newPw').value;
+    function saveBanking() {
+      const routing = document.getElementById('bankRouting').value;
+      const acct    = document.getElementById('bankAccount').value;
+      const conf    = document.getElementById('bankAccountConf').value;
+      const msg     = document.getElementById('bankMsg');
+      if (routing.length !== 9) { msg.style.color='#ef4444'; msg.textContent='Routing number must be 9 digits.'; return; }
+      if (acct !== conf)        { msg.style.color='#ef4444'; msg.textContent='Account numbers do not match.'; return; }
+      msg.style.color='#22c55e'; msg.textContent='✓ Banking information saved securely.';
+    }
+
+    function changePassword() {
+      const newPw = document.getElementById('newPw').value;
       const confPw = document.getElementById('confPw').value;
-      const msg    = document.getElementById('pwMsg');
-      if (newPw.length < 8) { msg.style.color='#ef4444'; msg.textContent='Password must be at least 8 characters.'; return; }
-      if (newPw !== confPw)  { msg.style.color='#ef4444'; msg.textContent='Passwords do not match.'; return; }
+      const msg   = document.getElementById('pwMsg');
+      if (newPw.length < 8) { msg.style.color='#ef4444'; msg.textContent='At least 8 characters required.'; return; }
+      if (newPw !== confPw) { msg.style.color='#ef4444'; msg.textContent='Passwords do not match.'; return; }
       msg.style.color='#22c55e'; msg.textContent='✓ Password updated successfully!';
     }
+
+    // Live deduction total
+    document.querySelectorAll('#tab-tax input[type=number]').forEach(inp => {
+      inp.addEventListener('input', () => {
+        const inputs = [...document.querySelectorAll('#tab-tax tbody input[type=number]')];
+        const fees = parseFloat(document.getElementById('taxFeesPaid').textContent.replace('$','')) || 0;
+        const manual = inputs.reduce((s,i) => s + (parseFloat(i.value)||0), 0);
+        document.getElementById('totalDeductions').textContent = `$${(fees + manual).toFixed(2)}`;
+      });
+    });
   </script>
 </body>
 </html>
