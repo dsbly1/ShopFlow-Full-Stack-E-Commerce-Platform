@@ -377,18 +377,6 @@
     }
     loadOrders();
 
-
-      tbody.innerHTML = products.map(p => `
-        <tr>
-          <td><strong>${p.name}</strong></td>
-          <td>${p.category}</td>
-          <td>$${parseFloat(p.price).toFixed(2)}</td>
-          <td>${p.stock}</td>
-          <td><span class="badge active">Active</span></td>
-          <td><a href="seller-dashboard.html" style="color:#2563eb;font-size:.85rem;">Edit</a></td>
-        </tr>`).join('');
-    }
-
     // Mock sold products (replace with real API when seller backend is built)
     function loadSoldProducts() {
       const sales = []; // No sales yet — connect to API when seller backend is ready
