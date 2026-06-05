@@ -344,38 +344,35 @@
 
     // Mock sold products (replace with real API when seller backend is built)
     function loadSoldProducts() {
-      // Only load mock data if user has real sales (replace with API call)
-      const mockSales = typeof SELLER_SALES !== 'undefined' ? SELLER_SALES : [
-        { date:'2026-05-12', product:'Sony WH-1000XM5', qty:1, price:349.99, status:'delivered' },
-        { date:'2026-05-20', product:'MacBook Pro 14"',  qty:1, price:1999.99, status:'delivered' },
-        { date:'2026-06-01', product:'Classic Chino',    qty:2, price:119.98, status:'shipped' },
-      ];
-      let totalSales=0, totalFees=0, totalNet=0;
-      document.getElementById('soldBody').innerHTML = mockSales.map(s => {
-        const fee = s.price * 0.10;
-        const net = s.price - fee;
-        totalSales += s.price; totalFees += fee; totalNet += net;
-        return `<tr>
-          <td>${new Date(s.date).toLocaleDateString()}</td>
-          <td>${s.product}</td><td>${s.qty}</td>
-          <td>$${s.price.toFixed(2)}</td>
-          <td style="color:#ef4444;">-$${fee.toFixed(2)}</td>
-          <td style="color:#16a34a;font-weight:600;">$${net.toFixed(2)}</td>
-          <td><span class="badge ${s.status}">${s.status}</span></td>
-        </tr>`;
-      }).join('');
-      document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
-      document.getElementById('totalFees').textContent  = `-$${totalFees.toFixed(2)}`;
-      document.getElementById('totalNet').textContent   = `$${totalNet.toFixed(2)}`;
-      if (mockSales.length > 0) document.getElementById('statSales').textContent = `$${totalNet.toFixed(2)}`;
-      // Tax summary
-      // Only update tax summary if there are real sales
-      if (mockSales.length > 0) {
+      const sales = []; // No sales yet — connect to API when seller backend is ready
+      let totalSales = 0, totalFees = 0, totalNet = 0;
+      const tbody = document.getElementById('soldBody');
+      if (!sales.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:2rem;">No sales yet. Products you sell will appear here.</td></tr>';
+      } else {
+        tbody.innerHTML = sales.map(s => {
+          const fee = s.price * 0.10;
+          const net = s.price - fee;
+          totalSales += s.price; totalFees += fee; totalNet += net;
+          return `<tr>
+            <td>${new Date(s.date).toLocaleDateString()}</td>
+            <td>${s.product}</td><td>${s.qty}</td>
+            <td>$${s.price.toFixed(2)}</td>
+            <td style="color:#ef4444;">-$${fee.toFixed(2)}</td>
+            <td style="color:#16a34a;font-weight:600;">$${net.toFixed(2)}</td>
+            <td><span class="badge ${s.status}">${s.status}</span></td>
+          </tr>`;
+        }).join('');
+        document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+        document.getElementById('totalFees').textContent  = `-$${totalFees.toFixed(2)}`;
+        document.getElementById('totalNet').textContent   = `$${totalNet.toFixed(2)}`;
+        document.getElementById('statSales').textContent  = `$${totalNet.toFixed(2)}`;
         document.getElementById('taxGross').textContent    = `$${totalSales.toFixed(2)}`;
         document.getElementById('taxFeesPaid').textContent = `$${totalFees.toFixed(2)}`;
         document.getElementById('taxNet').textContent      = `$${totalNet.toFixed(2)}`;
         document.getElementById('dedFees').textContent     = `$${totalFees.toFixed(2)}`;
       }
+    }
     }
 
     function exportCSV() {
