@@ -774,11 +774,22 @@
     })();
 
     
-    try {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
-      
-      
+    // Cart count from API
+    (async () => {
+      try {
+        const sfToken = localStorage.getItem('sf_token');
+        if (!sfToken) return;
+        const res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', {
+          headers: { 'Authorization': 'Bearer ' + sfToken }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        const items = Array.isArray(data) ? data : (data.items || data.cart || []);
+        const total = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('cart-count');
+        if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+      } catch(e) {}
+    })();
     } catch(e) {}
   </script>
 </body>
