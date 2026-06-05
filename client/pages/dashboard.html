@@ -344,7 +344,8 @@
 
     // Mock sold products (replace with real API when seller backend is built)
     function loadSoldProducts() {
-      const mockSales = [
+      // Only load mock data if user has real sales (replace with API call)
+      const mockSales = typeof SELLER_SALES !== 'undefined' ? SELLER_SALES : [
         { date:'2026-05-12', product:'Sony WH-1000XM5', qty:1, price:349.99, status:'delivered' },
         { date:'2026-05-20', product:'MacBook Pro 14"',  qty:1, price:1999.99, status:'delivered' },
         { date:'2026-06-01', product:'Classic Chino',    qty:2, price:119.98, status:'shipped' },
