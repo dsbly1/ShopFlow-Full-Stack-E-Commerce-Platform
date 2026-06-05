@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f1f5f9; }
+    .page { max-width:860px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .welcome { background:linear-gradient(135deg,#1d4ed8,#7c3aed); color:#fff; border-radius:14px; padding:2rem; margin-bottom:2rem; display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
+    .avatar { width:70px; height:70px; background:rgba(255,255,255,.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; flex-shrink:0; }
+    .welcome h1 { font-size:1.5rem; margin-bottom:.2rem; }
+    .welcome p { opacity:.85; font-size:.9rem; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
+    .card h2 { font-size:1rem; font-weight:700; margin-bottom:1.25rem; padding-bottom:.75rem; border-bottom:1px solid #f1f5f9; }
+    .form-group { display:flex; flex-direction:column; gap:.3rem; margin-bottom:.85rem; }
+    .form-group label { font-weight:500; font-size:.85rem; color:#374151; }
+    .form-group input, .form-group select { padding:.55rem .75rem; border:1px solid #cbd5e1; border-radius:7px; font-size:.9rem; outline:none; transition:border .2s; }
+    .form-group input:focus, .form-group select:focus { border-color:#2563eb; }
+    .form-group .hint { font-size:.75rem; color:#94a3b8; margin-top:.15rem; }
+    .btn-save { padding:.6rem 1.5rem; background:#2563eb; color:#fff; border:none; border-radius:7px; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn-save:hover { opacity:.88; }
+    .btn-danger { padding:.6rem 1.5rem; background:#fff; color:#ef4444; border:1.5px solid #ef4444; border-radius:7px; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn-danger:hover { background:#fef2f2; }
+    .msg { font-size:.85rem; margin-top:.5rem; min-height:1.1rem; }
+    .back-link { display:inline-flex; align-items:center; gap:.4rem; color:#2563eb; font-size:.9rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
+    .back-link:hover { opacity:.8; }
+    @media(max-width:640px) { .grid2 { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <a class="logo" href="../index.html">ShopFlow</a>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html" style="color:#fff">Dashboard</a>
+      <a href="../index.html" id="authLink" style="color:#fff">Shop</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <a class="back-link" href="dashboard.html">← Back to Dashboard</a>
+
+    <!-- Welcome banner -->
+    <div class="welcome">
+      <div class="avatar" id="avatarInitial">?</div>
+      <div>
+        <h1 id="welcomeName">My Profile</h1>
+        <p id="welcomeEmail"></p>
+        <p id="memberSince" style="opacity:.7;font-size:.8rem;margin-top:.2rem;"></p>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <!-- Personal Info -->
+      <div class="card">
+        <h2>Personal Information</h2>
+        <div class="form-group"><label>Full Name</label><input id="profileName" type="text" /></div>
+        <div class="form-group"><label>Email Address</label><input id="profileEmail" type="email" /></div>
+        <div class="form-group"><label>Phone Number</label><input id="profilePhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
+        <div class="form-group"><label>Date of Birth</label><input id="profileDob" type="date" /></div>
+        <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+        <p class="msg" id="profileMsg"></p>
+      </div>
+
+      <!-- Shipping Address -->
+      <div class="card">
+        <h2>Default Shipping Address</h2>
+        <div class="form-group"><label>Street Address</label><input id="addrStreet" type="text" placeholder="123 Main St" /></div>
+        <div class="form-group"><label>Apt / Suite</label><input id="addrApt" type="text" placeholder="Apt 4B (optional)" /></div>
+        <div class="form-group"><label>City</label><input id="addrCity" type="text" /></div>
+        <div class="form-group"><label>State</label><input id="addrState" type="text" /></div>
+        <div class="form-group"><label>ZIP Code</label><input id="addrZip" type="text" /></div>
+        <div class="form-group"><label>Country</label>
+          <select id="addrCountry">
+            <option>United States</option><option>Canada</option><option>United Kingdom</option><option>Australia</option><option>Other</option>
+          </select>
+        </div>
+        <button class="btn-save" onclick="saveAddress()">Save Address</button>
+        <p class="msg" id="addrMsg"></p>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="card" style="max-width:480px;">
+      <h2>Change Password</h2>
+      <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
+      <div class="form-group"><label>New Password</label><input id="newPw" type="password" /><span class="hint">Minimum 8 characters</span></div>
+      <div class="form-group"><label>Confirm New Password</label><input id="confPw" type="password" /></div>
+      <button class="btn-save" onclick="changePassword()">Update Password</button>
+      <p class="msg" id="pwMsg"></p>
+    </div>
+
+    <!-- Danger zone -->
+    <div class="card" style="border:1.5px solid #fee2e2;">
+      <h2 style="color:#ef4444;">Danger Zone</h2>
+      <p style="font-size:.88rem;color:#64748b;margin-bottom:1rem;">These actions are permanent and cannot be undone.</p>
+      <button class="btn-danger" onclick="if(confirm('Are you sure you want to delete your account? This cannot be undone.')) alert('Account deletion request submitted.')">Delete My Account</button>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    const stored = localStorage.getItem('sf_user');
+    if (!stored) window.location.href = 'login.html';
+    const user = JSON.parse(stored);
+
+    // Populate header
+    document.getElementById('avatarInitial').textContent = user.name.charAt(0).toUpperCase();
+    document.getElementById('welcomeName').textContent   = user.name;
+    document.getElementById('welcomeEmail').textContent  = user.email;
+    document.getElementById('memberSince').textContent   = 'Member since ' + new Date().toLocaleDateString('en-US',{year:'numeric',month:'long'});
+    document.getElementById('authLink').textContent      = user.name.split(' ')[0];
+
+    // Populate fields
+    document.getElementById('profileName').value  = user.name  || '';
+    document.getElementById('profileEmail').value = user.email || '';
+    document.getElementById('profilePhone').value = user.phone || '';
+
+    function saveProfile() {
+      user.name  = document.getElementById('profileName').value;
+      user.email = document.getElementById('profileEmail').value;
+      user.phone = document.getElementById('profilePhone').value;
+      localStorage.setItem('sf_user', JSON.stringify(user));
+      const msg = document.getElementById('profileMsg');
+      msg.style.color = '#22c55e';
+      msg.textContent = '✓ Profile updated successfully.';
+    }
+
+    function saveAddress() {
+      const msg = document.getElementById('addrMsg');
+      msg.style.color = '#22c55e';
+      msg.textContent = '✓ Address saved.';
+    }
+
+    function changePassword() {
+      const newPw  = document.getElementById('newPw').value;
+      const confPw = document.getElementById('confPw').value;
+      const msg    = document.getElementById('pwMsg');
+      if (newPw.length < 8) { msg.style.color='#ef4444'; msg.textContent='Password must be at least 8 characters.'; return; }
+      if (newPw !== confPw)  { msg.style.color='#ef4444'; msg.textContent='Passwords do not match.'; return; }
+      msg.style.color = '#22c55e';
+      msg.textContent = '✓ Password updated successfully.';
+    }
+  </script>
+</body>
+</html>

@@ -118,6 +118,7 @@
     </div>
     <nav class="drawer-nav">
       <a href="dashboard.html">My Dashboard</a>
+      <a href="profile.html">My Profile</a>
       <a href="purchases.html">Purchases</a>
       <a href="seller.html">Become a Seller</a>
       <hr />
@@ -159,7 +160,7 @@
     <!-- TABS -->
     <div class="tabs" id="tabBar">
       <button class="tab-btn active" onclick="switchTab('orders',this)">My Orders</button>
-      <button class="tab-btn" onclick="switchTab('profile',this)">Profile</button>
+      
       <button class="tab-btn" onclick="switchTab('security',this)">Security</button>
       <button class="tab-btn" onclick="switchTab('banking',this)">Banking</button>
       <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">Products Sold</button>
@@ -175,25 +176,7 @@
       </div>
     </div>
 
-    <!-- PROFILE -->
-    <div class="tab-panel" id="tab-profile">
-      <div class="grid2">
-        <div class="card">
-          <h2>Personal Info</h2>
-          <div class="form-group"><label>Full Name</label><input id="profileName" type="text" /></div>
-          <div class="form-group"><label>Email</label><input id="profileEmail" type="email" /></div>
-          <div class="form-group"><label>Phone</label><input id="profilePhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
-          <button class="btn-save" onclick="saveProfile()">Save Changes</button>
-        </div>
-        <div class="card">
-          <h2>Default Shipping Address</h2>
-          <div class="form-group"><label>Street</label><input id="addrStreet" type="text" placeholder="123 Main St" /></div>
-          <div class="form-group"><label>City</label><input id="addrCity" type="text" /></div>
-          <div class="form-group"><label>State</label><input id="addrState" type="text" /></div>
-          <div class="form-group"><label>ZIP</label><input id="addrZip" type="text" /></div>
-          <button class="btn-save" onclick="saveAddress()">Save Address</button>
-        </div>
-      </div>
+    
     </div>
 
     <!-- SECURITY -->
