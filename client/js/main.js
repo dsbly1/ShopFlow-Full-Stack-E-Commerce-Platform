@@ -58,3 +58,14 @@ catSel?.addEventListener('change', loadProducts);
 
 loadCategories();
 loadProducts();
+
+// Update cart count — only show number when > 0
+async function updateCartCount() {
+  if (!getToken()) return;
+  const items = await api.get('/cart');
+  if (!Array.isArray(items) || !items.length) return;
+  const total = items.reduce((sum, i) => sum + i.quantity, 0);
+  const link = document.getElementById('cartLink');
+  if (link && total > 0) link.textContent = `Cart (${total})`;
+}
+updateCartCount();
