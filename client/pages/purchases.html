@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Purchases — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f1f5f9; }
+    .page { max-width:860px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .page-header { margin-bottom:2rem; }
+    .page-header h1 { font-size:1.6rem; margin-bottom:.25rem; }
+    .page-header p { color:#64748b; font-size:.9rem; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
+    .order-card { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.25rem 1.5rem; margin-bottom:1rem; }
+    .order-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; margin-bottom:1rem; padding-bottom:.75rem; border-bottom:1px solid #f1f5f9; }
+    .order-id { font-weight:700; font-size:.95rem; }
+    .order-date { font-size:.82rem; color:#64748b; }
+    .order-total { font-weight:700; font-size:1rem; color:#2563eb; }
+    .badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.75rem; font-weight:600; }
+    .badge.pending   { background:#fef9c3; color:#854d0e; }
+    .badge.delivered { background:#dcfce7; color:#166534; }
+    .badge.shipped   { background:#dbeafe; color:#1d4ed8; }
+    .badge.processing { background:#f3e8ff; color:#6b21a8; }
+    .badge.cancelled { background:#fee2e2; color:#991b1b; }
+    .order-items { display:flex; flex-direction:column; gap:.5rem; }
+    .order-item { display:flex; align-items:center; gap:1rem; font-size:.88rem; }
+    .order-item img { width:52px; height:52px; object-fit:cover; border-radius:7px; background:#e2e8f0; flex-shrink:0; }
+    .order-item-info { flex:1; }
+    .order-item-info strong { display:block; color:#1e293b; }
+    .order-item-info span { color:#64748b; font-size:.8rem; }
+    .empty-state { text-align:center; padding:4rem 2rem; color:#94a3b8; }
+    .empty-state .icon { font-size:3.5rem; margin-bottom:1rem; }
+    .empty-state h2 { font-size:1.2rem; color:#64748b; margin-bottom:.5rem; }
+    .btn-primary { display:inline-block; padding:.7rem 1.75rem; background:#2563eb; color:#fff; border-radius:8px; font-weight:700; text-decoration:none; margin-top:1rem; }
+    .filters { display:flex; gap:.75rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .filter-btn { padding:.45rem 1rem; border-radius:20px; border:1.5px solid #e2e8f0; background:#fff; font-size:.82rem; font-weight:600; cursor:pointer; color:#64748b; transition:all .15s; }
+    .filter-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+    .back-link { display:inline-flex; align-items:center; gap:.4rem; color:#2563eb; font-size:.9rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="display:flex;align-items:center;gap:.25rem;">
+      <a class="logo" href="../index.html">ShopFlow</a>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html" style="color:#fff">Dashboard</a>
+      <a href="../index.html" id="authLink" style="color:#fff">Shop</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <a class="back-link" href="dashboard.html">← Back to Dashboard</a>
+    <div class="page-header">
+      <h1>My Purchases</h1>
+      <p>Your complete order history</p>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterOrders('all', this)">All Orders</button>
+      <button class="filter-btn" onclick="filterOrders('pending', this)">Pending</button>
+      <button class="filter-btn" onclick="filterOrders('shipped', this)">Shipped</button>
+      <button class="filter-btn" onclick="filterOrders('delivered', this)">Delivered</button>
+      <button class="filter-btn" onclick="filterOrders('cancelled', this)">Cancelled</button>
+    </div>
+
+    <div id="ordersList"></div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    const stored = localStorage.getItem('sf_user');
+    if (!stored) window.location.href = 'login.html';
+    const user = JSON.parse(stored);
+    document.getElementById('authLink').textContent = user.name.split(' ')[0];
+
+    let allOrders = [];
+
+    async function loadOrders() {
+      const orders = await api.get('/orders');
+      allOrders = Array.isArray(orders) ? orders : [];
+      renderOrders(allOrders);
+    }
+
+    function renderOrders(orders) {
+      const el = document.getElementById('ordersList');
+      if (!orders.length) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📦</div>
+            <h2>No orders found</h2>
+            <p>You haven't placed any orders yet.</p>
+            <a class="btn-primary" href="../index.html">Start Shopping</a>
+          </div>`;
+        return;
+      }
+      el.innerHTML = orders.map(o => `
+        <div class="order-card" data-status="${o.status}">
+          <div class="order-header">
+            <div>
+              <div class="order-id">Order #${o.id}</div>
+              <div class="order-date">${new Date(o.created_at).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <span class="badge ${o.status}">${o.status}</span>
+              <span class="order-total">$${parseFloat(o.total_price).toFixed(2)}</span>
+            </div>
+          </div>
+          <div class="order-items">
+            ${o.items ? o.items.map(item => `
+              <div class="order-item">
+                <img src="https://placehold.co/52x52/e2e8f0/94a3b8?text=Item" alt="${item.name}" />
+                <div class="order-item-info">
+                  <strong>${item.name}</strong>
+                  <span>Qty: ${item.quantity}  ·  $${parseFloat(item.unit_price).toFixed(2)} each</span>
+                </div>
+                <strong>$${(item.quantity * item.unit_price).toFixed(2)}</strong>
+              </div>`).join('') : ''}
+          </div>
+          <div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:#64748b;">
+            <span>Shipping to: ${o.shipping_address || 'N/A'}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    function filterOrders(status, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = status === 'all' ? allOrders : allOrders.filter(o => o.status === status);
+      renderOrders(filtered);
+    }
+
+    loadOrders();
+  </script>
+</body>
+</html>
