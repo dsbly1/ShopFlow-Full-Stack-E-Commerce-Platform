@@ -162,10 +162,31 @@
       <button class="tab-btn active" onclick="switchTab('orders',this)">My Orders</button>
       
       <button class="tab-btn" onclick="switchTab('security',this)">Security</button>
+      <button class="tab-btn seller-only" onclick="switchTab('products',this)" style="display:none">My Products</button>
       <button class="tab-btn" onclick="switchTab('banking',this)">Banking</button>
       <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">Products Sold</button>
       <button class="tab-btn seller-only" onclick="switchTab('tax',this)" style="display:none">Tax & 1099</button>
       <button class="tab-btn" onclick="switchTab('preferences',this)">Preferences</button>
+    </div>
+
+
+    <!-- MY PRODUCTS -->
+    <div class="tab-panel" id="tab-products">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem;">
+        <div>
+          <h1 style="font-size:1.4rem;">My Products</h1>
+          <p style="color:#64748b;font-size:.9rem;">Manage your active listings from your dashboard.</p>
+        </div>
+        <a href="seller-dashboard.html" class="btn-save" style="text-decoration:none;padding:.65rem 1.25rem;font-size:.88rem;">+ Add New Product</a>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="myProductsBody">
+            <tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:2.5rem;">No products listed yet. <a href="seller-dashboard.html" style="color:#2563eb;">Add your first product →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- ORDERS -->
@@ -359,6 +380,7 @@
     // Show seller-only tabs
     if (user.isSeller) {
       document.querySelectorAll('.seller-only').forEach(el => el.style.display = 'block');
+      loadMyProducts();
       loadSoldProducts();
     }
 
@@ -375,6 +397,26 @@
       document.getElementById('statOrders').textContent = orders.length;
     }
     loadOrders();
+
+
+    function loadMyProducts() {
+      // Connect to seller API when backend is ready
+      const products = [];
+      const tbody = document.getElementById('myProductsBody');
+      if (!products.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#94a3b8;padding:2.5rem;">No products listed yet. <a href="seller-dashboard.html" style="color:#2563eb;">Add your first product →</a></td></tr>';
+        return;
+      }
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.category}</td>
+          <td>$${parseFloat(p.price).toFixed(2)}</td>
+          <td>${p.stock}</td>
+          <td><span class="badge active">Active</span></td>
+          <td><a href="seller-dashboard.html" style="color:#2563eb;font-size:.85rem;">Edit</a></td>
+        </tr>`).join('');
+    }
 
     // Mock sold products (replace with real API when seller backend is built)
     function loadSoldProducts() {
