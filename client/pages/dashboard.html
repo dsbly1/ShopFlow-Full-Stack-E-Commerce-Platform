@@ -107,19 +107,19 @@
 
     <!-- TABS -->
     <div class="tabs" id="tabBar">
-      <button class="tab-btn active" onclick="switchTab('orders',this)">📦 My Orders</button>
-      <button class="tab-btn" onclick="switchTab('profile',this)">👤 Profile</button>
-      <button class="tab-btn" onclick="switchTab('security',this)">🔒 Security</button>
-      <button class="tab-btn" onclick="switchTab('banking',this)">🏦 Banking</button>
-      <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">🛒 Products Sold</button>
-      <button class="tab-btn seller-only" onclick="switchTab('tax',this)" style="display:none">🧾 Tax & 1099</button>
-      <button class="tab-btn" onclick="switchTab('preferences',this)">⚙️ Preferences</button>
+      <button class="tab-btn active" onclick="switchTab('orders',this)">My Orders</button>
+      <button class="tab-btn" onclick="switchTab('profile',this)">Profile</button>
+      <button class="tab-btn" onclick="switchTab('security',this)">Security</button>
+      <button class="tab-btn" onclick="switchTab('banking',this)">Banking</button>
+      <button class="tab-btn seller-only" onclick="switchTab('sold',this)" style="display:none">Products Sold</button>
+      <button class="tab-btn seller-only" onclick="switchTab('tax',this)" style="display:none">Tax & 1099</button>
+      <button class="tab-btn" onclick="switchTab('preferences',this)">Preferences</button>
     </div>
 
     <!-- ORDERS -->
     <div class="tab-panel active" id="tab-orders">
       <div class="card">
-        <h2><span>📦</span> Recent Orders</h2>
+        <h2>Recent Orders</h2>
         <div id="ordersList"><p class="empty">You haven't placed any orders yet.<br><a href="../index.html" style="color:#2563eb;">Start shopping →</a></p></div>
       </div>
     </div>
@@ -128,14 +128,14 @@
     <div class="tab-panel" id="tab-profile">
       <div class="grid2">
         <div class="card">
-          <h2><span>👤</span> Personal Info</h2>
+          <h2>Personal Info</h2>
           <div class="form-group"><label>Full Name</label><input id="profileName" type="text" /></div>
           <div class="form-group"><label>Email</label><input id="profileEmail" type="email" /></div>
           <div class="form-group"><label>Phone</label><input id="profilePhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
           <button class="btn-save" onclick="saveProfile()">Save Changes</button>
         </div>
         <div class="card">
-          <h2><span>📍</span> Default Shipping Address</h2>
+          <h2>Default Shipping Address</h2>
           <div class="form-group"><label>Street</label><input id="addrStreet" type="text" placeholder="123 Main St" /></div>
           <div class="form-group"><label>City</label><input id="addrCity" type="text" /></div>
           <div class="form-group"><label>State</label><input id="addrState" type="text" /></div>
@@ -148,7 +148,7 @@
     <!-- SECURITY -->
     <div class="tab-panel" id="tab-security">
       <div class="card" style="max-width:480px;">
-        <h2><span>🔒</span> Change Password</h2>
+        <h2>Change Password</h2>
         <div class="form-group"><label>Current Password</label><input id="curPw" type="password" /></div>
         <div class="form-group"><label>New Password</label><input id="newPw" type="password" /></div>
         <div class="form-group"><label>Confirm New Password</label><input id="confPw" type="password" /></div>
@@ -162,7 +162,7 @@
       <div class="callout blue"><span class="ci">🔒</span> Banking information is encrypted with AES-256. ShopFlow uses this solely for seller payouts and tax reporting. We never share your banking details with third parties.</div>
       <div class="grid2">
         <div class="card">
-          <h2><span>🏦</span> Bank Account</h2>
+          <h2>Bank Account</h2>
           <div class="form-group"><label>Account Holder Name</label><input id="bankHolder" type="text" placeholder="Name on bank account" /></div>
           <div class="form-group"><label>Account Type</label>
             <select id="bankType"><option>Checking</option><option>Savings</option><option>Business Checking</option></select>
@@ -174,7 +174,7 @@
           <p id="bankMsg" style="font-size:.83rem;margin-top:.5rem;min-height:1rem;"></p>
         </div>
         <div class="card">
-          <h2><span>💳</span> Payout Summary</h2>
+          <h2>Payout Summary</h2>
           <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.88rem;">
             <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">Payout Schedule</span><strong>Every 14 days</strong></div>
             <div style="display:flex;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid #f1f5f9;"><span style="color:#64748b;">ShopFlow Fee</span><strong>10% per sale</strong></div>
@@ -186,7 +186,7 @@
       </div>
 
       <div class="card">
-        <h2><span>🪪</span> Identity Verification</h2>
+        <h2>Identity Verification</h2>
         <p style="font-size:.88rem;color:#64748b;margin-bottom:1rem;">Required by FinCEN (Financial Crimes Enforcement Network) regulations for sellers processing over $600/year. Verification is handled by our KYC partner.</p>
         <div style="display:flex;flex-direction:column;gap:.75rem;">
           <div class="doc-row">
@@ -202,7 +202,7 @@
             <span class="badge pending-review">Not Submitted</span>
           </div>
         </div>
-        <button class="btn-outline" style="margin-top:1.25rem;">📤 Upload Documents</button>
+        <button class="btn-outline" style="margin-top:1.25rem;">Upload Documents</button>
       </div>
     </div>
 
@@ -211,12 +211,12 @@
       <div class="callout green"><span class="ci">✅</span> This report shows all completed sales from your store. Use this alongside the Tax & 1099 tab for accurate income reporting.</div>
       <div class="card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
-          <h2 style="margin:0;"><span>🛒</span> Products Sold</h2>
+          <h2 style="margin:0;">Products Sold</h2>
           <div style="display:flex;gap:.75rem;align-items:center;">
             <select id="soldYear" style="padding:.45rem .75rem;border:1px solid #cbd5e1;border-radius:6px;font-size:.85rem;">
               <option>2024</option><option>2025</option><option selected>2026</option>
             </select>
-            <button class="btn-outline" style="padding:.45rem 1rem;font-size:.82rem;" onclick="exportCSV()">⬇ Export CSV</button>
+            <button class="btn-outline" style="padding:.45rem 1rem;font-size:.82rem;" onclick="exportCSV()">Export CSV</button>
           </div>
         </div>
         <table id="soldTable">
@@ -239,7 +239,7 @@
 
       <!-- 1099-K Info -->
       <div class="card">
-        <h2><span>📋</span> IRS Form 1099-K</h2>
+        <h2>IRS Form 1099-K</h2>
         <div style="font-size:.88rem;color:#374151;line-height:1.7;margin-bottom:1rem;">
           ShopFlow is required by the IRS to issue a <strong>Form 1099-K</strong> if your gross sales exceed <strong>$600 in a calendar year</strong> (effective tax year 2024 per IRS Notice 2023-74). This form reports the total amount processed through ShopFlow on your behalf.
         </div>
@@ -255,7 +255,7 @@
 
       <!-- Deductions guide -->
       <div class="card">
-        <h2><span>💡</span> Common Tax Deductions for Online Sellers</h2>
+        <h2>Common Tax Deductions for Online Sellers</h2>
         <p style="font-size:.83rem;color:#64748b;margin-bottom:1rem;">These are commonly deductible business expenses for self-employed online sellers. Consult a tax professional to confirm eligibility for your situation.</p>
         <table>
           <thead><tr><th>Expense Category</th><th>Examples</th><th>Est. Your Amount</th></tr></thead>
@@ -277,7 +277,7 @@
 
       <!-- Quarterly estimates -->
       <div class="card">
-        <h2><span>📅</span> Estimated Quarterly Tax Payments (Self-Employed)</h2>
+        <h2>Estimated Quarterly Tax Payments (Self-Employed)</h2>
         <p style="font-size:.83rem;color:#64748b;margin-bottom:1rem;">If you expect to owe $1,000+ in taxes this year, the IRS requires quarterly estimated payments (Form 1040-ES). Missing payments may result in underpayment penalties.</p>
         <table>
           <thead><tr><th>Quarter</th><th>Period</th><th>Due Date</th><th>Status</th></tr></thead>
@@ -288,14 +288,14 @@
             <tr><td>Q4 2026</td><td>Sep 1 – Dec 31</td><td>January 15, 2027</td><td><span class="badge pending">Upcoming</span></td></tr>
           </tbody>
         </table>
-        <a href="https://www.irs.gov/payments/direct-pay" target="_blank" class="btn-outline" style="display:inline-block;margin-top:1rem;text-decoration:none;">Pay IRS Direct Pay →</a>
+        <a href="https://www.irs.gov/payments/direct-pay" target="_blank" class="btn-outline" style="display:inline-block;margin-top:1rem;text-decoration:none;">Pay IRS Direct Pay</a>
       </div>
     </div>
 
     <!-- PREFERENCES -->
     <div class="tab-panel" id="tab-preferences">
       <div class="card" style="max-width:480px;">
-        <h2><span>⚙️</span> Preferences</h2>
+        <h2>Preferences</h2>
         <div style="display:flex;flex-direction:column;gap:.85rem;">
           <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">Order confirmation emails<input type="checkbox" checked style="width:18px;height:18px;accent-color:#2563eb;" /></label>
           <label style="display:flex;align-items:center;justify-content:space-between;font-size:.9rem;font-weight:500;">Promotional emails<input type="checkbox" style="width:18px;height:18px;accent-color:#2563eb;" /></label>
