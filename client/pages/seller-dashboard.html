@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seller Dashboard — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f1f5f9; }
+    .dash { display:grid; grid-template-columns:240px 1fr; min-height:calc(100vh - 56px); }
+
+    /* Sidebar */
+    .sidebar { background:#1e293b; color:#fff; padding:1.5rem 0; }
+    .sidebar .store-name { padding:.5rem 1.5rem 1.25rem; font-weight:700; font-size:1rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; font-size:.75rem; border-bottom:1px solid #334155; }
+    .sidebar nav a { display:flex; align-items:center; gap:.75rem; padding:.8rem 1.5rem; color:#cbd5e1; text-decoration:none; font-size:.9rem; font-weight:500; transition:all .15s; }
+    .sidebar nav a:hover, .sidebar nav a.active { background:#334155; color:#fff; }
+    .sidebar nav a .icon { font-size:1.1rem; width:1.25rem; }
+    .sidebar hr { border:none; border-top:1px solid #334155; margin:.5rem 0; }
+
+    /* Main */
+    .main { padding:2rem; overflow-y:auto; }
+    .main h1 { font-size:1.5rem; margin-bottom:.25rem; }
+    .main .sub { color:#64748b; font-size:.9rem; margin-bottom:1.75rem; }
+
+    /* Stats */
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+    .stat-card { background:#fff; border-radius:12px; padding:1.25rem; box-shadow:0 1px 6px rgba(0,0,0,.07); }
+    .stat-card .stat-label { font-size:.78rem; color:#64748b; font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .stat-card .stat-val { font-size:1.9rem; font-weight:700; margin:.25rem 0; color:#1e293b; }
+    .stat-card .stat-sub { font-size:.78rem; color:#94a3b8; }
+
+    /* Panel */
+    .panel { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); padding:1.5rem; margin-bottom:1.5rem; }
+    .panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem; }
+    .panel-header h2 { font-size:1.05rem; }
+    .btn-sm { padding:.45rem 1rem; border-radius:7px; font-size:.85rem; font-weight:600; cursor:pointer; border:none; }
+    .btn-primary-sm { background:#2563eb; color:#fff; }
+    .btn-primary-sm:hover { opacity:.88; }
+
+    /* Upload area */
+    .upload-zone {
+      border:2px dashed #cbd5e1; border-radius:10px; padding:2.5rem 1rem;
+      text-align:center; cursor:pointer; transition:all .2s; color:#94a3b8;
+    }
+    .upload-zone:hover { border-color:#2563eb; background:#f0f7ff; color:#2563eb; }
+    .upload-zone .uz-icon { font-size:2.5rem; margin-bottom:.5rem; }
+    .upload-zone input { display:none; }
+    #previewGrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(90px,1fr)); gap:.75rem; margin-top:1rem; }
+    #previewGrid img { width:100%; height:90px; object-fit:cover; border-radius:8px; border:1px solid #e2e8f0; }
+
+    /* Form */
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .form-group { display:flex; flex-direction:column; gap:.3rem; margin-bottom:.85rem; }
+    .form-group.full { grid-column:1/-1; }
+    .form-group label { font-weight:500; font-size:.85rem; color:#374151; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding:.55rem .75rem; border:1px solid #cbd5e1; border-radius:7px; font-size:.9rem; outline:none;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:#2563eb; }
+    .form-group textarea { resize:vertical; min-height:70px; }
+
+    /* Listings table */
+    table { width:100%; border-collapse:collapse; font-size:.88rem; }
+    th { text-align:left; padding:.6rem .75rem; color:#64748b; font-weight:600; border-bottom:2px solid #f1f5f9; }
+    td { padding:.75rem; border-bottom:1px solid #f1f5f9; color:#1e293b; vertical-align:middle; }
+    tr:hover td { background:#f8fafc; }
+    .badge { display:inline-block; padding:.2rem .65rem; border-radius:20px; font-size:.75rem; font-weight:600; }
+    .badge.active  { background:#dcfce7; color:#166534; }
+    .badge.draft   { background:#fef9c3; color:#854d0e; }
+    .badge.sold    { background:#f1f5f9; color:#64748b; }
+
+    @media(max-width:768px) {
+      .dash { grid-template-columns:1fr; }
+      .sidebar { display:none; }
+      .stats { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="logo" href="../index.html">ShopFlow</a>
+    <div class="nav-links">
+      <span style="color:#fff;font-size:.9rem;" id="sellerName"></span>
+      <a href="../index.html" style="color:#fff">← Storefront</a>
+    </div>
+  </nav>
+
+  <div class="dash">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="store-name" id="sideStoreName">My Store</div>
+      <nav>
+        <a href="#" class="active" onclick="showTab('overview',this)"><span class="icon">📊</span> Overview</a>
+        <a href="#" onclick="showTab('addProduct',this)"><span class="icon">➕</span> Add Product</a>
+        <a href="#" onclick="showTab('listings',this)"><span class="icon">📦</span> My Listings</a>
+        <hr />
+        <a href="#" onclick="showTab('orders',this)"><span class="icon">🛒</span> Orders</a>
+        <a href="#" onclick="showTab('payouts',this)"><span class="icon">💰</span> Payouts</a>
+        <hr />
+        <a href="#" onclick="showTab('settings',this)"><span class="icon">⚙️</span> Store Settings</a>
+        <a href="../index.html"><span class="icon">🏠</span> Back to Shop</a>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- OVERVIEW -->
+      <div id="tab-overview">
+        <h1>Welcome to your Dashboard</h1>
+        <p class="sub">Manage your listings, track orders, and grow your store.</p>
+        <div class="stats">
+          <div class="stat-card"><div class="stat-label">Total Sales</div><div class="stat-val">$0</div><div class="stat-sub">All time</div></div>
+          <div class="stat-card"><div class="stat-label">Active Listings</div><div class="stat-val">0</div><div class="stat-sub">Products live</div></div>
+          <div class="stat-card"><div class="stat-label">Pending Orders</div><div class="stat-val">0</div><div class="stat-sub">Awaiting shipment</div></div>
+          <div class="stat-card"><div class="stat-label">Next Payout</div><div class="stat-val">$0</div><div class="stat-sub">In 14 days</div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2>Quick Start</h2></div>
+          <div style="display:flex;flex-direction:column;gap:.75rem;">
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid #e2e8f0;border-radius:8px;">
+              <span style="font-size:1.5rem;">✅</span><div><strong>Seller account activated</strong><br><span style="color:#64748b;font-size:.85rem;">Your store is ready to go.</span></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px dashed #cbd5e1;border-radius:8px;cursor:pointer;" onclick="showTab('addProduct',null)">
+              <span style="font-size:1.5rem;">➕</span><div><strong>Add your first product</strong><br><span style="color:#2563eb;font-size:.85rem;">Click to start listing →</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD PRODUCT -->
+      <div id="tab-addProduct" style="display:none">
+        <h1>Add a Product</h1>
+        <p class="sub">Fill in the details below to list a new item for sale.</p>
+
+        <div class="panel">
+          <div class="panel-header"><h2>📸 Product Photos</h2></div>
+          <div class="upload-zone" id="uploadZone">
+            <div class="uz-icon">📷</div>
+            <div><strong>Click to upload photos</strong> or drag and drop</div>
+            <div style="font-size:.8rem;margin-top:.35rem;">JPG, PNG, WEBP — up to 10 photos, max 10MB each</div>
+            <input type="file" id="photoInput" accept="image/*" multiple />
+          </div>
+          <div id="previewGrid"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>📋 Product Details</h2></div>
+          <div class="form-row">
+            <div class="form-group full"><label>Product Title *</label><input id="pTitle" type="text" placeholder="Be specific — e.g. 'Apple MacBook Pro 14-inch M3 2023 Space Gray'" /></div>
+            <div class="form-group full"><label>Description *</label><textarea id="pDesc" placeholder="Describe the item in detail — features, what's included, any flaws…"></textarea></div>
+            <div class="form-group"><label>Category *</label>
+              <select id="pCat">
+                <option value="">Select…</option>
+                <option>Electronics</option><option>Clothing & Apparel</option><option>Books & Media</option>
+                <option>Home & Garden</option><option>Sports & Outdoors</option><option>Toys & Games</option>
+                <option>Health & Beauty</option><option>Automotive</option><option>Other</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Condition *</label>
+              <select id="pCondition">
+                <option value="">Select…</option>
+                <option>New — Sealed, never opened</option>
+                <option>Like New — Opened but unused, all original packaging</option>
+                <option>Excellent — Minimal signs of use, no defects</option>
+                <option>Good — Normal wear, fully functional</option>
+                <option>Fair — Visible wear or minor defects, fully functional</option>
+                <option>For Parts — Not fully functional, sold as-is</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Price (USD) *</label><input id="pPrice" type="number" min="0.01" step="0.01" placeholder="0.00" /></div>
+            <div class="form-group"><label>Quantity Available *</label><input id="pQty" type="number" min="1" value="1" /></div>
+            <div class="form-group"><label>SKU / Item Number</label><input id="pSku" type="text" placeholder="Optional — your internal reference" /></div>
+            <div class="form-group"><label>Brand</label><input id="pBrand" type="text" placeholder="e.g. Apple, Nike, IKEA" /></div>
+            <div class="form-group"><label>Weight (lbs) — for shipping</label><input id="pWeight" type="number" step="0.1" placeholder="0.0" /></div>
+            <div class="form-group"><label>Shipping Option *</label>
+              <select id="pShipping">
+                <option>Free shipping</option>
+                <option>Flat rate $4.99</option>
+                <option>Flat rate $7.99</option>
+                <option>Calculated at checkout</option>
+                <option>Local pickup only</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:.5rem;padding:1rem;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:.83rem;color:#92400e;">
+            ⚠️ <strong>Listing Checklist:</strong> Accurate title · Honest condition · Clear photos · Correct price · Shipping details. Inaccurate listings may be removed and may affect your seller rating.
+          </div>
+
+          <div class="btn-row" style="display:flex;gap:1rem;margin-top:1.25rem;">
+            <button class="btn-sm" style="background:#f1f5f9;color:#374151;border:1px solid #cbd5e1;" onclick="saveDraft()">Save as Draft</button>
+            <button class="btn-sm btn-primary-sm" onclick="publishProduct()">🚀 Publish Listing</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISTINGS -->
+      <div id="tab-listings" style="display:none">
+        <h1>My Listings</h1>
+        <p class="sub">All your products — live, drafts, and sold.</p>
+        <div class="panel">
+          <table>
+            <thead><tr><th>Product</th><th>Condition</th><th>Price</th><th>Qty</th><th>Status</th></tr></thead>
+            <tbody id="listingsBody"><tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:2rem;">No listings yet. <a href="#" onclick="showTab('addProduct',null)" style="color:#2563eb;">Add your first product →</a></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div id="tab-orders" style="display:none">
+        <h1>Orders</h1><p class="sub">Buyer orders will appear here.</p>
+        <div class="panel" style="text-align:center;padding:3rem;color:#94a3b8;">📭 No orders yet. Orders appear here as buyers purchase your products.</div>
+      </div>
+
+      <!-- PAYOUTS -->
+      <div id="tab-payouts" style="display:none">
+        <h1>Payouts</h1><p class="sub">Your earnings and payout history.</p>
+        <div class="panel">
+          <div class="stats" style="margin-bottom:0;">
+            <div class="stat-card"><div class="stat-label">Available Balance</div><div class="stat-val">$0.00</div><div class="stat-sub">Paid out every 14 days</div></div>
+            <div class="stat-card"><div class="stat-label">ShopFlow Fee</div><div class="stat-val">10%</div><div class="stat-sub">Per completed sale</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="tab-settings" style="display:none">
+        <h1>Store Settings</h1><p class="sub">Update your store profile and preferences.</p>
+        <div class="panel">
+          <div class="form-group"><label>Store Name</label><input type="text" id="settingsStoreName" /></div>
+          <div class="form-group"><label>Store Description</label><textarea></textarea></div>
+          <button class="btn-sm btn-primary-sm" style="margin-top:.5rem;">Save Changes</button>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /dash -->
+
+  <script>
+    // Auth check
+    const user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+    if (!user.isSeller) window.location.href = 'seller.html';
+    document.getElementById('sellerName').textContent = user.name || '';
+    document.getElementById('sideStoreName').textContent = user.storeName || 'My Store';
+    if (document.getElementById('settingsStoreName'))
+      document.getElementById('settingsStoreName').value = user.storeName || '';
+
+    // Tab navigation
+    function showTab(name, el) {
+      document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display='none');
+      document.getElementById(`tab-${name}`).style.display = 'block';
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    // Photo upload preview
+    const uploadZone = document.getElementById('uploadZone');
+    const photoInput = document.getElementById('photoInput');
+    const previewGrid = document.getElementById('previewGrid');
+
+    uploadZone.addEventListener('click', () => photoInput.click());
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor='#2563eb'; });
+    uploadZone.addEventListener('dragleave', () => uploadZone.style.borderColor='#cbd5e1');
+    uploadZone.addEventListener('drop', e => { e.preventDefault(); handleFiles(e.dataTransfer.files); });
+    photoInput.addEventListener('change', () => handleFiles(photoInput.files));
+
+    function handleFiles(files) {
+      [...files].slice(0, 10).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          previewGrid.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // In-memory listings store
+    const listings = [];
+
+    function saveDraft() {
+      const item = collectForm();
+      if (!item) return;
+      item.status = 'draft';
+      listings.push(item);
+      renderListings();
+      showTab('listings', null);
+      alert('Draft saved!');
+    }
+
+    function publishProduct() {
+      const item = collectForm();
+      if (!item) return;
+      item.status = 'active';
+      listings.push(item);
+      renderListings();
+      showTab('listings', null);
+      clearForm();
+      alert('🎉 Product published successfully!');
+    }
+
+    function collectForm() {
+      const title = document.getElementById('pTitle').value.trim();
+      const price = document.getElementById('pPrice').value;
+      const condition = document.getElementById('pCondition').value;
+      const cat = document.getElementById('pCat').value;
+      if (!title || !price || !condition || !cat) { alert('Please fill in all required fields.'); return null; }
+      return {
+        title, price: parseFloat(price).toFixed(2),
+        condition: condition.split('—')[0].trim(),
+        category: cat,
+        qty: document.getElementById('pQty').value,
+        status: 'active',
+      };
+    }
+
+    function clearForm() {
+      ['pTitle','pDesc','pPrice','pSku','pBrand','pWeight'].forEach(id => document.getElementById(id).value='');
+      ['pCat','pCondition'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('pQty').value = 1;
+      document.getElementById('previewGrid').innerHTML = '';
+    }
+
+    function renderListings() {
+      const tbody = document.getElementById('listingsBody');
+      if (!listings.length) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:2rem;">No listings yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = listings.map((l,i) => `
+        <tr>
+          <td><strong>${l.title}</strong><br><span style="color:#64748b;font-size:.8rem;">${l.category}</span></td>
+          <td>${l.condition}</td>
+          <td>$${l.price}</td>
+          <td>${l.qty}</td>
+          <td><span class="badge ${l.status}">${l.status}</span></td>
+        </tr>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

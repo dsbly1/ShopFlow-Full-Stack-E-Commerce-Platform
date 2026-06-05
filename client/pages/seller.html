@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Seller — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f8fafc; }
+    .page { max-width:860px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+    /* Progress bar */
+    .progress-bar { display:flex; align-items:center; margin-bottom:2.5rem; }
+    .step { display:flex; flex-direction:column; align-items:center; gap:.35rem; flex:1; }
+    .step-circle {
+      width:36px; height:36px; border-radius:50%; background:#e2e8f0;
+      color:#94a3b8; font-weight:700; font-size:.9rem;
+      display:flex; align-items:center; justify-content:center; transition:all .3s;
+    }
+    .step.active .step-circle  { background:#2563eb; color:#fff; }
+    .step.done .step-circle    { background:#22c55e; color:#fff; }
+    .step-label { font-size:.72rem; color:#94a3b8; font-weight:500; text-align:center; }
+    .step.active .step-label   { color:#2563eb; }
+    .step.done .step-label     { color:#22c55e; }
+    .step-line { flex:1; height:2px; background:#e2e8f0; margin-bottom:1.4rem; transition:background .3s; }
+    .step-line.done { background:#22c55e; }
+
+    /* Cards */
+    .card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.07); padding:2rem; margin-bottom:1.5rem; }
+    .card h2 { font-size:1.3rem; margin-bottom:.4rem; }
+    .card .subtitle { color:#64748b; font-size:.9rem; margin-bottom:1.5rem; }
+
+    /* Form */
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .form-group { display:flex; flex-direction:column; gap:.35rem; margin-bottom:1rem; }
+    .form-group.full { grid-column:1/-1; }
+    .form-group label { font-weight:500; font-size:.88rem; color:#374151; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding:.6rem .8rem; border:1px solid #cbd5e1; border-radius:7px;
+      font-size:.95rem; outline:none; transition:border .2s; background:#fff;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:#2563eb; }
+    .form-group textarea { resize:vertical; min-height:80px; }
+    .required { color:#ef4444; }
+
+    /* Checkbox list */
+    .check-list { display:flex; flex-direction:column; gap:.6rem; }
+    .check-item { display:flex; align-items:flex-start; gap:.75rem; padding:.75rem 1rem; border:1px solid #e2e8f0; border-radius:8px; cursor:pointer; transition:border .2s; }
+    .check-item:hover { border-color:#2563eb; background:#f0f7ff; }
+    .check-item input[type=checkbox] { margin-top:.15rem; width:16px; height:16px; accent-color:#2563eb; flex-shrink:0; }
+    .check-item .check-label { font-size:.88rem; color:#374151; line-height:1.5; }
+    .check-item .check-label strong { display:block; color:#1e293b; margin-bottom:.1rem; }
+
+    /* Legal box */
+    .legal-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1.25rem; font-size:.82rem; color:#475569; line-height:1.7; max-height:220px; overflow-y:auto; margin-bottom:1rem; }
+    .legal-box h4 { color:#1e293b; margin-bottom:.5rem; font-size:.9rem; }
+    .legal-box ul { padding-left:1.2rem; }
+    .legal-box ul li { margin-bottom:.3rem; }
+
+    /* Buttons */
+    .btn-row { display:flex; gap:1rem; justify-content:flex-end; margin-top:1.5rem; }
+    .btn-back { padding:.7rem 1.75rem; background:#fff; border:1.5px solid #cbd5e1; border-radius:8px; font-weight:600; cursor:pointer; color:#374151; }
+    .btn-next { padding:.7rem 1.75rem; background:#2563eb; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:opacity .2s; }
+    .btn-next:hover { opacity:.88; }
+    .btn-next:disabled { opacity:.45; cursor:not-allowed; }
+
+    /* Info callout */
+    .callout { display:flex; gap:.75rem; padding:1rem 1.25rem; border-radius:8px; font-size:.85rem; margin-bottom:1.25rem; }
+    .callout.blue  { background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; }
+    .callout.amber { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+    .callout.green { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+    .callout .ci { font-size:1.1rem; flex-shrink:0; }
+
+    /* Step panels */
+    .step-panel { display:none; }
+    .step-panel.active { display:block; }
+
+    /* Section divider */
+    .section-title { font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin:1.25rem 0 .75rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a class="logo" href="../index.html">ShopFlow</a>
+    <div class="nav-links"><a href="../index.html" style="color:#fff">← Back to Shop</a></div>
+  </nav>
+
+  <div class="page">
+    <div style="margin-bottom:1.75rem;">
+      <h1 style="font-size:1.8rem;margin-bottom:.3rem;">Become a ShopFlow Seller</h1>
+      <p style="color:#64748b;">Set up your seller account in 4 steps. Takes about 10 minutes.</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar" id="progressBar">
+      <div class="step active" id="s1"><div class="step-circle">1</div><div class="step-label">Business Info</div></div>
+      <div class="step-line" id="l1"></div>
+      <div class="step" id="s2"><div class="step-circle">2</div><div class="step-label">Legal & Tax</div></div>
+      <div class="step-line" id="l2"></div>
+      <div class="step" id="s3"><div class="step-circle">3</div><div class="step-label">Policies</div></div>
+      <div class="step-line" id="l3"></div>
+      <div class="step" id="s4"><div class="step-circle">4</div><div class="step-label">Agreement</div></div>
+    </div>
+
+    <!-- ── STEP 1: Business Info ── -->
+    <div class="step-panel active" id="panel1">
+      <div class="card">
+        <h2>Business Information</h2>
+        <p class="subtitle">Tell us about your business. This information will appear on your seller profile.</p>
+
+        <div class="callout blue"><span class="ci">ℹ️</span> All fields marked <strong>*</strong> are required by ShopFlow and relevant tax authorities.</div>
+
+        <div class="section-title">Personal / Business Identity</div>
+        <div class="form-row">
+          <div class="form-group"><label>Legal First Name <span class="required">*</span></label><input id="firstName" type="text" placeholder="As it appears on government ID" /></div>
+          <div class="form-group"><label>Legal Last Name <span class="required">*</span></label><input id="lastName" type="text" placeholder="As it appears on government ID" /></div>
+          <div class="form-group"><label>Business / Store Name <span class="required">*</span></label><input id="bizName" type="text" placeholder="Your store display name" /></div>
+          <div class="form-group"><label>Business Type <span class="required">*</span></label>
+            <select id="bizType">
+              <option value="">Select type…</option>
+              <option>Sole Proprietor / Individual</option>
+              <option>LLC (Single-Member)</option>
+              <option>LLC (Multi-Member)</option>
+              <option>S-Corporation</option>
+              <option>C-Corporation</option>
+              <option>Partnership</option>
+              <option>Non-Profit Organization</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Business Email <span class="required">*</span></label><input id="bizEmail" type="email" placeholder="orders@yourbusiness.com" /></div>
+          <div class="form-group"><label>Business Phone <span class="required">*</span></label><input id="bizPhone" type="tel" placeholder="+1 (555) 000-0000" /></div>
+        </div>
+
+        <div class="section-title">Business Address</div>
+        <div class="form-row">
+          <div class="form-group full"><label>Street Address <span class="required">*</span></label><input id="street" type="text" placeholder="123 Main St" /></div>
+          <div class="form-group"><label>City <span class="required">*</span></label><input id="city" type="text" /></div>
+          <div class="form-group"><label>State / Province <span class="required">*</span></label><input id="state" type="text" /></div>
+          <div class="form-group"><label>ZIP / Postal Code <span class="required">*</span></label><input id="zip" type="text" /></div>
+          <div class="form-group"><label>Country <span class="required">*</span></label>
+            <select id="country">
+              <option>United States</option><option>Canada</option><option>United Kingdom</option>
+              <option>Australia</option><option>Germany</option><option>France</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Store Details</div>
+        <div class="form-row">
+          <div class="form-group full"><label>Store Description <span class="required">*</span></label>
+            <textarea id="storeDesc" placeholder="Describe what you sell and what makes your store unique…"></textarea>
+          </div>
+          <div class="form-group"><label>Primary Product Category <span class="required">*</span></label>
+            <select id="primaryCat">
+              <option value="">Select…</option>
+              <option>Electronics</option><option>Clothing & Apparel</option><option>Books & Media</option>
+              <option>Home & Garden</option><option>Sports & Outdoors</option><option>Toys & Games</option>
+              <option>Health & Beauty</option><option>Automotive</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Expected Monthly Listings</label>
+            <select id="listings">
+              <option>1–10 products</option><option>11–50 products</option>
+              <option>51–200 products</option><option>200+ products</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row"><button class="btn-next" id="next1">Continue →</button></div>
+    </div>
+
+    <!-- ── STEP 2: Legal & Tax ── -->
+    <div class="step-panel" id="panel2">
+      <div class="card">
+        <h2>Legal & Tax Requirements</h2>
+        <p class="subtitle">Required by U.S. federal law (and equivalent regulations internationally) to operate as an online seller.</p>
+
+        <div class="callout amber"><span class="ci">⚠️</span> ShopFlow is required by the IRS and applicable tax authorities to collect this information. It is encrypted and never shared with third parties except as required by law.</div>
+
+        <div class="section-title">Tax Identification</div>
+        <div class="form-row">
+          <div class="form-group"><label>Tax ID Type <span class="required">*</span></label>
+            <select id="taxType">
+              <option value="">Select…</option>
+              <option>SSN (Social Security Number)</option>
+              <option>EIN (Employer Identification Number)</option>
+              <option>ITIN (Individual Taxpayer ID)</option>
+              <option>VAT Number (EU/UK)</option>
+              <option>ABN (Australia)</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Tax ID Number <span class="required">*</span></label><input id="taxId" type="text" placeholder="XX-XXXXXXX" /></div>
+        </div>
+
+        <div class="section-title">What You're Required to Know</div>
+        <div class="legal-box">
+          <h4>U.S. Federal Tax Obligations for Online Sellers</h4>
+          <ul>
+            <li><strong>IRS Form 1099-K:</strong> ShopFlow will issue a 1099-K if you process over $600 in sales in a calendar year (effective 2024). You must report this income on your federal tax return.</li>
+            <li><strong>Self-Employment Tax:</strong> Sole proprietors owe 15.3% SE tax on net earnings above $400/year.</li>
+            <li><strong>Sales Tax Nexus:</strong> Since the <em>South Dakota v. Wayfair</em> (2018) Supreme Court ruling, states can require out-of-state sellers to collect sales tax once they exceed economic nexus thresholds (typically $100,000 in sales or 200 transactions per state).</li>
+            <li><strong>Resale Certificates:</strong> If purchasing wholesale goods for resale, obtain a state resale certificate to avoid paying sales tax on inventory.</li>
+            <li><strong>Home Occupation Permit:</strong> Many municipalities require a business license or home occupation permit even for online-only sellers.</li>
+          </ul>
+          <h4 style="margin-top:.75rem;">Consumer Protection Laws</h4>
+          <ul>
+            <li><strong>FTC Act Section 5:</strong> Prohibits unfair or deceptive acts. Listings must be accurate — no fake reviews, misleading descriptions, or bait-and-switch.</li>
+            <li><strong>Consumer Product Safety Act (CPSA):</strong> You may not sell recalled, unsafe, or non-compliant products. Check CPSC.gov before listing any children's products.</li>
+            <li><strong>CAN-SPAM Act:</strong> Marketing emails to buyers must include an unsubscribe option and your physical address.</li>
+            <li><strong>GDPR / CCPA:</strong> If selling to EU or California residents, you must comply with applicable data privacy laws.</li>
+          </ul>
+          <h4 style="margin-top:.75rem;">Intellectual Property</h4>
+          <ul>
+            <li>You may not list counterfeit, replica, or unauthorized reproductions of branded goods.</li>
+            <li>Product photos you upload must be owned by you or properly licensed.</li>
+            <li>Brand names, logos, and trademarks of third parties may not appear in your store name.</li>
+          </ul>
+        </div>
+
+        <div class="section-title">Payment & Banking</div>
+        <div class="form-row">
+          <div class="form-group"><label>Bank Account Holder Name <span class="required">*</span></label><input id="bankName" type="text" placeholder="Name on bank account" /></div>
+          <div class="form-group"><label>Account Type <span class="required">*</span></label>
+            <select id="accountType"><option>Checking</option><option>Savings</option><option>Business Checking</option></select>
+          </div>
+          <div class="form-group"><label>Routing Number <span class="required">*</span></label><input id="routing" type="text" placeholder="9-digit ABA routing number" /></div>
+          <div class="form-group"><label>Account Number <span class="required">*</span></label><input id="accountNum" type="text" placeholder="Bank account number" /></div>
+        </div>
+        <div class="callout blue"><span class="ci">🔒</span> Banking details are encrypted with AES-256 and stored with our PCI-DSS compliant payment processor. ShopFlow staff cannot view your full account number.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" id="back2">← Back</button>
+        <button class="btn-next" id="next2">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: Policies ── -->
+    <div class="step-panel" id="panel3">
+      <div class="card">
+        <h2>Seller Policies</h2>
+        <p class="subtitle">Set your store policies. These are shown to buyers before purchase.</p>
+
+        <div class="section-title">Shipping Policy</div>
+        <div class="form-row">
+          <div class="form-group"><label>Ships From <span class="required">*</span></label>
+            <select id="shipsFrom"><option>United States</option><option>Canada</option><option>United Kingdom</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Handling Time <span class="required">*</span></label>
+            <select id="handling">
+              <option>Same day (order by 12pm)</option><option>1 business day</option>
+              <option>2–3 business days</option><option>Up to 5 business days</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Domestic Shipping <span class="required">*</span></label>
+            <select id="domShipping">
+              <option>Free shipping on all orders</option><option>Flat rate ($4.99)</option>
+              <option>Flat rate ($7.99)</option><option>Calculated by weight/distance</option>
+            </select>
+          </div>
+          <div class="form-group"><label>International Shipping</label>
+            <select id="intShipping">
+              <option>No international shipping</option><option>Yes — buyer pays actual cost</option>
+              <option>Yes — flat rate ($14.99)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">Return & Refund Policy</div>
+        <div class="form-row">
+          <div class="form-group"><label>Returns Accepted? <span class="required">*</span></label>
+            <select id="returns"><option>Yes — 30 days</option><option>Yes — 14 days</option><option>Yes — 60 days</option><option>No returns</option></select>
+          </div>
+          <div class="form-group"><label>Return Shipping Paid By <span class="required">*</span></label>
+            <select id="returnShipping"><option>Buyer pays return shipping</option><option>Seller pays return shipping</option></select>
+          </div>
+          <div class="form-group full"><label>Refund Policy Details</label>
+            <textarea id="refundDetails" placeholder="e.g. Items must be unused and in original packaging. Refunds processed within 3–5 business days of receiving return…"></textarea>
+          </div>
+        </div>
+
+        <div class="section-title">Required Acknowledgements</div>
+        <div class="check-list">
+          <label class="check-item"><input type="checkbox" class="ack" /><div class="check-label"><strong>Prohibited Items Policy</strong>I will not list weapons, hazardous materials, counterfeit goods, recalled products, live animals, or any items prohibited by ShopFlow's Seller Guidelines or applicable law.</div></label>
+          <label class="check-item"><input type="checkbox" class="ack" /><div class="check-label"><strong>Accurate Listings</strong>All product descriptions, photos, prices, and condition disclosures will be accurate and not misleading to buyers.</div></label>
+          <label class="check-item"><input type="checkbox" class="ack" /><div class="check-label"><strong>Tax Collection Responsibility</strong>I understand I am solely responsible for collecting, reporting, and remitting applicable sales tax in jurisdictions where I have nexus.</div></label>
+          <label class="check-item"><input type="checkbox" class="ack" /><div class="check-label"><strong>Intellectual Property</strong>I own or have the right to sell all items I list and will not infringe on third-party trademarks, copyrights, or patents.</div></label>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" id="back3">← Back</button>
+        <button class="btn-next" id="next3" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: Agreement ── -->
+    <div class="step-panel" id="panel4">
+      <div class="card">
+        <h2>Seller Agreement</h2>
+        <p class="subtitle">Read and sign the ShopFlow Seller Agreement to activate your account.</p>
+
+        <div class="legal-box" style="max-height:300px;">
+          <h4>ShopFlow Seller Agreement — Summary of Key Terms</h4>
+          <p style="margin-bottom:.75rem;"><em>This is a plain-language summary. The full legal agreement governs.</em></p>
+          <ul>
+            <li><strong>Commission:</strong> ShopFlow charges a 10% referral fee on each completed sale (excluding shipping). This fee is automatically deducted before payout.</li>
+            <li><strong>Payouts:</strong> Seller payouts are processed every 14 days to your registered bank account, after any pending disputes are resolved.</li>
+            <li><strong>Listing Standards:</strong> Listings must include at least one photo, an accurate description, price, condition, and shipping details. ShopFlow reserves the right to remove non-compliant listings.</li>
+            <li><strong>Condition Definitions:</strong> New (sealed/unused), Like New (opened but unused), Excellent (minimal signs of use), Good (normal wear), Fair (functional with visible wear), For Parts (not fully functional).</li>
+            <li><strong>Dispute Resolution:</strong> In the event of a buyer dispute, ShopFlow's Trust & Safety team will mediate. Sellers must respond within 48 hours. Unresolved disputes may result in automatic refund to the buyer.</li>
+            <li><strong>Account Suspension:</strong> Accounts with an order defect rate above 3%, late shipment rate above 5%, or valid intellectual property complaints will be suspended pending review.</li>
+            <li><strong>Termination:</strong> Either party may terminate this agreement with 30 days written notice. Outstanding payouts will be processed at the end of the standard payout cycle.</li>
+            <li><strong>Governing Law:</strong> This agreement is governed by the laws of the State of Delaware, USA.</li>
+          </ul>
+        </div>
+
+        <div class="form-row" style="margin-top:1.25rem;">
+          <div class="form-group"><label>Full Legal Name (E-Signature) <span class="required">*</span></label><input id="signature" type="text" placeholder="Type your full legal name" /></div>
+          <div class="form-group"><label>Date</label><input type="text" id="sigDate" readonly /></div>
+        </div>
+
+        <label class="check-item" style="margin-top:.5rem;">
+          <input type="checkbox" id="agreeCheck" />
+          <div class="check-label"><strong>I agree to the ShopFlow Seller Agreement</strong>By checking this box and typing my name above, I confirm I have read, understood, and agree to be legally bound by the ShopFlow Seller Agreement and all incorporated policies.</div>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button class="btn-back" id="back4">← Back</button>
+        <button class="btn-next" id="submitBtn" disabled>🎉 Activate Seller Account</button>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <script src="../js/api.js"></script>
+  <script>
+    // Set today's date
+    document.getElementById('sigDate').value = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+    let current = 1;
+
+    function goTo(n) {
+      document.getElementById(`panel${current}`).classList.remove('active');
+      // Mark steps
+      for (let i = 1; i <= 4; i++) {
+        const s = document.getElementById(`s${i}`);
+        s.classList.remove('active','done');
+        if (i < n) { s.classList.add('done'); s.querySelector('.step-circle').textContent = '✓'; }
+        else if (i === n) s.classList.add('active');
+        else s.querySelector('.step-circle').textContent = i;
+      }
+      for (let i = 1; i <= 3; i++) {
+        document.getElementById(`l${i}`).classList.toggle('done', i < n);
+      }
+      current = n;
+      document.getElementById(`panel${n}`).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // Step 1 → 2
+    document.getElementById('next1').addEventListener('click', () => {
+      const req = ['firstName','lastName','bizName','bizType','bizEmail','bizPhone','street','city','state','zip','storeDesc','primaryCat'];
+      const empty = req.find(id => !document.getElementById(id).value.trim());
+      if (empty) { document.getElementById(empty).focus(); alert('Please fill in all required fields.'); return; }
+      goTo(2);
+    });
+
+    // Step 2 → 3
+    document.getElementById('next2').addEventListener('click', () => {
+      const req = ['taxType','taxId','bankName','routing','accountNum'];
+      const empty = req.find(id => !document.getElementById(id).value.trim());
+      if (empty) { document.getElementById(empty).focus(); alert('Please fill in all required fields.'); return; }
+      goTo(3);
+    });
+
+    document.getElementById('back2').addEventListener('click', () => goTo(1));
+    document.getElementById('back3').addEventListener('click', () => goTo(2));
+    document.getElementById('back4').addEventListener('click', () => goTo(3));
+
+    // Step 3 acknowledgements → enable Continue
+    const acks = document.querySelectorAll('.ack');
+    acks.forEach(cb => cb.addEventListener('change', () => {
+      document.getElementById('next3').disabled = ![...acks].every(c => c.checked);
+    }));
+
+    document.getElementById('next3').addEventListener('click', () => goTo(4));
+
+    // Step 4 agreement → enable Submit
+    const agreeCheck = document.getElementById('agreeCheck');
+    const signature  = document.getElementById('signature');
+    const submitBtn  = document.getElementById('submitBtn');
+    function checkSubmit() {
+      submitBtn.disabled = !(agreeCheck.checked && signature.value.trim().length > 2);
+    }
+    agreeCheck.addEventListener('change', checkSubmit);
+    signature.addEventListener('input', checkSubmit);
+
+    // Submit
+    submitBtn.addEventListener('click', () => {
+      // Save seller flag to localStorage
+      const user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+      user.isSeller = true;
+      user.storeName = document.getElementById('bizName').value;
+      localStorage.setItem('sf_user', JSON.stringify(user));
+      window.location.href = 'seller-dashboard.html';
+    });
+  </script>
+</body>
+</html>
