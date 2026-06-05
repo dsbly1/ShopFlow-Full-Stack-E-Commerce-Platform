@@ -6,10 +6,13 @@ const sortSel = document.getElementById('sortFilter');
 const catSel  = document.getElementById('categoryFilter');
 
 async function loadCategories() {
-  const cats = ['Electronics','Clothing','Books','Home & Garden','Sports'];
-  cats.forEach(c => {
+  const cats = await api.get('/categories');
+  if (!Array.isArray(cats)) return;
+  // Only show top-level categories (no parent)
+  cats.filter(c => !c.parent_category_id).forEach(c => {
     const opt = document.createElement('option');
-    opt.textContent = c;
+    opt.value = c.id;
+    opt.textContent = c.name;
     catSel.appendChild(opt);
   });
 }

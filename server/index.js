@@ -15,6 +15,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/cart',     require('./routes/cart'));
 app.use('/api/orders',   require('./routes/orders'));
 app.use('/api/reviews',  require('./routes/reviews'));
+app.use('/api/categories', require('./routes/categories'));
 app.use('/api/admin',    require('./routes/admin'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', env: process.env.NODE_ENV }));
