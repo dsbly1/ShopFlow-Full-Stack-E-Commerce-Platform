@@ -130,6 +130,10 @@
       <div class="avatar" id="avatarInitial">?</div>
     </div>
 
+    <div id="verifyBanner" style="display:none;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+      <div style="font-size:.9rem;color:#92400e;"><strong>Verify your email address</strong> — Check your inbox for a verification link.</div>
+      <button onclick="resendVerification()" style="padding:.45rem 1rem;background:#f59e0b;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;font-size:.85rem;">Resend Email</button>
+    </div>
     <div class="stats">
       <div class="stat-card"><div class="val" id="statOrders">0</div><div class="lbl">Orders</div></div>
       <div class="stat-card"><div class="val" id="statReviews">0</div><div class="lbl">Reviews</div></div>
@@ -320,6 +324,15 @@
     // Seller tabs
     if (user.isSeller) {
       document.querySelectorAll('.seller-only').forEach(el => el.style.display = 'block');
+    }
+
+
+    if (!user.email_verified) {
+      document.getElementById('verifyBanner').style.display = 'flex';
+    }
+    async function resendVerification() {
+      await api.post('/auth/resend-verification', { email: user.email });
+      alert('Verification email sent to ' + user.email);
     }
 
     // Orders
