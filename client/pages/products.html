@@ -18,7 +18,22 @@
     .prod-search input { flex:1; border:none; padding:.5rem .9rem; font-size:.9rem; outline:none; color:#1e293b; background:transparent; }
     .prod-search button { background:#2563eb; border:none; cursor:pointer; padding:.5rem .85rem; color:#fff; display:flex; align-items:center; }
     @keyframes badgePop { 0%{transform:scale(0);opacity:0} 60%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
-    @media (max-width:640px) { .products-toolbar { flex-direction:column; align-items:flex-start; } .prod-search { max-width:100%; } }
+    @media (max-width:768px) {
+      .filters-bar { padding:0 1rem 1rem; gap:.5rem; }
+      .filters-bar select { flex:1; min-width:120px; }
+      .products-toolbar { padding:1rem; }
+    }
+    @media (max-width:640px) {
+      .products-toolbar { flex-direction:column; align-items:stretch; }
+      .prod-search { max-width:100%; width:100%; }
+      .prod-search input { width:100%; }
+      .filters-bar { flex-direction:column; }
+      .filters-bar select { width:100%; }
+    }
+    @media (max-width:480px) {
+      .products-hero { padding:2rem 1rem 1.5rem; }
+      .products-hero h1 { font-size:1.4rem; }
+    }
   </style>
 </head>
 <body>
