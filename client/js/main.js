@@ -72,3 +72,16 @@ async function updateCartCount() {
   }
 }
 updateCartCount();
+
+// Read search query from URL params (e.g. from purchases/about page search bar)
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('search');
+  if (q && search) {
+    search.value = q;
+    loadProducts();
+    setTimeout(() => {
+      document.getElementById('productGrid')?.scrollIntoView({ behavior: 'smooth' });
+    }, 600);
+  }
+})();
