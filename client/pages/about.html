@@ -808,6 +808,17 @@
         if (link) link.style.display = 'flex';
       }
     })();
+  
+    // Show My Products link for sellers
+    (function() {
+      try {
+        var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+        if (user.role === 'seller' || user.role === 'admin') {
+          var el = document.getElementById('drawer-seller-link');
+          if (el) el.style.display = 'flex';
+        }
+      } catch(e) {}
+    })();
   </script>
 </body>
 </html>

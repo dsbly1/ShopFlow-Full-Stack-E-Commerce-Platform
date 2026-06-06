@@ -60,6 +60,7 @@
     <nav class="drawer-nav">
       <a href="pages/products.html"><span class="icon"></span> Products</a>
       <a href="pages/dashboard.html"><span class="icon"></span> My Dashboard</a>
+      <a id="drawer-seller-link" href="pages/seller-dashboard.html" style="display:none;" class="drawer-nav-link"><span class="icon"></span> My Products</a>
           <a href="pages/purchases.html"><span class="icon"></span> Purchases</a>
       <a href="pages/seller.html"><span class="icon"></span> Become a Seller</a>
       <hr />
@@ -236,6 +237,17 @@
         var link = document.getElementById('seller-drawer-link');
         if (link) link.style.display = 'flex';
       }
+    })();
+  
+    // Show My Products link for sellers
+    (function() {
+      try {
+        var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+        if (user.role === 'seller' || user.role === 'admin') {
+          var el = document.getElementById('drawer-seller-link');
+          if (el) el.style.display = 'flex';
+        }
+      } catch(e) {}
     })();
   </script>
 </body>
