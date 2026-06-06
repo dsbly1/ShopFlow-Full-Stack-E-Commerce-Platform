@@ -34,8 +34,43 @@
   <script>
     async function loadCart() {
       if (!getToken()) { window.location.href='login.html'; return; }
-      const items = await api.get('/cart');
       const el = document.getElementById('cartItems');
+
+      // Guest cart support
+      if (!getToken()) {
+        const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+        if (!guestCart.length) {
+          el.innerHTML = '<div style="text-align:center;padding:3rem 1rem;"><div style="font-size:3rem;margin-bottom:1rem;">&#128722;</div><p style="color:#64748b;margin-bottom:1rem;">Your guest cart is empty.</p><a href="../index.html" style="background:#2563eb;color:#fff;padding:.7rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:600;">Browse Products</a></div>';
+          return;
+        }
+        // Fetch product details for each guest cart item
+        const productDetails = await Promise.all(
+          guestCart.map(i => api.get('/products/' + i.id).catch(() => null))
+        );
+        let total = 0;
+        el.innerHTML = guestCart.map((item, idx) => {
+          const p = productDetails[idx];
+          if (!p) return '';
+          const subtotal = parseFloat(p.price) * (item.quantity || 1);
+          total += subtotal;
+          return '<div class="cart-item">' +
+            '<img src="' + (p.image_url || '') + '" onerror="this.style.background='#e2e8f0'" alt="' + p.name + '" />' +
+            '<div class="cart-item-info"><h3>' + p.name + '</h3>' +
+            '<p style="color:#64748b;font-size:.85rem;">Qty: ' + (item.quantity || 1) + '</p>' +
+            '<p style="color:#2563eb;font-weight:700;">$' + subtotal.toFixed(2) + '</p></div>' +
+            '<button onclick="removeGuestItem(' + item.id + ')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:7px;padding:.4rem .8rem;cursor:pointer;font-size:.8rem;font-weight:600;">Remove</button>' +
+            '</div>';
+        }).join('');
+        document.getElementById('cartTotal').innerHTML =
+          '<div style="margin-top:1rem;">Total: $' + total.toFixed(2) + '</div>' +
+          '<div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap;">' +
+          '<a href="login.html" style="flex:1;text-align:center;background:#2563eb;color:#fff;padding:.8rem;border-radius:9px;font-weight:600;text-decoration:none;min-width:140px;">Login to Checkout</a>' +
+          '<a href="register.html" style="flex:1;text-align:center;background:#f8fafc;color:#1e293b;border:1.5px solid #e2e8f0;padding:.8rem;border-radius:9px;font-weight:600;text-decoration:none;min-width:140px;">Create Account</a>' +
+          '</div>';
+        return;
+      }
+
+      const items = await api.get('/cart');
       if (!items.length) { el.innerHTML='<p>Your cart is empty.</p>'; return; }
       el.innerHTML = items.map(i => `
         <div class="cart-item">
@@ -57,6 +92,13 @@
       loadCart();
     }
     loadCart();
+
+    function removeGuestItem(productId) {
+      let cart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+      cart = cart.filter(i => i.id !== productId);
+      localStorage.setItem('guest_cart', JSON.stringify(cart));
+      loadCart();
+    }
   </script>
 </body>
 </html>
