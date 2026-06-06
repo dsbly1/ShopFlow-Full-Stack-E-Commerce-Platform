@@ -363,6 +363,10 @@
       if (existing) { existing.quantity = (existing.quantity || 1) + 1; }
       else { cart.push({ id: _pendingProductId, quantity: 1 }); }
       localStorage.setItem('guest_cart', JSON.stringify(cart));
+      // Update badge
+      var total = cart.reduce(function(s, i) { return s + (i.quantity || 1); }, 0);
+      var badge = document.getElementById('cart-count') || document.getElementById('cartCount');
+      if (badge) { badge.textContent = total; badge.style.display = 'flex'; }
       showGuestCartToast();
     }
     function showGuestCartToast() {
