@@ -132,6 +132,41 @@
     var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
     var grid = document.getElementById('productGrid');
 
+    function togglePricePopover() {
+      var pop = document.getElementById('pricePopover');
+      pop.style.display = pop.style.display === 'none' ? 'block' : 'none';
+    }
+    function applyPriceFilter() {
+      var min = document.getElementById('priceMin').value;
+      var max = document.getElementById('priceMax').value;
+      var label = '';
+      if (min && max) label = '$' + min + ' - $' + max;
+      else if (min) label = 'From $' + min;
+      else if (max) label = 'Up to $' + max;
+      document.getElementById('priceFilterLabel').textContent = label || 'Price Range';
+      document.getElementById('priceFilterBtn').style.borderColor = (min || max) ? '#2563eb' : '#e2e8f0';
+      document.getElementById('priceFilterBtn').style.color = (min || max) ? '#2563eb' : '#1e293b';
+      document.getElementById('pricePopover').style.display = 'none';
+      loadProducts();
+    }
+    function clearPriceFilter() {
+      document.getElementById('priceMin').value = '';
+      document.getElementById('priceMax').value = '';
+      document.getElementById('priceFilterLabel').textContent = 'Price Range';
+      document.getElementById('priceFilterBtn').style.borderColor = '#e2e8f0';
+      document.getElementById('priceFilterBtn').style.color = '#1e293b';
+      document.getElementById('pricePopover').style.display = 'none';
+      loadProducts();
+    }
+    // Close popover on outside click
+    document.addEventListener('click', function(e) {
+      var btn = document.getElementById('priceFilterBtn');
+      var pop = document.getElementById('pricePopover');
+      if (btn && pop && !btn.contains(e.target) && !pop.contains(e.target)) {
+        pop.style.display = 'none';
+      }
+    });
+
     function clearSearch() {
       document.getElementById('searchInput').value = '';
       loadProducts();
