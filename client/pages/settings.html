@@ -209,9 +209,14 @@
         // Drawer — hide login, swap CTA to Dashboard
         if (drawerLogin) drawerLogin.style.display = 'none';
         if (drawerCta) {
-          drawerCta.textContent = 'Go to Dashboard';
-          drawerCta.href = 'dashboard.html';
-          drawerCta.style.background = '#2563eb';
+          drawerCta.textContent = 'Logout';
+          drawerCta.href = '#';
+          drawerCta.style.background = '#dc2626';
+          drawerCta.addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user');
+            window.location.href = 'login.html';
+          });
         }
       }
     })();
