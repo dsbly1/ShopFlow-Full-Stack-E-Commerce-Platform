@@ -105,14 +105,13 @@
       <option value="price_desc">Price: High to Low</option>
       <option value="name">Name A-Z</option>
     </select>
-    <select id="priceFilter">
-      <option value="">All Prices</option>
-      <option value="0-50">Under $50</option>
-      <option value="50-200">$50 - $200</option>
-      <option value="200-500">$200 - $500</option>
-      <option value="500-1000">$500 - $1,000</option>
-      <option value="1000-99999">Over $1,000</option>
-    </select>
+    <div style="display:flex;align-items:center;gap:.4rem;background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:.35rem .75rem;font-size:.875rem;">
+      <span style="color:#64748b;white-space:nowrap;">$</span>
+      <input type="number" id="priceMin" placeholder="Min" min="0" style="width:70px;border:none;outline:none;font-size:.875rem;color:#1e293b;background:transparent;" />
+      <span style="color:#94a3b8;">—</span>
+      <input type="number" id="priceMax" placeholder="Max" min="0" style="width:70px;border:none;outline:none;font-size:.875rem;color:#1e293b;background:transparent;" />
+      <button onclick="loadProducts()" style="background:#2563eb;color:#fff;border:none;border-radius:6px;padding:.25rem .6rem;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;">Go</button>
+    </div>
     <select id="ratingFilter">
       <option value="">All Ratings</option>
       <option value="4">4+ Stars</option>
@@ -177,16 +176,17 @@
       else if (sort === 'price_desc') { q.set('sort', 'price'); q.set('order', 'desc'); }
       else { q.set('sort', sort); }
       if (cat) q.set('category', cat);
-      var priceRange = document.getElementById('priceFilter').value;
-      var minRating = document.getElementById('ratingFilter').value;
+
       var products = await api.get('/products?' + q.toString());
       var list = Array.isArray(products) ? products : [];
       // Client-side price filter
-      var priceRange = document.getElementById('priceFilter').value;
-      if (priceRange) {
-        var parts = priceRange.split('-');
-        var min = parseFloat(parts[0]); var max = parseFloat(parts[1]);
-        list = list.filter(function(p) { var price = parseFloat(p.price); return price >= min && price <= max; });
+      var priceMin = document.getElementById('priceMin').value;
+      var priceMax = document.getElementById('priceMax').value;
+      if (priceMin !== '') {
+        list = list.filter(function(p) { return parseFloat(p.price) >= parseFloat(priceMin); });
+      }
+      if (priceMax !== '') {
+        list = list.filter(function(p) { return parseFloat(p.price) <= parseFloat(priceMax); });
       }
       // Client-side rating filter
       var minRating = document.getElementById('ratingFilter').value;
@@ -268,8 +268,9 @@
 
     document.getElementById('categoryFilter').addEventListener('change', loadProducts);
     document.getElementById('sortFilter').addEventListener('change', loadProducts);
-    document.getElementById('priceFilter').addEventListener('change', loadProducts);
     document.getElementById('ratingFilter').addEventListener('change', loadProducts);
+    document.getElementById('priceMin').addEventListener('keydown', function(e) { if (e.key === 'Enter') loadProducts(); });
+    document.getElementById('priceMax').addEventListener('keydown', function(e) { if (e.key === 'Enter') loadProducts(); });
     loadCategories();
     loadProducts();
     loadCartCount();
