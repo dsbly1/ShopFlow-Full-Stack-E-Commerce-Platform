@@ -30,6 +30,11 @@
     .divider { display:flex; align-items:center; gap:.75rem; margin:1.1rem 0; color:#94a3b8; font-size:.82rem; }
     .divider::before, .divider::after { content:''; flex:1; height:1px; background:#e2e8f0; }
   
+    @keyframes badgePop {
+      0%   { transform: scale(0); opacity: 0; }
+      60%  { transform: scale(1.3); }
+      100% { transform: scale(1); opacity: 1; }
+    }
     @media (max-width:480px) {
       .auth-box { margin:1.5rem auto; padding:1.25rem; border-radius:8px; }
     }
@@ -56,7 +61,7 @@
         <div style="width:1px;height:24px;background:#e5e7eb;"></div>
         <button onclick="window.location.href='../index.html'" style="position:relative;background:none;border:none;cursor:pointer;color:#6b7280;padding:.4rem;border-radius:8px;display:flex;align-items:center;">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span id="cart-count" style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;border:2px solid #fff;padding:0 3px;">0</span>
+          <span id="cart-count" style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;border:2px solid #fff;padding:0 3px;box-shadow:0 2px 6px rgba(239,68,68,.5);">0</span>
         </button>
       </div>
     </div>
