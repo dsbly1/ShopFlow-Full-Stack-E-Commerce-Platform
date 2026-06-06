@@ -130,7 +130,7 @@
     <div style="background:#fff;border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);text-align:center;">
       <div style="font-size:2.5rem;margin-bottom:.75rem;">&#128722;</div>
       <h2 style="font-size:1.25rem;font-weight:700;color:#1e293b;margin-bottom:.5rem;">Add to Cart</h2>
-      <p style="font-size:.9rem;color:#64748b;margin-bottom:1.5rem;">Sign in for the full experience, or continue as a guest.</p>
+      <p style="font-size:.9rem;color:#64748b;margin-bottom:1.5rem;">Item added to your cart! Sign in to save your cart and checkout, or continue as a guest.</p>
       <div style="display:flex;flex-direction:column;gap:.75rem;">
         <button onclick="cartModalLogin()" style="padding:.8rem;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;">Login to Your Account</button>
         <button onclick="cartModalRegister()" style="padding:.8rem;background:#f8fafc;color:#1e293b;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;">Create an Account</button>
@@ -338,6 +338,17 @@
 
     function openCartModal(productId) {
       _pendingProductId = productId;
+      // Add to guest cart immediately
+      var cart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+      var existing = cart.find(function(i) { return i.id === productId; });
+      if (existing) { existing.quantity = (existing.quantity || 1) + 1; }
+      else { cart.push({ id: productId, quantity: 1 }); }
+      localStorage.setItem('guest_cart', JSON.stringify(cart));
+      // Update badge right away
+      var total = cart.reduce(function(s, i) { return s + (i.quantity || 1); }, 0);
+      var badge = document.getElementById('cart-count') || document.getElementById('cartCount');
+      if (badge) { badge.textContent = total; badge.style.display = 'flex'; }
+      // Show modal
       var modal = document.getElementById('cart-auth-modal');
       modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
@@ -357,16 +368,6 @@
     }
     async function cartModalGuest() {
       closeCartModal();
-      if (!_pendingProductId) return;
-      var cart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
-      var existing = cart.find(function(i) { return i.id === _pendingProductId; });
-      if (existing) { existing.quantity = (existing.quantity || 1) + 1; }
-      else { cart.push({ id: _pendingProductId, quantity: 1 }); }
-      localStorage.setItem('guest_cart', JSON.stringify(cart));
-      // Update badge
-      var total = cart.reduce(function(s, i) { return s + (i.quantity || 1); }, 0);
-      var badge = document.getElementById('cart-count') || document.getElementById('cartCount');
-      if (badge) { badge.textContent = total; badge.style.display = 'flex'; }
       showGuestCartToast();
     }
     function showGuestCartToast() {
