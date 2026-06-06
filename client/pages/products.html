@@ -47,12 +47,7 @@
         <span style="display:block;width:22px;height:2px;background:#111827;border-radius:2px;"></span>
       </button>
       <a href="../index.html" style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:#2563eb;text-decoration:none;letter-spacing:-.5px;white-space:nowrap;">ShopFlow</a>
-      <div style="flex:1;max-width:480px;display:flex;align-items:center;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;overflow:hidden;">
-        <input type="text" id="nav-search-input" placeholder="Search products..." style="flex:1;min-width:0;border:none;background:#f9fafb;padding:.55rem .75rem;font-size:.9rem;outline:none;width:100%;color:#111827;"/>
-        <button onclick="handleNavSearch()" style="background:#2563eb;border:none;cursor:pointer;padding:.55rem .9rem;color:#fff;display:flex;align-items:center;">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </button>
-      </div>
+
       <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto;">
         <div style="width:1px;height:24px;background:#e5e7eb;"></div>
         <button onclick="window.location.href='cart.html'" style="position:relative;background:none;border:none;cursor:pointer;color:#6b7280;padding:.4rem;border-radius:8px;display:flex;align-items:center;">
@@ -110,6 +105,19 @@
       <option value="price_desc">Price: High to Low</option>
       <option value="name">Name A-Z</option>
     </select>
+    <select id="priceFilter">
+      <option value="">All Prices</option>
+      <option value="0-50">Under $50</option>
+      <option value="50-200">$50 - $200</option>
+      <option value="200-500">$200 - $500</option>
+      <option value="500-1000">$500 - $1,000</option>
+      <option value="1000-99999">Over $1,000</option>
+    </select>
+    <select id="ratingFilter">
+      <option value="">All Ratings</option>
+      <option value="4">4+ Stars</option>
+      <option value="3">3+ Stars</option>
+    </select>
   </div>
 
   <!-- PRODUCT GRID -->
@@ -139,13 +147,11 @@
     }
 
     function handleNavSearch() {
-      var q = document.getElementById('nav-search-input').value.trim();
+      var navInput = document.getElementById('nav-search-input');
+      if (!navInput) return;
+      var q = navInput.value.trim();
       if (q) { document.getElementById('searchInput').value = q; loadProducts(); }
     }
-
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') handleNavSearch();
-    });
     document.getElementById('searchInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') loadProducts();
     });
@@ -171,8 +177,22 @@
       else if (sort === 'price_desc') { q.set('sort', 'price'); q.set('order', 'desc'); }
       else { q.set('sort', sort); }
       if (cat) q.set('category', cat);
+      var priceRange = document.getElementById('priceFilter').value;
+      var minRating = document.getElementById('ratingFilter').value;
       var products = await api.get('/products?' + q.toString());
       var list = Array.isArray(products) ? products : [];
+      // Client-side price filter
+      var priceRange = document.getElementById('priceFilter').value;
+      if (priceRange) {
+        var parts = priceRange.split('-');
+        var min = parseFloat(parts[0]); var max = parseFloat(parts[1]);
+        list = list.filter(function(p) { var price = parseFloat(p.price); return price >= min && price <= max; });
+      }
+      // Client-side rating filter
+      var minRating = document.getElementById('ratingFilter').value;
+      if (minRating) {
+        list = list.filter(function(p) { return p.avg_rating && parseFloat(p.avg_rating) >= parseFloat(minRating); });
+      }
       var countEl = document.getElementById('productCount');
       if (countEl) countEl.textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' found';
       if (!list.length) {
@@ -248,6 +268,8 @@
 
     document.getElementById('categoryFilter').addEventListener('change', loadProducts);
     document.getElementById('sortFilter').addEventListener('change', loadProducts);
+    document.getElementById('priceFilter').addEventListener('change', loadProducts);
+    document.getElementById('ratingFilter').addEventListener('change', loadProducts);
     loadCategories();
     loadProducts();
     loadCartCount();
