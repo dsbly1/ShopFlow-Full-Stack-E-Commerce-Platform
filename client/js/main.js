@@ -60,9 +60,22 @@ async function loadProducts() {
 }
 
 async function addToCart(productId) {
-  if (!getToken()) { window.location.href = 'pages/login.html'; return; }
+  if (!getToken()) {
+    if (typeof openCartModal === 'function') { openCartModal(productId); return; }
+    window.location.href = 'pages/login.html'; return;
+  }
   await api.post('/cart', { product_id: productId, quantity: 1 });
-  alert('Added to cart!');
+  updateCartCount();
+  var toast = document.getElementById('guest-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'guest-toast';
+    toast.style = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:.75rem 1.5rem;border-radius:10px;font-size:.875rem;font-weight:500;z-index:600;transition:opacity .3s;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = 'Added to cart!';
+  toast.style.opacity = '1'; toast.style.display = 'block';
+  setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.style.display='none'; }, 300); }, 2000);
 }
 
 document.getElementById('searchBtn')?.addEventListener('click', loadProducts);

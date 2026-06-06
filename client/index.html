@@ -113,6 +113,22 @@
     <p class="loading">Loading products…</p>
   </main>
 
+  
+  <!-- Auth/Guest Modal -->
+  <div id="cart-auth-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:2rem;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);text-align:center;">
+      <div style="font-size:2.5rem;margin-bottom:.75rem;">&#128722;</div>
+      <h2 style="font-size:1.25rem;font-weight:700;color:#1e293b;margin-bottom:.5rem;">Add to Cart</h2>
+      <p style="font-size:.9rem;color:#64748b;margin-bottom:1.5rem;">Sign in for the full experience, or continue as a guest.</p>
+      <div style="display:flex;flex-direction:column;gap:.75rem;">
+        <button onclick="cartModalLogin()" style="padding:.8rem;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;">Login to Your Account</button>
+        <button onclick="cartModalRegister()" style="padding:.8rem;background:#f8fafc;color:#1e293b;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;">Create an Account</button>
+        <button onclick="cartModalGuest()" style="padding:.8rem;background:transparent;color:#64748b;border:none;border-radius:10px;font-size:.9rem;cursor:pointer;text-decoration:underline;">Continue as Guest</button>
+      </div>
+      <button onclick="closeCartModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#94a3b8;">&#10005;</button>
+    </div>
+  </div>
+
   <footer><p>&copy; 2026 ShopFlow. Built with Node.js + PostgreSQL.</p></footer>
 
   <script src="js/api.js"></script>
@@ -149,6 +165,57 @@
       localStorage.removeItem('sf_token');
       localStorage.removeItem('sf_user');
       window.location.href = '/index.html';
+    });
+  </script>
+
+  <script>
+    var _pendingProductId = null;
+
+    function openCartModal(productId) {
+      _pendingProductId = productId;
+      var modal = document.getElementById('cart-auth-modal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeCartModal() {
+      document.getElementById('cart-auth-modal').style.display = 'none';
+      document.body.style.overflow = '';
+      _pendingProductId = null;
+    }
+    function cartModalLogin() {
+      if (_pendingProductId) sessionStorage.setItem('pendingCartProduct', _pendingProductId);
+      window.location.href = 'pages/login.html';
+    }
+    function cartModalRegister() {
+      if (_pendingProductId) sessionStorage.setItem('pendingCartProduct', _pendingProductId);
+      window.location.href = 'pages/register.html';
+    }
+    async function cartModalGuest() {
+      closeCartModal();
+      if (!_pendingProductId) return;
+      var cart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+      var existing = cart.find(function(i) { return i.id === _pendingProductId; });
+      if (existing) { existing.quantity = (existing.quantity || 1) + 1; }
+      else { cart.push({ id: _pendingProductId, quantity: 1 }); }
+      localStorage.setItem('guest_cart', JSON.stringify(cart));
+      showGuestCartToast();
+    }
+    function showGuestCartToast() {
+      var toast = document.getElementById('guest-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'guest-toast';
+        toast.style = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:.75rem 1.5rem;border-radius:10px;font-size:.875rem;font-weight:500;z-index:600;transition:opacity .3s;';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = 'Added to guest cart! Sign in to checkout.';
+      toast.style.opacity = '1';
+      toast.style.display = 'block';
+      setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.style.display = 'none'; }, 300); }, 2500);
+    }
+    // Close modal on backdrop click
+    document.getElementById('cart-auth-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeCartModal();
     });
   </script>
 </body>
