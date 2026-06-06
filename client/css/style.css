@@ -67,3 +67,17 @@ footer { text-align:center; padding:2rem; color:var(--clr-muted); font-size:.9re
 @media (max-width:375px) {
   .product-grid { grid-template-columns:1fr; }
 }
+
+/* ── Navbar overflow fix ── */
+@media (max-width:900px) {
+  .nav-search { max-width:220px; }
+  .nav-links { gap:.75rem; }
+}
+@media (max-width:768px) {
+  .navbar { flex-wrap:nowrap; overflow:hidden; }
+  .nav-search { display:none; }
+  .nav-links { gap:.5rem; }
+}
+@media (max-width:600px) {
+  .nav-links a:not(:last-child) { display:none; }
+}

@@ -37,6 +37,17 @@
     .filter-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
     .back-link { display:inline-flex; align-items:center; gap:.4rem; color:#2563eb; font-size:.9rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
   
+
+    @media (max-width:900px) {
+      #nav-search-input { width:120px; }
+    }
+    @media (max-width:768px) {
+      #nav-search-input, #nav-search-input + button { display:none; }
+      .navbar-top { gap:.5rem; }
+    }
+    @media (max-width:520px) {
+      [style*="max-width:480px"] { display:none !important; }
+    }
     @media (max-width:640px) {
       .page { padding:1rem .75rem 3rem; }
       .order-header { flex-direction:column; align-items:flex-start; }
