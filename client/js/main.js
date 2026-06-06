@@ -18,7 +18,21 @@ async function loadCategories() {
 }
 
 function renderProducts(products) {
-  if (!products.length) { grid.innerHTML = '<p class="loading">No products found.</p>'; return; }
+  if (!products.length) {
+    const q = document.getElementById('searchInput')?.value.trim();
+    grid.innerHTML = q
+      ? `<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;">
+           <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
+           <h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem;">No results for "<strong>${q}</strong>"</h2>
+           <p style="color:#64748b;font-size:.95rem;">Try a different keyword or browse all products.</p>
+           <button onclick="document.getElementById('searchInput').value='';loadProducts();"
+             style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">
+             Clear Search
+           </button>
+         </div>`
+      : '<p class="loading">No products found.</p>';
+    return;
+  }
   grid.innerHTML = products.map(p => `
     <div class="product-card">
       <img src="${p.image_url || PLACEHOLDER}"
