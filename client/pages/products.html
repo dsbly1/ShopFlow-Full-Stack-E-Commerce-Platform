@@ -119,11 +119,11 @@
 
   <footer><p>&copy; <span id="year"></span> ShopFlow. All rights reserved.</p></footer>
 
-  <script src="../js/api.js"></script>
+    <script src="../js/api.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-    const PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
-    const grid = document.getElementById('productGrid');
+    var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
+    var grid = document.getElementById('productGrid');
 
     function clearSearch() {
       document.getElementById('searchInput').value = '';
@@ -131,51 +131,75 @@
     }
 
     function toggleDrawer() {
-      const drawer = document.getElementById('nav-drawer');
-      const overlay = document.getElementById('drawer-overlay');
-      const open = drawer.style.transform === 'translateX(0px)' || drawer.style.transform === 'translateX(0)';
+      var drawer = document.getElementById('nav-drawer');
+      var overlay = document.getElementById('drawer-overlay');
+      var open = drawer.style.transform === 'translateX(0px)' || drawer.style.transform === 'translateX(0)';
       drawer.style.transform = open ? 'translateX(-100%)' : 'translateX(0)';
       overlay.style.display = open ? 'none' : 'block';
     }
 
     function handleNavSearch() {
-      const q = document.getElementById('nav-search-input').value.trim();
+      var q = document.getElementById('nav-search-input').value.trim();
       if (q) { document.getElementById('searchInput').value = q; loadProducts(); }
     }
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleNavSearch(); });
-    document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') loadProducts(); });
+
+    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleNavSearch();
+    });
+    document.getElementById('searchInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') loadProducts();
+    });
 
     async function loadCategories() {
-      const cats = await api.get('/categories');
+      var cats = await api.get('/categories');
       if (!Array.isArray(cats)) return;
-      const sel = document.getElementById('categoryFilter');
-      cats.filter(c => !c.parent_category_id).forEach(c => {
-        const opt = document.createElement('option');
+      var sel = document.getElementById('categoryFilter');
+      cats.filter(function(c) { return !c.parent_category_id; }).forEach(function(c) {
+        var opt = document.createElement('option');
         opt.value = c.id; opt.textContent = c.name; sel.appendChild(opt);
       });
     }
 
     async function loadProducts() {
       grid.innerHTML = '<p class="loading">Loading products...</p>';
-      const search = document.getElementById('searchInput').value.trim();
-      const sort = document.getElementById('sortFilter').value;
-      const cat = document.getElementById('categoryFilter').value;
-      const q = new URLSearchParams({ search });
-      if (sort === 'price_asc') { q.set('sort','price'); q.set('order','asc'); }
-      else if (sort === 'price_desc') { q.set('sort','price'); q.set('order','desc'); }
-      else q.set('sort', sort);
+      var search = document.getElementById('searchInput').value.trim();
+      var sort = document.getElementById('sortFilter').value;
+      var cat = document.getElementById('categoryFilter').value;
+      var q = new URLSearchParams();
+      q.set('search', search);
+      if (sort === 'price_asc') { q.set('sort', 'price'); q.set('order', 'asc'); }
+      else if (sort === 'price_desc') { q.set('sort', 'price'); q.set('order', 'desc'); }
+      else { q.set('sort', sort); }
       if (cat) q.set('category', cat);
-      const products = await api.get('/products?' + q);
-      const list = Array.isArray(products) ? products : [];
-      document.getElementById('productCount').textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' found';
+      var products = await api.get('/products?' + q.toString());
+      var list = Array.isArray(products) ? products : [];
+      var countEl = document.getElementById('productCount');
+      if (countEl) countEl.textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' found';
       if (!list.length) {
-        const noResultsHTML = search
-          ? '<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;"><div style="font-size:3rem;margin-bottom:1rem;">&#128269;</div><h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem;">No results for &ldquo;' + search + '&rdquo;</h2><p style="color:#64748b;">Try a different keyword or browse all categories.</p><button onclick="clearSearch()" style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Clear Search</button></div>'
-          : '<p class=\"loading\">No products found.</p>';
-        grid.innerHTML = noResultsHTML;
+        if (search) {
+          grid.innerHTML = '<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">&#128269;</div><h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem">No results for ' + search + '</h2><p style="color:#64748b">Try a different keyword or browse all categories.</p><button onclick="clearSearch()" style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Clear Search</button></div>';
+        } else {
+          grid.innerHTML = '<p class="loading">No products found.</p>';
+        }
         return;
       }
-      grid.innerHTML = list.map(p => '<div class="product-card"><img src="' + (p.image_url || PLACEHOLDER) + '" onerror="this.src='' + PLACEHOLDER + ''" alt="' + p.name + '" loading="lazy" /><div class="card-body"><h3>' + p.name + '</h3><div class="card-price">$' + parseFloat(p.price).toFixed(2) + '</div><div class="card-rating">&#11088; ' + (p.avg_rating || 'No reviews') + ' (' + (p.review_count || 0) + ')</div><button class="btn-primary" onclick="addToCart(' + p.id + ')">Add to Cart</button></div></div>').join('');
+      var html_out = '';
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i];
+        var img = p.image_url || PLACEHOLDER;
+        var price = parseFloat(p.price).toFixed(2);
+        var rating = p.avg_rating || 'No reviews';
+        var reviews = p.review_count || 0;
+        html_out += '<div class="product-card">';
+        html_out += '<img src="' + img + '" onerror="this.src=' + "'" + PLACEHOLDER + "'" + '" alt="' + p.name + '" loading="lazy" />';
+        html_out += '<div class="card-body">';
+        html_out += '<h3>' + p.name + '</h3>';
+        html_out += '<div class="card-price">$' + price + '</div>';
+        html_out += '<div class="card-rating">&#11088; ' + rating + ' (' + reviews + ')</div>';
+        html_out += '<button class="btn-primary" onclick="addToCart(' + p.id + ')">Add to Cart</button>';
+        html_out += '</div></div>';
+      }
+      grid.innerHTML = html_out;
     }
 
     async function addToCart(productId) {
@@ -187,35 +211,38 @@
 
     async function loadCartCount() {
       try {
-        const sfToken = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+        var sfToken = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
         if (!sfToken) return;
-        const res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', { headers: { 'Authorization': 'Bearer ' + sfToken } });
+        var res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', { headers: { 'Authorization': 'Bearer ' + sfToken } });
         if (!res.ok) return;
-        const data = await res.json();
-        const items = Array.isArray(data) ? data : (data.items || data.cart || []);
-        const total = items.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0);
-        const badge = document.getElementById('cart-count');
+        var data = await res.json();
+        var items = Array.isArray(data) ? data : (data.items || data.cart || []);
+        var total = items.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0);
+        var badge = document.getElementById('cart-count');
         if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
       } catch(e) {}
     }
 
     (function() {
-      const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
-      const btn = document.getElementById('nav-auth-btn');
-      const drawerLogin = document.getElementById('drawer-login-link');
-      const drawerCta = document.getElementById('drawer-cta-btn');
+      var token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+      var btn = document.getElementById('nav-auth-btn');
+      var drawerLogin = document.getElementById('drawer-login-link');
+      var drawerCta = document.getElementById('drawer-cta-btn');
       if (token) {
         btn.textContent = 'Logout'; btn.href = '#';
         btn.style.background = 'transparent'; btn.style.color = '#dc2626'; btn.style.border = '2px solid #dc2626';
         btn.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; });
         if (drawerLogin) drawerLogin.style.display = 'none';
-        if (drawerCta) { drawerCta.textContent = 'Logout'; drawerCta.href = '#'; drawerCta.style.background = '#dc2626'; drawerCta.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; }); }
+        if (drawerCta) {
+          drawerCta.textContent = 'Logout'; drawerCta.href = '#'; drawerCta.style.background = '#dc2626';
+          drawerCta.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; });
+        }
       }
     })();
 
     (function() {
-      const params = new URLSearchParams(window.location.search);
-      const q = params.get('search');
+      var params = new URLSearchParams(window.location.search);
+      var q = params.get('search');
       if (q) document.getElementById('searchInput').value = q;
     })();
 
