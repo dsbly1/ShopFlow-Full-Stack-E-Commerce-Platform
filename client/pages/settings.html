@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background:#f1f5f9; }
+    .page { max-width:780px; margin:0 auto; padding:2rem 1.5rem 4rem; width:100%; }
+    .page-header { text-align:center; margin-bottom:2rem; }
+    .page-header h1 { font-size:clamp(1.3rem,4vw,1.8rem); margin-bottom:.25rem; }
+    .page-header p { color:#64748b; font-size:.9rem; }
+    .settings-card { background:#fff; border-radius:14px; box-shadow:0 1px 6px rgba(0,0,0,.07); margin-bottom:1.25rem; overflow:hidden; }
+    .settings-card-header { padding:1.1rem 1.5rem; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; gap:.75rem; }
+    .settings-card-header .icon { font-size:1.2rem; }
+    .settings-card-header h2 { font-size:1rem; font-weight:700; margin:0; }
+    .settings-row { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; border-bottom:1px solid #f8fafc; gap:1rem; }
+    .settings-row:last-child { border-bottom:none; }
+    .settings-row-info { flex:1; }
+    .settings-row-info strong { display:block; font-size:.9rem; color:#1e293b; }
+    .settings-row-info span { font-size:.8rem; color:#64748b; }
+    /* Toggle */
+    .toggle { position:relative; width:44px; height:24px; flex-shrink:0; }
+    .toggle input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; inset:0; background:#cbd5e1; border-radius:999px; cursor:pointer; transition:.3s; }
+    .toggle-slider::before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.3s; }
+    .toggle input:checked + .toggle-slider { background:#2563eb; }
+    .toggle input:checked + .toggle-slider::before { transform:translateX(20px); }
+    /* Select */
+    .settings-select { padding:.4rem .75rem; border:1px solid #e2e8f0; border-radius:7px; font-size:.875rem; background:#fff; color:#1e293b; cursor:pointer; outline:none; }
+    /* Danger */
+    .btn-danger { padding:.5rem 1.1rem; background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; border-radius:8px; font-size:.85rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn-danger:hover { background:#fecaca; }
+    .btn-save { padding:.5rem 1.1rem; background:#2563eb; color:#fff; border:none; border-radius:8px; font-size:.85rem; font-weight:600; cursor:pointer; transition:background .2s; }
+    .btn-save:hover { background:#1d4ed8; }
+    .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:#1e293b; color:#fff; padding:.75rem 1.5rem; border-radius:10px; font-size:.875rem; font-weight:500; opacity:0; transition:opacity .3s; pointer-events:none; z-index:999; }
+    .toast.show { opacity:1; }
+    @media (max-width:480px) {
+      .settings-row { flex-direction:column; align-items:flex-start; gap:.75rem; }
+      .page { padding:1rem .75rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div style="position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e5e7eb;box-shadow:0 1px 8px rgba(0,0,0,.06);">
+    <div style="display:flex;align-items:center;gap:1rem;padding:0 1.5rem;height:64px;max-width:1200px;margin:0 auto;width:100%;">
+      <a href="../index.html" style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:#2563eb;text-decoration:none;letter-spacing:-.5px;">ShopFlow</a>
+      <div style="flex:1;max-width:480px;display:flex;align-items:center;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+        <input type="text" id="nav-search-input" placeholder="Search products…" style="flex:1;min-width:0;border:none;background:#f9fafb;padding:.55rem .75rem;font-size:.9rem;outline:none;width:100%;color:#111827;"/>
+        <button onclick="handleSearch()" style="background:#2563eb;border:none;cursor:pointer;padding:.55rem .9rem;color:#fff;display:flex;align-items:center;">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto;">
+        <a href="dashboard.html" style="color:#6b7280;font-size:.875rem;font-weight:500;text-decoration:none;padding:.4rem .6rem;border-radius:8px;">Dashboard</a>
+        <button onclick="window.location.href='../index.html'" style="position:relative;background:none;border:none;cursor:pointer;color:#6b7280;padding:.4rem;border-radius:8px;display:flex;align-items:center;">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </button>
+        <a id="nav-auth-btn" href="register.html" style="background:#2563eb;color:#fff;padding:.5rem 1.2rem;border-radius:8px;font-size:.875rem;font-weight:600;text-decoration:none;white-space:nowrap;">Get Started</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="page-header">
+      <h1>Settings</h1>
+      <p>Manage your account preferences</p>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-card">
+      <div class="settings-card-header"><span class="icon">🔔</span><h2>Notifications</h2></div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Email notifications</strong><span>Receive order updates and promotions by email</span></div>
+        <label class="toggle"><input type="checkbox" id="emailNotif" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Order status updates</strong><span>Get notified when your order ships or is delivered</span></div>
+        <label class="toggle"><input type="checkbox" id="orderNotif" checked /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Promotional emails</strong><span>Deals, discounts, and new arrivals</span></div>
+        <label class="toggle"><input type="checkbox" id="promoNotif" /><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="settings-card">
+      <div class="settings-card-header"><span class="icon">🎨</span><h2>Appearance</h2></div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Theme</strong><span>Choose your preferred display mode</span></div>
+        <select class="settings-select" id="themeSelect">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="system">System default</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Language</strong><span>Select your preferred language</span></div>
+        <select class="settings-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Privacy -->
+    <div class="settings-card">
+      <div class="settings-card-header"><span class="icon">🔒</span><h2>Privacy</h2></div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Profile visibility</strong><span>Allow other users to view your profile</span></div>
+        <label class="toggle"><input type="checkbox" id="profileVisible" /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Activity status</strong><span>Show when you were last active</span></div>
+        <label class="toggle"><input type="checkbox" id="activityStatus" /><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="settings-card">
+      <div class="settings-card-header"><span class="icon">👤</span><h2>Account</h2></div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Change password</strong><span>Update your account password</span></div>
+        <button class="btn-save" onclick="window.location.href='profile.html'">Go to Profile</button>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Two-factor authentication</strong><span>Add an extra layer of security</span></div>
+        <label class="toggle"><input type="checkbox" id="twoFactor" /><span class="toggle-slider"></span></label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-row-info"><strong>Delete account</strong><span>Permanently remove your account and data</span></div>
+        <button class="btn-danger" onclick="confirmDelete()">Delete Account</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;">
+      <button class="btn-save" style="padding:.75rem 2.5rem;font-size:1rem;" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function handleSearch() {
+      const q = document.getElementById('nav-search-input').value.trim();
+      if (q) window.location.href = '../index.html?search=' + encodeURIComponent(q);
+    }
+    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleSearch();
+    });
+
+    // Auth-aware navbar
+    (function() {
+      const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+      const btn = document.getElementById('nav-auth-btn');
+      if (token) {
+        btn.textContent = 'Logout';
+        btn.href = '#';
+        btn.style.background = 'transparent';
+        btn.style.color = '#dc2626';
+        btn.style.border = '2px solid #dc2626';
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user');
+          window.location.href = 'login.html';
+        });
+      }
+    })();
+
+    // Load saved settings
+    const saved = JSON.parse(localStorage.getItem('sf_settings') || '{}');
+    if (saved.emailNotif !== undefined) document.getElementById('emailNotif').checked = saved.emailNotif;
+    if (saved.orderNotif !== undefined) document.getElementById('orderNotif').checked = saved.orderNotif;
+    if (saved.promoNotif !== undefined) document.getElementById('promoNotif').checked = saved.promoNotif;
+    if (saved.profileVisible !== undefined) document.getElementById('profileVisible').checked = saved.profileVisible;
+    if (saved.activityStatus !== undefined) document.getElementById('activityStatus').checked = saved.activityStatus;
+    if (saved.twoFactor !== undefined) document.getElementById('twoFactor').checked = saved.twoFactor;
+    if (saved.theme) document.getElementById('themeSelect').value = saved.theme;
+    if (saved.lang) document.getElementById('langSelect').value = saved.lang;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function saveSettings() {
+      const settings = {
+        emailNotif: document.getElementById('emailNotif').checked,
+        orderNotif: document.getElementById('orderNotif').checked,
+        promoNotif: document.getElementById('promoNotif').checked,
+        profileVisible: document.getElementById('profileVisible').checked,
+        activityStatus: document.getElementById('activityStatus').checked,
+        twoFactor: document.getElementById('twoFactor').checked,
+        theme: document.getElementById('themeSelect').value,
+        lang: document.getElementById('langSelect').value,
+      };
+      localStorage.setItem('sf_settings', JSON.stringify(settings));
+      showToast('Settings saved!');
+    }
+
+    function confirmDelete() {
+      if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+        localStorage.removeItem('sf_token');
+        localStorage.removeItem('sf_user');
+        window.location.href = 'register.html';
+      }
+    }
+
+    document.getElementById('year') && (document.getElementById('year').textContent = new Date().getFullYear());
+  </script>
+</body>
+</html>
