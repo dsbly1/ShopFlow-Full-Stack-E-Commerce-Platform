@@ -799,6 +799,15 @@
         }
       } catch(e) { console.error('Cart error:', e); }
     })();
+  
+    // Show My Products link for sellers
+    (function() {
+      var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+      if (user.isSeller || user.role === 'seller') {
+        var link = document.getElementById('seller-drawer-link');
+        if (link) link.style.display = 'flex';
+      }
+    })();
   </script>
 </body>
 </html>

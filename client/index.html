@@ -65,6 +65,7 @@
       <hr />
       <a href="pages/about.html"><span class="icon"></span> About Us</a>
       <a href="pages/settings.html"><span class="icon"></span> Settings</a>
+      <a href="pages/seller-dashboard.html" id="seller-drawer-link" style="display:none;align-items:center;gap:.75rem;padding:.8rem 1rem;border-radius:10px;color:#111827;text-decoration:none;font-weight:500;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>My Products</a>
     </nav>
     <div class="drawer-footer">
       <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -227,6 +228,15 @@
     document.getElementById('cart-auth-modal').addEventListener('click', function(e) {
       if (e.target === this) closeCartModal();
     });
+  
+    // Show My Products link for sellers
+    (function() {
+      var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
+      if (user.isSeller || user.role === 'seller') {
+        var link = document.getElementById('seller-drawer-link');
+        if (link) link.style.display = 'flex';
+      }
+    })();
   </script>
 </body>
 </html>
