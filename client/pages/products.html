@@ -125,6 +125,11 @@
     const PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
     const grid = document.getElementById('productGrid');
 
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      loadProducts();
+    }
+
     function toggleDrawer() {
       const drawer = document.getElementById('nav-drawer');
       const overlay = document.getElementById('drawer-overlay');
@@ -164,9 +169,10 @@
       const list = Array.isArray(products) ? products : [];
       document.getElementById('productCount').textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' found';
       if (!list.length) {
-        grid.innerHTML = search
-          ? '<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;"><div style="font-size:3rem;margin-bottom:1rem;">&#128269;</div><h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem;">No results for &quot;' + search + '&quot;</h2><p style="color:#64748b;">Try a different keyword or browse all categories.</p><button onclick="document.getElementById('searchInput').value='';loadProducts();" style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Clear Search</button></div>'
-          : '<p class="loading">No products found.</p>';
+        const noResultsHTML = search
+          ? '<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;"><div style="font-size:3rem;margin-bottom:1rem;">&#128269;</div><h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem;">No results for &ldquo;' + search + '&rdquo;</h2><p style="color:#64748b;">Try a different keyword or browse all categories.</p><button onclick="clearSearch()" style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Clear Search</button></div>'
+          : '<p class=\"loading\">No products found.</p>';
+        grid.innerHTML = noResultsHTML;
         return;
       }
       grid.innerHTML = list.map(p => '<div class="product-card"><img src="' + (p.image_url || PLACEHOLDER) + '" onerror="this.src='' + PLACEHOLDER + ''" alt="' + p.name + '" loading="lazy" /><div class="card-body"><h3>' + p.name + '</h3><div class="card-price">$' + parseFloat(p.price).toFixed(2) + '</div><div class="card-rating">&#11088; ' + (p.avg_rating || 'No reviews') + ' (' + (p.review_count || 0) + ')</div><button class="btn-primary" onclick="addToCart(' + p.id + ')">Add to Cart</button></div></div>').join('');
