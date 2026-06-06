@@ -348,6 +348,10 @@
       var total = cart.reduce(function(s, i) { return s + (i.quantity || 1); }, 0);
       var badge = document.getElementById('cart-count') || document.getElementById('cartCount');
       if (badge) { badge.textContent = total; badge.style.display = 'flex'; }
+      // Skip modal if user already chose guest this session
+      if (sessionStorage.getItem('guest_mode') === 'true') {
+        showGuestCartToast(); return;
+      }
       // Show modal
       var modal = document.getElementById('cart-auth-modal');
       modal.style.display = 'flex';
@@ -367,6 +371,7 @@
       window.location.href = 'register.html';
     }
     async function cartModalGuest() {
+      sessionStorage.setItem('guest_mode', 'true');
       closeCartModal();
       showGuestCartToast();
     }
