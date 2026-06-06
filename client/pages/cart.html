@@ -33,7 +33,6 @@
   <script src="../js/api.js"></script>
   <script>
     async function loadCart() {
-      if (!getToken()) { window.location.href='login.html'; return; }
       const el = document.getElementById('cartItems');
 
       // Guest cart support
