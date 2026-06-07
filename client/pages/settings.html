@@ -279,7 +279,7 @@
         const items = Array.isArray(data) ? data : (data.items || data.cart || []);
         const total = items.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0);
         const badge = document.getElementById('cart-count');
-        if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+        var guestCount = JSON.parse(localStorage.getItem('guest_cart') || '[]').reduce(function(s,i){return s+(i.quantity||1);},0); var finalTotal = total + guestCount; if (finalTotal > 0) { badge.textContent = finalTotal; badge.style.display = 'flex'; }
       } catch(e) {}
     })();
   
