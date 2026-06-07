@@ -162,7 +162,7 @@
       const u = JSON.parse(stored);
       // Navbar
       authLink.textContent = u.name.split(' ')[0];
-      authLink.href = '#';
+      authLink.href = 'pages/dashboard.html'; authLink.style.cursor = 'pointer';
       // Drawer user info
       document.getElementById('drawerUser').style.display = 'block';
       document.getElementById('drawerName').textContent  = u.name;
