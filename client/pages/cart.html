@@ -135,6 +135,11 @@
       document.getElementById('cartTotal').textContent = `Total: $${total.toFixed(2)}`;
       document.getElementById('checkoutBtn').style.display='block';
     }
+    function guestCheckout() {
+      sessionStorage.setItem('guest_mode', 'true');
+      alert('Guest checkout coming soon! Create an account to complete your purchase.');
+    }
+
     async function removeItem(id) {
       await api.delete(`/cart/${id}`);
       loadCart();
