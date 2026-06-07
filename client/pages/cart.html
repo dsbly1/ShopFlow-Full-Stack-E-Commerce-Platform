@@ -86,6 +86,7 @@
         const guestCart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
         if (!guestCart.length) {
           el.innerHTML = '<div style="text-align:center;padding:3rem 1rem;"><div style="font-size:3rem;margin-bottom:1rem;">&#128722;</div><p style="color:#64748b;margin-bottom:1rem;">Your guest cart is empty.</p><a href="../index.html" style="background:#2563eb;color:#fff;padding:.7rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:600;">Browse Products</a></div>';
+          var ct = document.getElementById('cartTotal'); if (ct) ct.innerHTML = '';
           return;
         }
         // Fetch product details for each guest cart item
@@ -161,10 +162,10 @@
       overlay.style.display = open ? 'none' : 'block';
     }
     function handleSearch() {
-      var q = document.getElementById('nav-search-input').value.trim();
+      var _si = document.getElementById('nav-search-input') || document.getElementById('product-search'); var q = _si ? _si.value.trim() : '';
       if (q) window.location.href = 'products.html?search=' + encodeURIComponent(q);
     }
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
+    var _ski = document.getElementById('nav-search-input') || document.getElementById('product-search'); if (_ski) _ski.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') handleSearch();
     });
     // Auth-aware navbar
