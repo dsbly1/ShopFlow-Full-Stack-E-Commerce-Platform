@@ -311,7 +311,6 @@
           products = [];
         }
         allProducts = products;
-        if (products.length === 0) {
         renderProductList(products, '');
       } catch(e) {
         container.innerHTML = '<p style="color:#ef4444;text-align:center;padding:2rem;">Failed to load products. Please try again.</p>';
