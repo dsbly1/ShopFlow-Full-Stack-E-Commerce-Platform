@@ -98,6 +98,14 @@
   </nav>
 
   <!-- PAGE -->
+  <!-- SEARCH BAR -->
+  <div style="background:#1d4ed8;padding:.5rem 1rem;">
+    <div style="display:flex;align-items:center;gap:.5rem;max-width:900px;margin:0 auto;">
+      <input type="text" id="product-search" placeholder="Search your products..." style="flex:1;padding:.5rem .85rem;border-radius:8px;border:none;font-size:.9rem;outline:none;background:#fff;color:#1e293b;" oninput="filterProducts(this.value)"/>
+      <button onclick="filterProducts(document.getElementById('product-search').value)" style="padding:.5rem 1.1rem;background:#f59e0b;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;white-space:nowrap;">Search</button>
+    </div>
+  </div>
+
   <div class="page">
     <div class="page-header">
       <h1 id="page-title">My Products</h1>
@@ -237,38 +245,64 @@
       await loadProducts();
     }
 
-    async function loadProducts() {
+    var allProducts = [];
+
+    function filterProducts(query) {
+      var q = (query || '').toLowerCase().trim();
+      var filtered = q ? allProducts.filter(function(p) {
+        return p.name.toLowerCase().includes(q) ||
+               (p.description && p.description.toLowerCase().includes(q));
+      }) : allProducts;
+      renderProductList(filtered, q);
+    }
+
+    function renderProductList(products, query) {
       var container = document.getElementById('products-container');
-      container.innerHTML = '<p class="loading">Loading your products...</p>';
-      try {
-        var products = await api.get('/products/my');
-        if (!Array.isArray(products) || products.length === 0) {
-          // Try fallback
-          products = [];
-        }
-        if (products.length === 0) {
+      if (products.length === 0) {
+        if (query) {
+          container.innerHTML = '<div class="empty-state">' +
+            '<div class="icon">&#128269;</div>' +
+            '<h2>No products found</h2>' +
+            '<p>No products match "<strong>' + query + '</strong>". Try a different keyword.</p>' +
+            '<button class="btn-become" onclick="document.getElementById('product-search').value='';filterProducts('')">Clear Search</button>' +
+            '</div>';
+        } else {
           container.innerHTML = '<div class="empty-state">' +
             '<div class="icon">&#128230;</div>' +
             '<h2>No products in your inventory</h2>' +
             '<p>Want to add a product? Get started and list your first item on ShopFlow.</p>' +
             '<button class="btn-become" onclick="openModal()" style="margin-top:.5rem;">+ Add Product</button>' +
             '</div>';
-          return;
         }
-        var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
-        container.innerHTML = '<div class="product-grid">' +
-          products.map(function(p) {
-            return '<div class="product-card-seller">' +
-              '<img src="' + (p.image_url || PLACEHOLDER) + '" alt="' + p.name + '" />' +
-              '<div class="card-body">' +
-              '<h3>' + p.name + '</h3>' +
-              '<div class="card-price">$' + parseFloat(p.price).toFixed(2) + '</div>' +
-              '<div class="card-stock">Stock: ' + (p.stock_quantity || 0) + '</div>' +
-              '<div class="card-actions">' +
-              '<button class="btn-edit" onclick="editProduct(' + JSON.stringify(p).replace(/"/g, '&quot;') + ')">Edit</button>' +
-              '<button class="btn-delete" onclick="deleteProduct(' + p.id + ')">Delete</button>' +
-              '</div></div></div>';
-          }).join('') + '</div>';
+        return;
+      }
+      var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
+      container.innerHTML = '<div class="product-grid">' +
+        products.map(function(p) {
+          return '<div class="product-card-seller">' +
+            '<img src="' + (p.image_url || PLACEHOLDER) + '" alt="' + p.name + '" />' +
+            '<div class="card-body">' +
+            '<h3>' + p.name + '</h3>' +
+            '<div class="card-price">$' + parseFloat(p.price).toFixed(2) + '</div>' +
+            '<div class="card-stock">Stock: ' + (p.stock_quantity || 0) + '</div>' +
+            '<div class="card-actions">' +
+            '<button class="btn-edit" onclick="editProduct(' + JSON.stringify(p).replace(/"/g, '&quot;') + ')">Edit</button>' +
+            '<button class="btn-delete" onclick="deleteProduct(' + p.id + ')">Delete</button>' +
+            '</div></div></div>';
+        }).join('') + '</div>';
+    }
+
+    async function loadProducts() {
+      var container = document.getElementById('products-container');
+      container.innerHTML = '<p class="loading">Loading your products...</p>';
+      try {
+        var products = await api.get('/products/my');
+        if (!Array.isArray(products) || products.length === 0) {
+          products = [];
+        }
+        allProducts = products;
+        if (products.length === 0) {
+        renderProductList(products, '');
       } catch(e) {
         container.innerHTML = '<p style="color:#ef4444;text-align:center;padding:2rem;">Failed to load products. Please try again.</p>';
       }
