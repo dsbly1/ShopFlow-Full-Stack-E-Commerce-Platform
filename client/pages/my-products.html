@@ -164,10 +164,10 @@
       overlay.style.display = open ? 'none' : 'block';
     }
     function handleSearch() {
-      var q = document.getElementById('nav-search-input').value.trim();
+      var q = document.getElementById('product-search').value.trim();
       if (q) window.location.href = 'products.html?search=' + encodeURIComponent(q);
     }
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSearch(); });
+    document.getElementById('product-search').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSearch(); });
 
     function showToast(msg) {
       var t = document.getElementById('toast');
