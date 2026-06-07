@@ -184,9 +184,9 @@
       if (token) {
         btn.textContent = 'Logout'; btn.href = '#';
         btn.style.background = 'transparent'; btn.style.color = '#dc2626'; btn.style.border = '2px solid #dc2626';
-        btn.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; });
+        btn.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; }, { once: true });
         if (drawerLogin) drawerLogin.style.display = 'none';
-        if (drawerCta) { drawerCta.textContent = 'Logout'; drawerCta.href = '#'; drawerCta.style.background = '#dc2626'; drawerCta.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; }); }
+        if (drawerCta) { drawerCta.textContent = 'Logout'; drawerCta.href = '#'; drawerCta.style.background = '#dc2626'; drawerCta.addEventListener('click', function(e) { e.preventDefault(); localStorage.removeItem('sf_token'); localStorage.removeItem('sf_user'); window.location.href = 'login.html'; }, { once: true }); }
       } else {
         window.location.href = 'login.html';
       }
