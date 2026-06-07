@@ -187,7 +187,7 @@
       const q = document.getElementById('product-search').value.trim();
       if (q) window.location.href = '../index.html?search=' + encodeURIComponent(q);
     }
-    document.getElementById('product-search').addEventListener('keydown', function(e) {
+    var _ps = document.getElementById("product-search"); if (_ps) _ps.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') handleSearch();
     });
 
