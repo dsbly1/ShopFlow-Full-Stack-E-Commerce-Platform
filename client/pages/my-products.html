@@ -428,8 +428,11 @@
         name: name,
         description: document.getElementById('prod-desc').value.trim(),
         price: parseFloat(price),
-        stock_quantity: parseInt(document.getElementById('prod-stock').value) || 0,
-        image_url: document.getElementById('prod-image').value.trim(),
+        stock_qty: parseInt(document.getElementById('prod-stock').value) || 0,
+        image_url: (function() {
+          var v = document.getElementById('prod-image').value.trim();
+          return v.startsWith('data:') ? '' : v;
+        })(),
         category_id: document.getElementById('prod-category').value || null
       };
       try {
