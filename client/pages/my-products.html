@@ -353,6 +353,53 @@
       document.getElementById('product-modal').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
+
+    var _mediaFiles = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var input = document.getElementById('prod-media-input');
+      if (input) {
+        input.addEventListener('change', function() {
+          var files = Array.from(this.files);
+          _mediaFiles = _mediaFiles.concat(files);
+          var preview = document.getElementById('media-preview');
+          files.forEach(function(file) {
+            var idx = _mediaFiles.indexOf(file);
+            var item = document.createElement('div');
+            item.className = 'media-preview-item';
+            item.dataset.idx = idx;
+            var btn = document.createElement('button');
+            btn.className = 'remove-media';
+            btn.textContent = '✕';
+            btn.onclick = function(e) {
+              e.preventDefault();
+              _mediaFiles.splice(idx, 1);
+              item.remove();
+            };
+            if (file.type.startsWith('video/')) {
+              var vid = document.createElement('video');
+              vid.src = URL.createObjectURL(file);
+              vid.muted = true;
+              item.appendChild(vid);
+            } else {
+              var img = document.createElement('img');
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                img.src = e.target.result;
+                if (!document.getElementById('prod-image').value)
+                  document.getElementById('prod-image').value = e.target.result;
+              };
+              reader.readAsDataURL(file);
+              item.appendChild(img);
+            }
+            item.appendChild(btn);
+            preview.appendChild(item);
+          });
+          this.value = '';
+        });
+      }
+    });
+
     function closeModal() {
       document.getElementById('product-modal').classList.remove('open');
       _mediaFiles = [];
