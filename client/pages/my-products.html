@@ -142,12 +142,12 @@
       </div>
       <div class="form-group">
         <label>Media</label>
-        <div class="media-upload-area" onclick="document.getElementById('prod-media-input').click()">
-          <input type="file" id="prod-media-input" accept="image/*,video/*" multiple onchange="handleMediaUpload(this)">
+        <label class="media-upload-area" for="prod-media-input" style="cursor:pointer;display:block;">
+          <input type="file" id="prod-media-input" accept="image/*,video/*" multiple style="display:none;">
           <div style="font-size:1.5rem;margin-bottom:.3rem;">📷</div>
           <div style="font-size:.85rem;font-weight:600;color:#2563eb;">Add Photos & Videos</div>
           <div style="font-size:.75rem;color:#94a3b8;margin-top:.2rem;">Click to upload or drag & drop</div>
-        </div>
+        </label>
         <div class="media-preview" id="media-preview"></div>
         <div style="margin-top:.5rem;">
           <input type="text" id="prod-image" placeholder="Or paste image URL (https://...)" style="width:100%;padding:.5rem .75rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;outline:none;font-family:inherit;box-sizing:border-box;" />
