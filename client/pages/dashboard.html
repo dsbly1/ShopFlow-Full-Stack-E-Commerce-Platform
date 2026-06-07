@@ -116,9 +116,12 @@
       <button class="side-menu-btn" id="menuBtn">☰</button>
       <a class="logo" href="../index.html">ShopFlow</a>
     </div>
-    <div class="nav-links">
-      <a href="cart.html" style="color:#fff;position:relative;display:inline-flex;align-items:center;gap:.3rem;">Cart<span id="cart-count" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;border:2px solid #1d4ed8;padding:0 3px;">0</span></a>
-      <a href="../index.html" id="authLink" style="color:#fff">Shop</a>
+    <div class="nav-links" style="display:flex;align-items:center;gap:.75rem;">
+      <a href="cart.html" style="color:#fff;position:relative;display:inline-flex;align-items:center;">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span id="cart-count" style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;border:2px solid #1d4ed8;padding:0 3px;">0</span>
+      </a>
+      <span id="authLink" style="color:#fff;font-size:.875rem;font-weight:600;"></span>
     </div>
   </nav>
 
@@ -301,7 +304,7 @@
     document.getElementById('welcomeEmail').textContent  = user.email;
     document.getElementById('avatarInitial').textContent = user.name.charAt(0).toUpperCase();
     document.getElementById('statSeller').textContent    = user.isSeller ? '✅ Active' : '—';
-    document.getElementById('authLink').textContent      = user.name.split(' ')[0];
+    var al = document.getElementById('authLink'); if(al) al.textContent = user.name.split(' ')[0];
 
     // Drawer
     const drawer  = document.getElementById('sideDrawer');
