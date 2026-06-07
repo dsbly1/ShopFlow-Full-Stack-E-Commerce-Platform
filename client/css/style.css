@@ -46,6 +46,13 @@ footer { text-align:center; padding:2rem; color:var(--clr-muted); font-size:.9re
 
 @media (max-width:768px) { .nav-search { display:none; } }
 @media (max-width:375px) { .product-grid { grid-template-columns:1fr; } }
+/* ── Mobile navbar fix ── */
+@media (max-width:600px) {
+  .navbar { flex-wrap:nowrap; padding:.6rem .75rem; gap:.5rem; overflow:hidden; }
+  .nav-search { display:none !important; }
+  .nav-links { gap:.5rem; }
+  .nav-links a { font-size:.85rem; }
+}
 
 /* ── Global Responsive ── */
 @media (max-width:768px) {
