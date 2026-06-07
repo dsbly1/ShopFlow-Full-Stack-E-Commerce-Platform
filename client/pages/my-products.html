@@ -258,38 +258,48 @@
 
     function renderProductList(products, query) {
       var container = document.getElementById('products-container');
+      var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
       if (products.length === 0) {
         if (query) {
-          container.innerHTML = '<div class="empty-state">' +
-            '<div class="icon">&#128269;</div>' +
-            '<h2>No products found</h2>' +
-            '<p>No products match "<strong>' + query + '</strong>". Try a different keyword.</p>' +
-            '<button class="btn-become" onclick="document.getElementById(&quot;product-search&quot;).value=&quot;&quot;;filterProducts(&quot;&quot;)">Clear Search</button>' +
-            '</div>';
+          container.innerHTML = [
+            '<div class="empty-state">',
+            '<div class="icon">&#128269;</div>',
+            '<h2>No products found</h2>',
+            '<p>No products match <strong>' + query + '</strong>. Try a different keyword.</p>',
+            '<button class="btn-become" onclick="clearProductSearch()">Clear Search</button>',
+            '</div>'
+          ].join('');
         } else {
-          container.innerHTML = '<div class="empty-state">' +
-            '<div class="icon">&#128230;</div>' +
-            '<h2>No products in your inventory</h2>' +
-            '<p>Want to add a product? Get started and list your first item on ShopFlow.</p>' +
-            '<button class="btn-become" onclick="openModal()" style="margin-top:.5rem;">+ Add Product</button>' +
-            '</div>';
+          container.innerHTML = [
+            '<div class="empty-state">',
+            '<div class="icon">&#128230;</div>',
+            '<h2>No products in your inventory</h2>',
+            '<p>Want to add a product? Get started and list your first item on ShopFlow.</p>',
+            '<button class="btn-become" onclick="openModal()" style="margin-top:.5rem;">+ Add Product</button>',
+            '</div>'
+          ].join('');
         }
         return;
       }
-      var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
-      container.innerHTML = '<div class="product-grid">' +
-        products.map(function(p) {
-          return '<div class="product-card-seller">' +
-            '<img src="' + (p.image_url || PLACEHOLDER) + '" alt="' + p.name + '" />' +
-            '<div class="card-body">' +
-            '<h3>' + p.name + '</h3>' +
-            '<div class="card-price">$' + parseFloat(p.price).toFixed(2) + '</div>' +
-            '<div class="card-stock">Stock: ' + (p.stock_quantity || 0) + '</div>' +
-            '<div class="card-actions">' +
-            '<button class="btn-edit" onclick="editProduct(' + JSON.stringify(p).replace(/"/g, '&quot;') + ')">Edit</button>' +
-            '<button class="btn-delete" onclick="deleteProduct(' + p.id + ')">Delete</button>' +
-            '</div></div></div>';
-        }).join('') + '</div>';
+      var rows = products.map(function(p) {
+        var img = p.image_url || PLACEHOLDER;
+        var price = parseFloat(p.price).toFixed(2);
+        var stock = p.stock_quantity || 0;
+        var pJson = JSON.stringify(p).replace(/"/g, '&quot;');
+        return [
+          '<div class="product-card-seller">',
+          '<img src="' + img + '" alt="' + p.name + '" />',
+          '<div class="card-body">',
+          '<h3>' + p.name + '</h3>',
+          '<div class="card-price">$' + price + '</div>',
+          '<div class="card-stock">Stock: ' + stock + '</div>',
+          '<div class="card-actions">',
+          '<button class="btn-edit" onclick="editProduct(' + pJson + ')">Edit</button>',
+          '<button class="btn-delete" onclick="deleteProduct(' + p.id + ')">Delete</button>',
+          '</div></div></div>'
+        ].join('');
+      });
+      container.innerHTML = '<div class="product-grid">' + rows.join('') + '</div>';
     }
 
     async function loadProducts() {
