@@ -117,7 +117,7 @@
       <a class="logo" href="../index.html">ShopFlow</a>
     </div>
     <div class="nav-links">
-      <a href="cart.html" style="color:#fff">Cart</a>
+      <a href="cart.html" style="color:#fff;position:relative;display:inline-flex;align-items:center;gap:.3rem;">Cart<span id="cart-count" style="display:none;background:#ef4444;color:#fff;font-size:.65rem;font-weight:800;min-width:18px;height:18px;border-radius:999px;align-items:center;justify-content:center;border:2px solid #1d4ed8;padding:0 3px;">0</span></a>
       <a href="../index.html" id="authLink" style="color:#fff">Shop</a>
     </div>
   </nav>
@@ -411,6 +411,23 @@
         document.getElementById('totalDeductions').textContent = '$' + (fees + manual).toFixed(2);
       });
     });
+  </script>
+  <script>
+  (async function() {
+    try {
+      var token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+      var badge = document.getElementById('cart-count');
+      if (!badge) return;
+      var guestCount = JSON.parse(localStorage.getItem('guest_cart') || '[]').reduce(function(s,i){return s+(i.quantity||1);},0);
+      var apiCount = 0;
+      if (token) {
+        var res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (res.ok) { var data = await res.json(); var items = Array.isArray(data) ? data : (data.items || []); apiCount = items.reduce(function(s,i){return s+(i.quantity||1);},0); }
+      }
+      var total = apiCount + guestCount;
+      if (total > 0) { badge.textContent = total; badge.style.display = 'inline-flex'; }
+    } catch(e) {}
+  })();
   </script>
 </body>
 </html>
