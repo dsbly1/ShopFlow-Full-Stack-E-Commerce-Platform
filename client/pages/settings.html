@@ -184,10 +184,10 @@
     }
 
     function handleSearch() {
-      const q = document.getElementById('nav-search-input').value.trim();
+      const q = document.getElementById('product-search').value.trim();
       if (q) window.location.href = '../index.html?search=' + encodeURIComponent(q);
     }
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
+    document.getElementById('product-search').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') handleSearch();
     });
 
