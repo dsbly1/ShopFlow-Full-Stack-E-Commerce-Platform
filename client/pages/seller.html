@@ -441,13 +441,26 @@
     signature.addEventListener('input', checkSubmit);
 
     // Submit
-    submitBtn.addEventListener('click', () => {
-      // Save seller flag to localStorage
-      const user = JSON.parse(localStorage.getItem('sf_user') || '{}');
-      user.isSeller = true;
-      user.storeName = document.getElementById('bizName').value;
-      localStorage.setItem('sf_user', JSON.stringify(user));
-      window.location.href = 'seller-dashboard.html';
+    submitBtn.addEventListener('click', async () => {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Activating...';
+      try {
+        const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+        const res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/auth/become-seller', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed');
+        // Update localStorage with new seller role and token
+        localStorage.setItem('sf_user', JSON.stringify(data.user));
+        localStorage.setItem('sf_token', data.token);
+        window.location.href = 'seller-dashboard.html';
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🎉 Activate Seller Account';
+        alert('Error: ' + err.message);
+      }
     });
 
     // Drawer
