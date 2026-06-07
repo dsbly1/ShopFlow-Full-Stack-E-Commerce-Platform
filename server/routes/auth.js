@@ -69,4 +69,21 @@ router.post('/login', async (req, res) => {
   } catch { res.status(500).json({ error: 'Server error' }); }
 });
 
+
+const authMiddleware = require('../middleware/auth');
+
+// POST /api/auth/become-seller — upgrade user to seller
+router.post('/become-seller', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `UPDATE users SET role='seller' WHERE id=$1 RETURNING id, name, email, role`,
+      [req.user.id]
+    );
+    if (!rows.length) return res.status(404).json({ error: 'User not found' });
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign(rows[0], process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    res.json({ user: rows[0], token, message: 'You are now a seller!' });
+  } catch (err) { console.error(err); res.status(500).json({ error: 'Server error' }); }
+});
+
 module.exports = router;
