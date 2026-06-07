@@ -88,15 +88,19 @@ loadProducts();
 
 // Update cart count — badge appears only when items exist
 async function updateCartCount() {
-  if (!getToken()) return;
+  const badge = document.getElementById('cartCount');
+  if (!badge) return;
+  if (!getToken()) {
+    // Show guest cart count
+    const guest = JSON.parse(localStorage.getItem('guest_cart') || '[]');
+    const total = guest.reduce((sum, i) => sum + (i.quantity || 1), 0);
+    if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
+    return;
+  }
   const items = await api.get('/cart');
   if (!Array.isArray(items) || !items.length) return;
   const total = items.reduce((sum, i) => sum + i.quantity, 0);
-  const badge = document.getElementById('cartCount');
-  if (badge && total > 0) {
-    badge.textContent = total;
-    badge.style.display = "flex";
-  }
+  if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
 }
 updateCartCount();
 
