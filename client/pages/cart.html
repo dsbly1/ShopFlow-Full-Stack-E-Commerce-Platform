@@ -151,6 +151,9 @@
       let cart = JSON.parse(localStorage.getItem('guest_cart') || '[]');
       cart = cart.filter(i => i.id !== productId);
       localStorage.setItem('guest_cart', JSON.stringify(cart));
+      var badge = document.getElementById('cart-count');
+      var total = cart.reduce(function(s,i){return s+(i.quantity||1);},0);
+      if (badge) { badge.textContent = total; badge.style.display = total > 0 ? 'flex' : 'none'; }
       loadCart();
     }
 
