@@ -36,23 +36,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const { rows } = await db.query(`
-      SELECT p.*, c.name AS category_name, ROUND(AVG(r.rating),2) AS avg_rating
-      FROM products p
-      LEFT JOIN categories c ON c.id = p.category_id
-      LEFT JOIN reviews    r ON r.product_id = p.id
-      WHERE p.id = $1
-      GROUP BY p.id, c.name
-    `, [req.params.id]);
-    if (!rows.length) return res.status(404).json({ error: 'Product not found' });
-    res.json(rows[0]);
-  } catch {
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 
 const auth = require('../middleware/auth');
 
@@ -69,6 +52,23 @@ router.get('/my', auth, async (req, res) => {
     );
     res.json(rows);
   } catch (err) { console.error(err); res.status(500).json({ error: 'Server error' }); }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { rows } = await db.query(`
+      SELECT p.*, c.name AS category_name, ROUND(AVG(r.rating),2) AS avg_rating
+      FROM products p
+      LEFT JOIN categories c ON c.id = p.category_id
+      LEFT JOIN reviews    r ON r.product_id = p.id
+      WHERE p.id = $1
+      GROUP BY p.id, c.name
+    `, [req.params.id]);
+    if (!rows.length) return res.status(404).json({ error: 'Product not found' });
+    res.json(rows[0]);
+  } catch {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 // POST /api/products — seller creates product
