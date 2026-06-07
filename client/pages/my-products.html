@@ -9,6 +9,12 @@
     .page { max-width:900px; margin:0 auto; padding:2rem 1.5rem 4rem; width:100%; }
     .page-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:2rem; }
     .page-header h1 { font-size:clamp(1.3rem,4vw,1.8rem); font-weight:700; color:#1e293b; }
+    .btn-draft { display:inline-flex; align-items:center; gap:.5rem; background:#f59e0b; color:#fff; padding:.65rem 1.25rem; border-radius:9px; font-weight:600; font-size:.9rem; border:none; cursor:pointer; text-decoration:none; transition:background .2s; }
+    .btn-draft:hover { background:#d97706; }
+    .draft-badge { background:#fff; color:#f59e0b; border-radius:999px; font-size:.7rem; font-weight:800; padding:0 5px; margin-left:2px; }
+    .tab-row { display:flex; gap:.5rem; margin-bottom:1.5rem; }
+    .tab-pill { padding:.45rem 1.1rem; border-radius:999px; font-size:.85rem; font-weight:600; border:none; cursor:pointer; background:#f1f5f9; color:#64748b; transition:all .2s; }
+    .tab-pill.active { background:#2563eb; color:#fff; }
     .btn-add { display:inline-flex; align-items:center; gap:.5rem; background:#2563eb; color:#fff; padding:.65rem 1.25rem; border-radius:9px; font-weight:600; font-size:.9rem; border:none; cursor:pointer; text-decoration:none; transition:background .2s; }
     .btn-add:hover { background:#1d4ed8; }
     .product-card-seller { background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.07); overflow:hidden; display:flex; flex-direction:column; transition:transform .2s; }
@@ -115,7 +121,12 @@
         Add Product
       </button>
     </div>
+    <div class="tab-row">
+      <button class="tab-pill active" id="tab-live" onclick="switchProductTab('live')">Live Products</button>
+      <button class="tab-pill" id="tab-drafts" onclick="switchProductTab('drafts')">Drafts <span class="draft-badge" id="draft-count">0</span></button>
+    </div>
     <div id="products-container"><p class="loading">Loading...</p></div>
+    <div id="drafts-container" style="display:none;"></div>
   </div>
 
   <!-- Add/Edit Product Modal -->
@@ -159,6 +170,7 @@
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-draft" onclick="saveDraft()">Save Draft</button>
         <button class="btn-submit" onclick="saveProduct()">Save Product</button>
       </div>
     </div>
@@ -400,6 +412,89 @@
       }
     });
 
+
+    function switchProductTab(tab) {
+      document.getElementById('tab-live').classList.toggle('active', tab === 'live');
+      document.getElementById('tab-drafts').classList.toggle('active', tab === 'drafts');
+      document.getElementById('products-container').style.display = tab === 'live' ? '' : 'none';
+      document.getElementById('drafts-container').style.display = tab === 'drafts' ? '' : 'none';
+      if (tab === 'drafts') renderDrafts();
+    }
+
+    function getDrafts() {
+      return JSON.parse(localStorage.getItem('sf_drafts') || '[]');
+    }
+
+    function saveDraft() {
+      var name = document.getElementById('prod-name').value.trim();
+      if (!name) { showToast('Product name required for draft.'); return; }
+      var draft = {
+        id: Date.now(),
+        name: name,
+        description: document.getElementById('prod-desc').value.trim(),
+        price: document.getElementById('prod-price').value,
+        stock_qty: document.getElementById('prod-stock').value,
+        image_url: (function() { var v = document.getElementById('prod-image').value.trim(); return v.startsWith('data:') ? '' : v; })(),
+        category_id: document.getElementById('prod-category').value,
+        saved_at: new Date().toLocaleDateString()
+      };
+      var drafts = getDrafts();
+      drafts.push(draft);
+      localStorage.setItem('sf_drafts', JSON.stringify(drafts));
+      updateDraftCount();
+      closeModal();
+      showToast('Draft saved!');
+    }
+
+    function updateDraftCount() {
+      var count = getDrafts().length;
+      document.getElementById('draft-count').textContent = count;
+    }
+
+    function deleteDraft(id) {
+      var drafts = getDrafts().filter(function(d) { return d.id !== id; });
+      localStorage.setItem('sf_drafts', JSON.stringify(drafts));
+      updateDraftCount();
+      renderDrafts();
+    }
+
+    function editDraft(id) {
+      var draft = getDrafts().find(function(d) { return d.id === id; });
+      if (!draft) return;
+      deleteDraft(id);
+      editingId = null;
+      document.getElementById('modal-title').textContent = 'Add New Product';
+      document.getElementById('prod-name').value = draft.name || '';
+      document.getElementById('prod-desc').value = draft.description || '';
+      document.getElementById('prod-price').value = draft.price || '';
+      document.getElementById('prod-stock').value = draft.stock_qty || '';
+      document.getElementById('prod-image').value = draft.image_url || '';
+      document.getElementById('prod-category').value = draft.category_id || '';
+      openModal();
+    }
+
+    function renderDrafts() {
+      var drafts = getDrafts();
+      var el = document.getElementById('drafts-container');
+      if (!drafts.length) {
+        el.innerHTML = '<div class="empty-state"><div class="icon">📝</div><h2>No drafts saved</h2><p>Save a product as draft to continue editing later.</p></div>';
+        return;
+      }
+      el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">' +
+        drafts.map(function(d) {
+          return '<div class="product-card-seller">' +
+            '<img src="' + (d.image_url || 'https://placehold.co/400x300/e2e8f0/94a3b8?text=Draft') + '" alt="' + d.name + '" />' +
+            '<div class="card-body">' +
+            '<h3>' + d.name + '</h3>' +
+            '<div class="card-price">' + (d.price ? '$' + parseFloat(d.price).toFixed(2) : 'No price') + '</div>' +
+            '<div class="card-stock">Saved: ' + d.saved_at + '</div>' +
+            '<div class="card-actions">' +
+            '<button class="btn-edit" onclick="editDraft(' + d.id + ')">Edit</button>' +
+            '<button class="btn-delete" onclick="deleteDraft(' + d.id + ')">Delete</button>' +
+            '</div></div></div>';
+        }).join('') + '</div>';
+    }
+
     function closeModal() {
       document.getElementById('product-modal').classList.remove('open');
       _mediaFiles = [];
@@ -467,6 +562,7 @@
     });
 
     init();
+    updateDraftCount();
   
     // Show Settings only when logged in
     (function showSettingsIfLoggedIn() {
