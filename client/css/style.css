@@ -12,8 +12,7 @@
 body { font-family: system-ui, sans-serif; background: var(--clr-bg); color: var(--clr-text); }
 
 /* NAVBAR */
-.navbar { background:var(--clr-primary); position:sticky; top:0; z-index:100; }
-.navbar > * { display:flex; align-items:center; justify-content:space-between; padding:.75rem 1.5rem; max-width:1200px; margin:0 auto; width:100%; gap:1rem; }
+.navbar { display:flex; align-items:center; justify-content:space-between; padding:.75rem 1.5rem; background:var(--clr-primary); position:sticky; top:0; z-index:100; gap:1rem; }
 .logo { color:#fff; font-size:1.4rem; font-weight:700; text-decoration:none; }
 .nav-search { display:flex; gap:.5rem; flex:1; max-width:480px; }
 .nav-search input { flex:1; padding:.45rem .75rem; border-radius:6px; border:none; font-size:.95rem; }
