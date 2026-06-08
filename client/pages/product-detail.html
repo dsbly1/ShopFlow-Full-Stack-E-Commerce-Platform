@@ -268,12 +268,8 @@
 
         document.title = p.name + ' - ShopFlow';
 
-        // Images
-        var catKey = p.category_name && p.category_name.includes('Laptop') ? 'Laptops'
-          : p.category_name && p.category_name.includes('Phone') ? 'Phones'
-          : p.category_name && p.category_name.includes('Audio') ? 'Audio' : 'default';
-        var extraImgs = fakeImages[catKey] || fakeImages['default'];
-        var allImgs = [p.image_url || PLACEHOLDER].concat(extraImgs);
+        // Images — only use real product image
+        var allImgs = p.image_url ? [p.image_url] : [PLACEHOLDER];
 
         var thumbsHtml = allImgs.map(function(src, i) {
           return '<img class="thumb' + (i===0?' active':'') + '" src="' + src + '" data-src="' + src + '" onclick="setMainImg(this.dataset.src)" onerror="this.style.display=\'none\'" />';
