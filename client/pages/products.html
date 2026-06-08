@@ -263,13 +263,17 @@
         var price = parseFloat(p.price).toFixed(2);
         var rating = p.avg_rating || 'No reviews';
         var reviews = p.review_count || 0;
-        html_out += '<div class="product-card">';
-        html_out += '<img src="' + img + '" onerror="this.src=' + "'" + PLACEHOLDER + "'" + '" alt="' + p.name + '" loading="lazy" />';
+        var sellerHtml = p.seller_id
+          ? '<a href="seller-profile.html?id=' + p.seller_id + '" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.2rem;margin-bottom:.25rem;">&#128204; ' + (p.seller_name || 'View Seller') + '</a>'
+          : '';
+        html_out += '<div class="product-card" style="cursor:pointer;" onclick="window.location.href=\'product-detail.html?id=' + p.id + '\'">';
+        html_out += '<img src="' + img + '" onerror="this.src=\''+PLACEHOLDER+'\'" alt="' + p.name + '" loading="lazy" />';
         html_out += '<div class="card-body">';
         html_out += '<h3>' + p.name + '</h3>';
+        html_out += sellerHtml;
         html_out += '<div class="card-price">$' + price + '</div>';
         html_out += '<div class="card-rating">&#11088; ' + rating + ' (' + reviews + ')</div>';
-        html_out += '<button class="btn-primary" onclick="addToCart(' + p.id + ')">Add to Cart</button>';
+        html_out += '<button class="btn-primary" onclick="event.stopPropagation();addToCart(' + p.id + ')">Add to Cart</button>';
         html_out += '</div></div>';
       }
       grid.innerHTML = html_out;
