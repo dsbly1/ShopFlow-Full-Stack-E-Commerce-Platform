@@ -40,7 +40,7 @@ function renderProducts(products) {
     const rating = p.avg_rating
       ? `⭐ ${p.avg_rating} (${p.review_count || 0})`
       : '<span style="color:#94a3b8;font-size:.78rem;">No reviews yet</span>';
-    return `<div class="product-card" style="cursor:pointer;" onclick="window.location.href='pages/products.html?id=${p.id}'">
+    return `<div class="product-card" style="cursor:pointer;" onclick="window.location.href='pages/product-detail.html?id=${p.id}'">
       <img src="${p.image_url || PLACEHOLDER}"
            onerror="this.src='${PLACEHOLDER}'"
            alt="${p.name}" loading="lazy" />
