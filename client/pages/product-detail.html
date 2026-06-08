@@ -40,9 +40,9 @@
     .reviewer{font-weight:600;color:#1e293b;font-size:.9rem;}
     .review-date{font-size:.75rem;color:#94a3b8;}
     .review-comment{font-size:.875rem;color:#374151;line-height:1.5;margin-top:.4rem;}
-    .img-zoom{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center;cursor:zoom-out;}
-    .img-zoom.open{display:flex;}
-    .img-zoom img{max-width:90vw;max-height:90vh;border-radius:12px;}
+    
+    #img-zoom.open{display:flex;}
+    
     @media(max-width:640px){.product-layout{grid-template-columns:1fr;}.main-img{height:240px;}}
   </style>
 </head>
@@ -93,14 +93,19 @@
     </div>
   </div>
 
-  <!-- Image Zoom -->
-  <div class="img-zoom" id="img-zoom" onclick="closeZoom()">
-    <img id="zoom-img" src="" alt="zoom"/>
+  <!-- Image Lightbox -->
+  <div id="img-zoom" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;align-items:center;justify-content:center;flex-direction:column;">
+    <button onclick="closeZoom()" style="position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:1000;">✕</button>
+    <button id="zoom-prev" onclick="zoomNav(-1)" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.5rem;cursor:pointer;display:none;align-items:center;justify-content:center;">‹</button>
+    <img id="zoom-img" src="" alt="zoom" style="max-width:90vw;max-height:85vh;border-radius:8px;object-fit:contain;cursor:default;"/>
+    <button id="zoom-next" onclick="zoomNav(1)" style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:1.5rem;cursor:pointer;display:none;align-items:center;justify-content:center;">›</button>
+    <div id="zoom-counter" style="position:absolute;bottom:1rem;color:rgba(255,255,255,.7);font-size:.85rem;font-weight:500;"></div>
   </div>
 
   <script src="../js/api.js"></script>
   <script>
     var productId = new URLSearchParams(location.search).get('id');
+    var allImgs = [];
     if (!productId) window.location.href = '../index.html';
 
     var PLACEHOLDER = 'https://placehold.co/800x600/e2e8f0/94a3b8?text=No+Image';
@@ -221,11 +226,37 @@
       overlay.style.display = open ? 'none' : 'block';
     }
 
+    var _zoomIndex = 0;
+    var _zoomImgs = [];
+
     function openZoom(src) {
-      document.getElementById('zoom-img').src = src;
-      document.getElementById('img-zoom').classList.add('open');
+      _zoomImgs = allImgs || [src];
+      _zoomIndex = _zoomImgs.indexOf(src);
+      if (_zoomIndex < 0) _zoomIndex = 0;
+      updateZoom();
+      var el = document.getElementById('img-zoom');
+      el.style.display = 'flex';
+      var prev = document.getElementById('zoom-prev');
+      var next = document.getElementById('zoom-next');
+      if (_zoomImgs.length > 1) { prev.style.display='flex'; next.style.display='flex'; }
+      else { prev.style.display='none'; next.style.display='none'; }
     }
-    function closeZoom() { document.getElementById('img-zoom').classList.remove('open'); }
+
+    function updateZoom() {
+      document.getElementById('zoom-img').src = _zoomImgs[_zoomIndex];
+      var counter = document.getElementById('zoom-counter');
+      if (_zoomImgs.length > 1) counter.textContent = (_zoomIndex+1) + ' / ' + _zoomImgs.length;
+      else counter.textContent = '';
+    }
+
+    function zoomNav(dir) {
+      _zoomIndex = (_zoomIndex + dir + _zoomImgs.length) % _zoomImgs.length;
+      updateZoom();
+    }
+
+    function closeZoom() {
+      document.getElementById('img-zoom').style.display = 'none';
+    }
 
     function setMainImg(src) {
       document.getElementById('main-img').src = src;
@@ -262,6 +293,10 @@
       // Load product
       try {
         var p = await api.get('/products/' + productId);
+        if (!p.image_url) {
+          document.getElementById('product-container').innerHTML = '<div style="text-align:center;padding:3rem;"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><h2 style="color:#1e293b;">No photos available</h2><p style="color:#64748b;">This product requires at least one photo.</p></div>';
+          return;
+        }
         var reviews = await api.get('/reviews/' + productId);
         var specs = fakeSpecs[parseInt(productId)] || {'Name': p.name, 'Category': p.category_name||'General', 'Condition': 'New'};
         var condition = fakeConditions[parseInt(productId)] || p.description || 'Item is in good condition.';
@@ -269,7 +304,7 @@
         document.title = p.name + ' - ShopFlow';
 
         // Images — only use real product image
-        var allImgs = p.image_url ? [p.image_url] : [PLACEHOLDER];
+        allImgs = p.image_url ? [p.image_url] : [PLACEHOLDER];
 
         var thumbsHtml = allImgs.map(function(src, i) {
           return '<img class="thumb' + (i===0?' active':'') + '" src="' + src + '" data-src="' + src + '" onclick="setMainImg(this.dataset.src)" onerror="this.style.display=\'none\'" />';
@@ -288,7 +323,7 @@
         document.getElementById('product-container').innerHTML =
           '<div class="product-layout">' +
           '<div class="media-section">' +
-          '<img id="main-img" class="main-img" src="' + allImgs[0] + '" onclick="openZoom(this.src)" onerror="this.src=\'https://placehold.co/800x600/e2e8f0/94a3b8?text=No+Image\'" />' +
+          '<img id="main-img" class="main-img" src="' + allImgs[0] + '" onclick="openZoom(this.src)" style="cursor:pointer;" onerror="this.src=\'https://placehold.co/800x600/e2e8f0/94a3b8?text=No+Image\'" />' +
           '<div class="thumb-row">' + thumbsHtml + '</div>' +
           '</div>' +
           '<div class="info-section">' +
