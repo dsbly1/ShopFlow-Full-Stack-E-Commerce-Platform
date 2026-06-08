@@ -33,19 +33,26 @@ function renderProducts(products) {
       : '<p class="loading">No products found.</p>';
     return;
   }
-  grid.innerHTML = products.map(p => `
-    <div class="product-card">
+  grid.innerHTML = products.map(p => {
+    const sellerLink = p.seller_id
+      ? `<a href="pages/seller-profile.html?id=${p.seller_id}" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.25rem;margin-top:.2rem;">🏪 ${p.seller_name || 'View Seller'}</a>`
+      : '';
+    const rating = p.avg_rating
+      ? `⭐ ${p.avg_rating} (${p.review_count || 0})`
+      : '<span style="color:#94a3b8;font-size:.78rem;">No reviews yet</span>';
+    return `<div class="product-card" style="cursor:pointer;" onclick="window.location.href='pages/products.html?id=${p.id}'">
       <img src="${p.image_url || PLACEHOLDER}"
            onerror="this.src='${PLACEHOLDER}'"
            alt="${p.name}" loading="lazy" />
       <div class="card-body">
         <h3>${p.name}</h3>
+        ${sellerLink}
         <div class="card-price">$${parseFloat(p.price).toFixed(2)}</div>
-        <div class="card-rating">⭐ ${p.avg_rating || 'No reviews'} (${p.review_count || 0})</div>
-        <button class="btn-primary" onclick="addToCart(${p.id})">Add to Cart</button>
+        <div class="card-rating">${rating}</div>
+        <button class="btn-primary" onclick="event.stopPropagation();addToCart(${p.id})">Add to Cart</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 async function loadProducts() {
