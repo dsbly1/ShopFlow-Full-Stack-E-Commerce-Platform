@@ -18,3 +18,13 @@ const api = {
   put:    (path, body)   => fetch(`${API}${path}`, { method:'PUT',    headers: getHeaders(), body: JSON.stringify(body) }).then(r => r.json()),
   delete: (path)         => fetch(`${API}${path}`, { method:'DELETE', headers: getHeaders() }).then(r => r.json()),
 };
+
+// Keep Render backend alive — ping every 14 minutes
+(function() {
+  function ping() {
+    fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/health')
+      .catch(function(){});
+  }
+  ping();
+  setInterval(ping, 14 * 60 * 1000);
+})();
