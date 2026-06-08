@@ -353,12 +353,16 @@
       setTimeout(function(){toast.remove();},2000);
     }
 
-    init();
-    setTimeout(function() {
-      var retry = document.getElementById('retry-btn');
-      if (retry && document.getElementById('product-container').querySelector('button[onclick="init()"]')) return;
-      if (retry) retry.style.display = 'block';
-    }, 8000);
+    document.addEventListener('DOMContentLoaded', function() {
+      init();
+      setTimeout(function() {
+        var container = document.getElementById('product-container');
+        if (container && container.querySelector('.loading, [style*="hourglass"], #retry-btn')) {
+          var retry = document.getElementById('retry-btn');
+          if (retry) retry.style.display = 'block';
+        }
+      }, 8000);
+    });
   </script>
 </body>
 </html>
