@@ -169,7 +169,7 @@
         var PLACEHOLDER = 'https://placehold.co/400x300/e2e8f0/94a3b8?text=No+Image';
         document.getElementById('products-title').textContent = s.name + "'s Products (" + data.products.length + ")";
         document.getElementById('products-grid').innerHTML = data.products.map(function(p) {
-          return '<div class="product-card" onclick="window.location.href='products.html?id='+p.id+''">' +
+          return '<div class="product-card" onclick="window.location.href=\'product-detail.html?id=' + p.id + '\'">' +
             '<img src="'+(p.image_url||PLACEHOLDER)+'" alt="'+p.name+'" />' +
             '<div class="product-card-body">' +
             '<h3>'+p.name+'</h3>' +
