@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Add Product - ShopFlow</title>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    body{background:#f8fafc;}
+    .page{max-width:900px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+    .back-link{display:inline-flex;align-items:center;gap:.4rem;color:#2563eb;text-decoration:none;font-size:.9rem;font-weight:500;margin-bottom:1.5rem;}
+    .form-card{background:#fff;border-radius:14px;box-shadow:0 1px 6px rgba(0,0,0,.07);padding:1.75rem;margin-bottom:1.5rem;}
+    .form-card h2{font-size:1rem;font-weight:700;color:#1e293b;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid #f1f5f9;}
+    .form-group{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1rem;}
+    .form-group label{font-size:.85rem;font-weight:600;color:#374151;}
+    .form-group input,.form-group textarea,.form-group select{padding:.6rem .8rem;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.9rem;outline:none;font-family:inherit;transition:border .2s;}
+    .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#2563eb;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+    /* Media Upload */
+    .media-drop-zone{border:2px dashed #cbd5e1;border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;background:#f8fafc;margin-bottom:1rem;}
+    .media-drop-zone:hover,.media-drop-zone.drag-over{border-color:#2563eb;background:#eff6ff;}
+    .media-drop-zone .icon{font-size:2.5rem;margin-bottom:.5rem;}
+    .media-drop-zone h3{font-size:.95rem;font-weight:700;color:#2563eb;margin-bottom:.25rem;}
+    .media-drop-zone p{font-size:.8rem;color:#94a3b8;}
+
+    /* Media Grid */
+    .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.75rem;margin-bottom:1rem;}
+    .media-grid-item{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1;background:#e2e8f0;cursor:pointer;border:2px solid transparent;transition:border .2s;}
+    .media-grid-item.primary{border-color:#2563eb;}
+    .media-grid-item img,.media-grid-item video{width:100%;height:100%;object-fit:cover;}
+    .media-grid-item .overlay{position:absolute;inset:0;background:rgba(0,0,0,.0);transition:background .2s;display:flex;align-items:flex-end;justify-content:space-between;padding:.4rem;}
+    .media-grid-item:hover .overlay{background:rgba(0,0,0,.35);}
+    .media-grid-item .remove-btn{background:#ef4444;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:.7rem;cursor:pointer;display:none;align-items:center;justify-content:center;font-weight:700;}
+    .media-grid-item:hover .remove-btn{display:flex;}
+    .media-grid-item .primary-badge{background:#2563eb;color:#fff;font-size:.6rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;display:none;}
+    .media-grid-item.primary .primary-badge{display:block;}
+    .media-grid-item .set-primary{background:rgba(255,255,255,.9);color:#1e293b;font-size:.65rem;font-weight:600;padding:.15rem .4rem;border-radius:4px;border:none;cursor:pointer;display:none;}
+    .media-grid-item:hover .set-primary{display:block;}
+
+    /* Slideshow */
+    .slideshow{display:none;position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:16/9;margin-bottom:1rem;}
+    .slideshow.has-media{display:block;}
+    .slide{display:none;width:100%;height:100%;}
+    .slide.active{display:flex;align-items:center;justify-content:center;}
+    .slide img,.slide video{max-width:100%;max-height:100%;object-fit:contain;}
+    .slide-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .slide-nav:hover{background:rgba(0,0,0,.8);}
+    .slide-prev{left:.75rem;}
+    .slide-next{right:.75rem;}
+    .slide-dots{position:absolute;bottom:.75rem;left:50%;transform:translateX(-50%);display:flex;gap:.4rem;}
+    .slide-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;border:none;transition:background .2s;}
+    .slide-dot.active{background:#fff;}
+    .slide-counter{position:absolute;top:.75rem;right:.75rem;background:rgba(0,0,0,.5);color:#fff;font-size:.75rem;font-weight:600;padding:.25rem .6rem;border-radius:999px;}
+
+    .btn-submit{width:100%;padding:1rem;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;}
+    .btn-submit:hover{background:#1d4ed8;}
+    .btn-draft-pg{width:100%;padding:.8rem;background:#f59e0b;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:.5rem;}
+    .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:.75rem 1.5rem;border-radius:10px;font-size:.875rem;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
+    .toast.show{opacity:1;}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr;}.media-grid{grid-template-columns:repeat(3,1fr);}}
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div style="position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e5e7eb;box-shadow:0 1px 8px rgba(0,0,0,.06);">
+    <div style="display:flex;align-items:center;gap:1rem;padding:0 1rem;height:64px;max-width:1200px;margin:0 auto;width:100%;overflow:hidden;">
+      <button id="hamburger" onclick="toggleDrawer()" style="display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:.4rem;">
+        <span style="display:block;width:22px;height:2px;background:#111827;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#111827;border-radius:2px;"></span>
+        <span style="display:block;width:22px;height:2px;background:#111827;border-radius:2px;"></span>
+      </button>
+      <a href="../index.html" style="font-family:Georgia,serif;font-size:clamp(1rem,4vw,1.6rem);font-weight:900;color:#2563eb;text-decoration:none;letter-spacing:-.5px;">ShopFlow</a>
+      <div style="display:flex;align-items:center;gap:.75rem;margin-left:auto;">
+        <a id="nav-auth-btn" href="login.html" style="background:#2563eb;color:#fff;padding:.45rem .75rem;border-radius:8px;font-size:.8rem;font-weight:600;text-decoration:none;">Get Started</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page">
+    <a href="my-products.html" class="back-link">← Back to My Products</a>
+    <h1 style="font-size:1.6rem;font-weight:800;color:#1e293b;margin-bottom:1.5rem;" id="page-title">Add New Product</h1>
+
+    <!-- Media Section -->
+    <div class="form-card">
+      <h2>📷 Photos & Videos</h2>
+
+      <!-- Slideshow -->
+      <div class="slideshow" id="slideshow">
+        <div id="slides-container"></div>
+        <button class="slide-nav slide-prev" onclick="changeSlide(-1)">‹</button>
+        <button class="slide-nav slide-next" onclick="changeSlide(1)">›</button>
+        <div class="slide-dots" id="slide-dots"></div>
+        <div class="slide-counter" id="slide-counter">1 / 1</div>
+      </div>
+
+      <!-- Drop Zone -->
+      <div class="media-drop-zone" id="drop-zone" onclick="document.getElementById('media-file-input').click()">
+        <input type="file" id="media-file-input" accept="image/*,video/*" multiple style="display:none;">
+        <div class="icon">📁</div>
+        <h3>Drop photos & videos here</h3>
+        <p>or click to browse • JPG, PNG, WEBP, MP4 supported</p>
+      </div>
+
+      <!-- Media Grid -->
+      <div class="media-grid" id="media-grid"></div>
+      <p style="font-size:.78rem;color:#94a3b8;">Click a photo to preview in slideshow. Click "Set Primary" to use as main listing photo.</p>
+
+      <!-- URL fallback -->
+      <div class="form-group" style="margin-top:.75rem;">
+        <label>Or paste image URL</label>
+        <input type="text" id="prod-image" placeholder="https://..." />
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="form-card">
+      <h2>📦 Product Details</h2>
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" id="prod-name" placeholder='e.g. MacBook Pro 14"' />
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="prod-desc" rows="4" placeholder="Describe your product, condition, what's included..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price ($) *</label>
+          <input type="number" id="prod-price" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Stock Quantity</label>
+          <input type="number" id="prod-stock" placeholder="0" min="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="prod-category"><option value="">Select category...</option></select>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn-submit" onclick="saveProduct()">🚀 Publish Product</button>
+    <button class="btn-draft-pg" onclick="saveDraft()">💾 Save as Draft</button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    var _mediaFiles = [];
+    var _primaryIndex = 0;
+    var _currentSlide = 0;
+    var _editingId = new URLSearchParams(location.search).get('edit');
+
+    // Auth check
+    var token = localStorage.getItem('sf_token');
+    var user = JSON.parse(localStorage.getItem('sf_user') || 'null');
+    if (!token || !user) window.location.href = 'login.html';
+    if (user.role !== 'seller' && user.role !== 'admin') window.location.href = 'my-products.html';
+
+    // Auth navbar
+    var btn = document.getElementById('nav-auth-btn');
+    if (btn && user) { btn.textContent = user.name.split(' ')[0]; btn.href = 'dashboard.html'; btn.style.background='transparent'; btn.style.color='#2563eb'; btn.style.border='2px solid #2563eb'; }
+
+    function toggleDrawer() {}
+
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 2500);
+    }
+
+    // Load categories
+    api.get('/categories').then(function(cats) {
+      if (!Array.isArray(cats)) return;
+      var sel = document.getElementById('prod-category');
+      cats.filter(function(c){ return !c.parent_category_id; }).forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.name; sel.appendChild(opt);
+      });
+    });
+
+    // Load product for editing
+    if (_editingId) {
+      document.getElementById('page-title').textContent = 'Edit Product';
+      api.get('/products/' + _editingId).then(function(p) {
+        document.getElementById('prod-name').value = p.name || '';
+        document.getElementById('prod-desc').value = p.description || '';
+        document.getElementById('prod-price').value = p.price || '';
+        document.getElementById('prod-stock').value = p.stock_qty || '';
+        document.getElementById('prod-image').value = p.image_url || '';
+        document.getElementById('prod-category').value = p.category_id || '';
+        if (p.image_url) addUrlToMedia(p.image_url);
+      });
+    }
+
+    // File input
+    document.getElementById('media-file-input').addEventListener('change', function() {
+      handleFiles(Array.from(this.files));
+      this.value = '';
+    });
+
+    // Drag and drop
+    var dz = document.getElementById('drop-zone');
+    dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', function() { dz.classList.remove('drag-over'); });
+    dz.addEventListener('drop', function(e) {
+      e.preventDefault(); dz.classList.remove('drag-over');
+      handleFiles(Array.from(e.dataTransfer.files).filter(function(f){ return f.type.startsWith('image/') || f.type.startsWith('video/'); }));
+    });
+
+    function handleFiles(files) {
+      files.forEach(function(file) {
+        var idx = _mediaFiles.length;
+        _mediaFiles.push({ file: file, url: URL.createObjectURL(file), type: file.type.startsWith('video/') ? 'video' : 'image' });
+        renderMediaGrid();
+        updateSlideshow();
+      });
+    }
+
+    function addUrlToMedia(url) {
+      _mediaFiles.push({ file: null, url: url, type: 'image' });
+      renderMediaGrid();
+      updateSlideshow();
+    }
+
+    function renderMediaGrid() {
+      var grid = document.getElementById('media-grid');
+      grid.innerHTML = _mediaFiles.map(function(m, i) {
+        var isPrimary = i === _primaryIndex;
+        var mediaEl = m.type === 'video'
+          ? '<video src="' + m.url + '" muted style="width:100%;height:100%;object-fit:cover;"></video>'
+          : '<img src="' + m.url + '" style="width:100%;height:100%;object-fit:cover;" />';
+        return '<div class="media-grid-item' + (isPrimary?' primary':'') + '" onclick="previewSlide(' + i + ')">' +
+          mediaEl +
+          '<div class="overlay">' +
+          '<span class="primary-badge">PRIMARY</span>' +
+          (!isPrimary ? '<button class="set-primary" onclick="event.stopPropagation();setPrimary(' + i + ')">Set Primary</button>' : '') +
+          '<button class="remove-btn" onclick="event.stopPropagation();removeMedia(' + i + ')">✕</button>' +
+          '</div></div>';
+      }).join('');
+    }
+
+    function setPrimary(idx) {
+      _primaryIndex = idx;
+      var urlField = document.getElementById('prod-image');
+      if (_mediaFiles[idx] && _mediaFiles[idx].url && !_mediaFiles[idx].url.startsWith('blob:')) {
+        urlField.value = _mediaFiles[idx].url;
+      }
+      renderMediaGrid();
+    }
+
+    function removeMedia(idx) {
+      _mediaFiles.splice(idx, 1);
+      if (_primaryIndex >= _mediaFiles.length) _primaryIndex = 0;
+      if (_currentSlide >= _mediaFiles.length) _currentSlide = 0;
+      renderMediaGrid();
+      updateSlideshow();
+    }
+
+    function updateSlideshow() {
+      var ss = document.getElementById('slideshow');
+      var sc = document.getElementById('slides-container');
+      var dots = document.getElementById('slide-dots');
+      var counter = document.getElementById('slide-counter');
+
+      if (!_mediaFiles.length) { ss.classList.remove('has-media'); return; }
+      ss.classList.add('has-media');
+
+      sc.innerHTML = _mediaFiles.map(function(m, i) {
+        var el = m.type === 'video'
+          ? '<video src="' + m.url + '" controls style="max-width:100%;max-height:100%;"></video>'
+          : '<img src="' + m.url + '" style="max-width:100%;max-height:100%;object-fit:contain;" />';
+        return '<div class="slide' + (i===_currentSlide?' active':'') + '">' + el + '</div>';
+      }).join('');
+
+      dots.innerHTML = _mediaFiles.map(function(m, i) {
+        return '<button class="slide-dot' + (i===_currentSlide?' active':'') + '" onclick="goToSlide(' + i + ')"></button>';
+      }).join('');
+
+      counter.textContent = (_currentSlide + 1) + ' / ' + _mediaFiles.length;
+    }
+
+    function changeSlide(dir) {
+      _currentSlide = (_currentSlide + dir + _mediaFiles.length) % _mediaFiles.length;
+      updateSlideshow();
+    }
+
+    function goToSlide(idx) {
+      _currentSlide = idx;
+      updateSlideshow();
+    }
+
+    function previewSlide(idx) {
+      _currentSlide = idx;
+      updateSlideshow();
+      document.getElementById('slideshow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    async function saveProduct() {
+      var name = document.getElementById('prod-name').value.trim();
+      var price = document.getElementById('prod-price').value;
+      if (!name || !price) { showToast('Name and price are required.'); return; }
+
+      var imageUrl = document.getElementById('prod-image').value.trim();
+      if (!imageUrl && _mediaFiles.length && _mediaFiles[_primaryIndex]) {
+        var m = _mediaFiles[_primaryIndex];
+        if (!m.url.startsWith('blob:')) imageUrl = m.url;
+      }
+
+      var body = {
+        name: name,
+        description: document.getElementById('prod-desc').value.trim(),
+        price: parseFloat(price),
+        stock_qty: parseInt(document.getElementById('prod-stock').value) || 0,
+        image_url: imageUrl,
+        category_id: document.getElementById('prod-category').value || null
+      };
+
+      try {
+        if (_editingId) {
+          await api.put('/products/' + _editingId, body);
+        } else {
+          await api.post('/products', body);
+        }
+        showToast(_editingId ? 'Product updated!' : 'Product published!');
+        setTimeout(function(){ window.location.href = 'my-products.html'; }, 1200);
+      } catch(e) { showToast('Error saving product. Please try again.'); }
+    }
+
+    function saveDraft() {
+      var name = document.getElementById('prod-name').value.trim();
+      if (!name) { showToast('Product name required for draft.'); return; }
+      var imageUrl = document.getElementById('prod-image').value.trim();
+      if (!imageUrl && _mediaFiles.length && _mediaFiles[_primaryIndex]) {
+        var m = _mediaFiles[_primaryIndex];
+        if (!m.url.startsWith('blob:')) imageUrl = m.url;
+      }
+      var draft = {
+        id: Date.now(),
+        name: name,
+        description: document.getElementById('prod-desc').value.trim(),
+        price: document.getElementById('prod-price').value,
+        stock_qty: document.getElementById('prod-stock').value,
+        image_url: imageUrl,
+        category_id: document.getElementById('prod-category').value,
+        saved_at: new Date().toLocaleDateString()
+      };
+      var drafts = JSON.parse(localStorage.getItem('sf_drafts') || '[]');
+      drafts.push(draft);
+      localStorage.setItem('sf_drafts', JSON.stringify(drafts));
+      showToast('Draft saved!');
+      setTimeout(function(){ window.location.href = 'my-products.html'; }, 1200);
+    }
+  </script>
+</body>
+</html>
