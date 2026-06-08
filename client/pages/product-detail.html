@@ -81,7 +81,16 @@
 
   <div class="page">
     <a href="../index.html" class="back-link">← Back to Products</a>
-    <div id="product-container"><p class="loading" style="text-align:center;padding:3rem;">Loading product...</p></div>
+    <div id="product-container">
+      <div style="text-align:center;padding:4rem 2rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">⏳</div>
+        <p style="font-size:1rem;font-weight:600;color:#1e293b;margin-bottom:.5rem;">Loading product...</p>
+        <p style="font-size:.85rem;color:#64748b;margin-bottom:1.5rem;">Our server may be waking up. This takes up to 30 seconds on first load.</p>
+        <div id="retry-btn" style="display:none;">
+          <button onclick="init()" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:.65rem 1.5rem;font-size:.9rem;font-weight:600;cursor:pointer;">Try Again</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Image Zoom -->
@@ -345,6 +354,11 @@
     }
 
     init();
+    setTimeout(function() {
+      var retry = document.getElementById('retry-btn');
+      if (retry && document.getElementById('product-container').querySelector('button[onclick="init()"]')) return;
+      if (retry) retry.style.display = 'block';
+    }, 8000);
   </script>
 </body>
 </html>
