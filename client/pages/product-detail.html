@@ -315,8 +315,10 @@
           return '<tr><td>' + k + '</td><td>' + specs[k] + '</td></tr>';
         }).join('');
 
+        var currentUser = JSON.parse(localStorage.getItem('sf_user') || 'null');
+        var isOwnProduct = currentUser && p.seller_id && currentUser.id === p.seller_id;
         var sellerHtml = p.seller_id
-          ? '<a class="seller-link" href="seller-profile.html?id=' + p.seller_id + '">🏪 ' + (p.seller_name || 'View Seller') + '</a>'
+          ? '<a class="seller-link" href="' + (isOwnProduct ? 'my-products.html' : 'seller-profile.html?id=' + p.seller_id) + '">🏪 ' + (isOwnProduct ? 'View Your Profile' : (p.seller_name || 'View Seller')) + '</a>'
           : '';
 
         var inStock = p.stock_qty > 0;
