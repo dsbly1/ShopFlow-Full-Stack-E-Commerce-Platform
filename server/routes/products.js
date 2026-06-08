@@ -11,10 +11,12 @@ router.get('/', async (req, res) => {
     let query = `
       SELECT p.*, c.name AS category_name,
              ROUND(AVG(r.rating),2) AS avg_rating,
-             COUNT(DISTINCT r.id) AS review_count
+             COUNT(DISTINCT r.id) AS review_count,
+             u.name AS seller_name
       FROM products p
       LEFT JOIN categories c ON c.id = p.category_id
       LEFT JOIN reviews    r ON r.product_id = p.id
+      LEFT JOIN users      u ON u.id = p.seller_id
       WHERE p.name ILIKE $1
     `;
     const params = [`%${search}%`];
@@ -25,7 +27,7 @@ router.get('/', async (req, res) => {
       query += ` AND (p.category_id = $${params.length} OR c.parent_category_id = $${params.length})`;
     }
 
-    query += ` GROUP BY p.id, c.name, c.parent_category_id ORDER BY p.${sortCol} ${order} LIMIT $${params.length+1} OFFSET $${params.length+2}`;
+    query += ` GROUP BY p.id, c.name, c.parent_category_id, u.name ORDER BY p.${sortCol} ${order} LIMIT $${params.length+1} OFFSET $${params.length+2}`;
     params.push(limit, offset);
 
     const { rows } = await db.query(query, params);
