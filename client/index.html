@@ -60,13 +60,13 @@
     <nav class="drawer-nav">
       <a href="pages/products.html"><span class="icon"></span> Products</a>
       <a href="pages/dashboard.html"><span class="icon"></span> My Dashboard</a>
-      <a id="drawer-seller-link" href="pages/my-products.html" class="drawer-nav-link"><span class="icon"></span> My Products</a>
+      <a id="drawer-seller-link" href="pages/my-products.html" class="drawer-nav-link"><span class="icon"></span> Seller's Profile</a>
           <a href="pages/purchases.html"><span class="icon"></span> Purchases</a>
       <a href="pages/seller.html"><span class="icon"></span> Become a Seller</a>
       <hr />
       <a href="pages/about.html"><span class="icon"></span> About Us</a>
       <a href="pages/settings.html"><span class="icon"></span> Settings</a>
-      <a href="pages/my-products.html" id="seller-drawer-link" style="display:none;align-items:center;gap:.75rem;padding:.8rem 1rem;border-radius:10px;color:#111827;text-decoration:none;font-weight:500;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>My Products</a>
+      <a href="pages/my-products.html" id="seller-drawer-link" style="display:none;align-items:center;gap:.75rem;padding:.8rem 1rem;border-radius:10px;color:#111827;text-decoration:none;font-weight:500;"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Seller's Profile</a>
     </nav>
     <div class="drawer-footer">
       <button class="logout-btn" id="logoutBtn">Logout</button>
@@ -238,7 +238,7 @@
       if (e.target === this) closeCartModal();
     });
   
-    // Show My Products link for sellers
+    // Show Seller's Profile link for sellers
     (function() {
       var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
       if (user.isSeller || user.role === 'seller') {
@@ -247,7 +247,7 @@
       }
     })();
   
-    // Show My Products link for sellers
+    // Show Seller's Profile link for sellers
     (function() {
       try {
         var user = JSON.parse(localStorage.getItem('sf_user') || '{}');

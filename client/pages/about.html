@@ -800,7 +800,7 @@
       } catch(e) { console.error('Cart error:', e); }
     })();
   
-    // Show My Products link for sellers
+    // Show Seller's Profile link for sellers
     (function() {
       var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
       if (user.isSeller || user.role === 'seller') {
@@ -809,7 +809,7 @@
       }
     })();
   
-    // Show My Products link for sellers
+    // Show Seller's Profile link for sellers
     (function() {
       try {
         var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
