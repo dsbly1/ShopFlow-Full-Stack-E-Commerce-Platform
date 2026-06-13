@@ -5,21 +5,31 @@ const search  = document.getElementById('searchInput');
 const sortSel = document.getElementById('sortFilter');
 const catSel  = document.getElementById('categoryFilter');
 
-async function loadCategories() {
-  const cats = await api.get('/categories');
-  if (!Array.isArray(cats)) return;
-  // Only show top-level categories (no parent)
-  cats.filter(c => !c.parent_category_id).forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.name;
-    catSel.appendChild(opt);
-  });
+// ── Skeleton loader ──────────────────────────────────────────
+function showSkeleton() {
+  grid.innerHTML = Array(6).fill(`
+    <div class="product-card skeleton-card" style="pointer-events:none;">
+      <div class="skeleton-img" style="background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;height:200px;border-radius:8px 8px 0 0;"></div>
+      <div class="card-body">
+        <div class="skeleton-line" style="background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;height:16px;border-radius:4px;margin-bottom:8px;"></div>
+        <div class="skeleton-line" style="background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;height:14px;width:60%;border-radius:4px;margin-bottom:8px;"></div>
+        <div class="skeleton-line" style="background:linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;height:20px;width:40%;border-radius:4px;"></div>
+      </div>
+    </div>`).join('');
+
+  // Inject shimmer keyframes once
+  if (!document.getElementById('shimmer-style')) {
+    const s = document.createElement('style');
+    s.id = 'shimmer-style';
+    s.textContent = '@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+    document.head.appendChild(s);
+  }
 }
 
+// ── Render products ──────────────────────────────────────────
 function renderProducts(products) {
   if (!products.length) {
-    const q = document.getElementById('searchInput')?.value.trim();
+    const q = search?.value.trim();
     grid.innerHTML = q
       ? `<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;">
            <div style="font-size:3rem;margin-bottom:1rem;">🔍</div>
@@ -37,7 +47,7 @@ function renderProducts(products) {
     const sellerLink = p.seller_id
       ? `<a href="pages/seller-profile.html?id=${p.seller_id}" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.25rem;margin-top:.2rem;">🏪 ${p.seller_name || 'View Seller'}</a>`
       : '';
-    const rating = p.avg_rating
+    const rating = p.avg_rating && p.avg_rating > 0
       ? `⭐ ${p.avg_rating} (${p.review_count || 0})`
       : '<span style="color:#94a3b8;font-size:.78rem;">No reviews yet</span>';
     return `<div class="product-card" style="cursor:pointer;" onclick="window.location.href='pages/product-detail.html?id=${p.id}'">
@@ -55,17 +65,43 @@ function renderProducts(products) {
   }).join('');
 }
 
+// ── Load categories ──────────────────────────────────────────
+async function loadCategories() {
+  const cats = await api.get('/categories');
+  if (!Array.isArray(cats)) return;
+  cats.filter(c => !c.parent_category_id).forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name;
+    catSel.appendChild(opt);
+  });
+}
+
+// ── Load products (handles both array and paginated response) ─
 async function loadProducts() {
-  grid.innerHTML = '<p class="loading">Loading products…</p>';
+  showSkeleton();
   const q = new URLSearchParams({
     search: search?.value || '',
     sort:   sortSel?.value || 'created_at',
+    limit:  12,
   });
   if (catSel?.value) q.set('category', catSel.value);
-  const products = await api.get(`/products?${q}`);
-  renderProducts(Array.isArray(products) ? products : []);
+
+  try {
+    const res = await api.get(`/products?${q}`);
+    // Handle both old array response and new paginated response
+    const products = Array.isArray(res) ? res : (res.products || []);
+    renderProducts(products);
+  } catch (err) {
+    grid.innerHTML = `<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1;">
+      <div style="font-size:3rem;margin-bottom:1rem;">⚠️</div>
+      <p style="color:#64748b;">Could not load products. Please try again.</p>
+      <button onclick="loadProducts()" style="margin-top:1rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;">Retry</button>
+    </div>`;
+  }
 }
 
+// ── Add to cart ──────────────────────────────────────────────
 async function addToCart(productId) {
   if (!getToken()) {
     if (typeof openCartModal === 'function') { openCartModal(productId); return; }
@@ -85,6 +121,7 @@ async function addToCart(productId) {
   setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.style.display='none'; }, 300); }, 2000);
 }
 
+// ── Event listeners ──────────────────────────────────────────
 document.getElementById('searchBtn')?.addEventListener('click', loadProducts);
 search?.addEventListener('keydown', e => e.key === 'Enter' && loadProducts());
 sortSel?.addEventListener('change', loadProducts);
@@ -93,12 +130,11 @@ catSel?.addEventListener('change', loadProducts);
 loadCategories();
 loadProducts();
 
-// Update cart count — badge appears only when items exist
+// ── Cart count ───────────────────────────────────────────────
 async function updateCartCount() {
   const badge = document.getElementById('cartCount');
   if (!badge) return;
   if (!getToken()) {
-    // Show guest cart count
     const guest = JSON.parse(localStorage.getItem('guest_cart') || '[]');
     const total = guest.reduce((sum, i) => sum + (i.quantity || 1), 0);
     if (total > 0) { badge.textContent = total; badge.style.display = 'flex'; }
@@ -111,7 +147,7 @@ async function updateCartCount() {
 }
 updateCartCount();
 
-// Read search query from URL params (e.g. from purchases/about page search bar)
+// ── Read search from URL params ──────────────────────────────
 (function() {
   const params = new URLSearchParams(window.location.search);
   const q = params.get('search');
