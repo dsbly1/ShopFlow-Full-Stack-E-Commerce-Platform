@@ -247,7 +247,7 @@
         list = list.filter(function(p) { return p.avg_rating && parseFloat(p.avg_rating) >= parseFloat(minRating); });
       }
       var countEl = document.getElementById('productCount');
-      if (countEl) countEl.textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' found';
+      if (countEl) countEl.textContent = list.length + ' product' + (list.length !== 1 ? 's' : '') + ' in inventory';
       if (!list.length) {
         if (search) {
           grid.innerHTML = '<div style="text-align:center;padding:4rem 2rem;grid-column:1/-1"><div style="font-size:3rem;margin-bottom:1rem">&#128269;</div><h2 style="font-size:1.2rem;color:#1e293b;margin-bottom:.5rem">No results for ' + search + '</h2><p style="color:#64748b">Try a different keyword or browse all categories.</p><button onclick="clearSearch()" style="margin-top:1.25rem;padding:.65rem 1.5rem;background:#2563eb;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer">Clear Search</button></div>';
