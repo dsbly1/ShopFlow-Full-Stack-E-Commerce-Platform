@@ -8,7 +8,7 @@
     body { background:#f8fafc; }
     .page { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
     .seller-hero { background:linear-gradient(135deg,#1d4ed8,#7c3aed); border-radius:16px; padding:2rem; color:#fff; display:flex; align-items:center; gap:1.5rem; margin-bottom:2rem; flex-wrap:wrap; }
-    .seller-avatar { width:72px; height:72px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; flex-shrink:0; border:3px solid rgba(255,255,255,.4); }
+    .seller-avatar { width:72px; height:72px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:2rem; font-weight:700; flex-shrink:0; border:3px solid rgba(255,255,255,.4); overflow:hidden; padding:0; }
     .seller-info h1 { font-size:1.4rem; font-weight:700; margin-bottom:.25rem; }
     .seller-info p { font-size:.9rem; opacity:.8; }
     .seller-stats { display:flex; gap:1.5rem; margin-top:1rem; flex-wrap:wrap; }
@@ -156,7 +156,7 @@
         // Hero
         document.getElementById('seller-hero-container').innerHTML =
           '<div class="seller-hero">' +
-          '<div class="seller-avatar">' + s.name.charAt(0) + '</div>' +
+          '<div class="seller-avatar" style="padding:0;overflow:hidden;"><img src="https://ui-avatars.com/api/?name='+encodeURIComponent(s.name)+'&size=72&rounded=true&background=random&color=fff&bold=true&font-size=0.4" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" /></div>' +
           '<div class="seller-info">' +
           '<h1>' + s.name + '</h1>' +
           '<p>Member since ' + new Date(s.created_at).toLocaleDateString('en-US',{year:'numeric',month:'long'}) + '</p>' +
