@@ -264,7 +264,7 @@
         var rating = p.avg_rating || 'No reviews';
         var reviews = p.review_count || 0;
         var sellerHtml = p.seller_id
-          ? '<a href="seller-profile.html?id=' + p.seller_id + '" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.2rem;margin-bottom:.25rem;">&#128204; ' + (p.seller_name || 'View Seller') + '</a>'
+          ? '<a href="seller-profile.html?id=' + p.seller_id + '" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.35rem;margin-bottom:.25rem;"><img src="https://ui-avatars.com/api/?name=' + encodeURIComponent(p.seller_name||'S') + '&size=20&rounded=true&background=' + ['16a34a','7c3aed','db2777','ea580c','2563eb','0891b2','ca8a04'][p.seller_id%7] + '&color=fff&bold=true&font-size=0.5" style="width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;" />' + (p.seller_name || 'View Seller') + '</a>'
           : '';
         html_out += '<div class="product-card" style="cursor:pointer;" onclick="window.location.href=\'product-detail.html?id=' + p.id + '\'">';
         html_out += '<img src="' + img + '" onerror="this.src=\''+PLACEHOLDER+'\'" alt="' + p.name + '" loading="lazy" />';
