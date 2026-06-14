@@ -87,6 +87,7 @@ router.post('/become-seller', authMiddleware, async (req, res) => {
 });
 
 
+const auth   = require('../middleware/auth');
 const multer = require('multer');
 const path   = require('path');
 const fs     = require('fs');
