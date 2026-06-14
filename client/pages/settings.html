@@ -163,7 +163,7 @@
       </div>
       <div class="settings-row">
         <div class="settings-row-info"><strong>Delete account</strong><span>Permanently remove your account and data</span></div>
-        <button class="btn-danger" onclick="confirmDelete()">Delete Account</button>
+        <button class="btn-danger" id="delete-account-btn" onclick="confirmDelete()" style="display:none">Delete Account</button>
       </div>
     </div>
 
@@ -255,6 +255,12 @@
       localStorage.setItem('sf_settings', JSON.stringify(settings));
       showToast('Settings saved!');
     }
+
+    (function() {
+      const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
+      const btn = document.getElementById('delete-account-btn');
+      if (token && btn) btn.style.display = 'inline-block';
+    })();
 
     function confirmDelete() {
       if (confirm('Are you sure you want to delete your account? This cannot be undone.')) {
