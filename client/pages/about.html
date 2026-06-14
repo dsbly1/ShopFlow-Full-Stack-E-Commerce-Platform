@@ -9,684 +9,208 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --brand:       #2563eb;
-      --brand-dark:  #1d4ed8;
-      --accent:      #f59e0b;
-      --text:        #111827;
-      --muted:       #6b7280;
-      --bg:          #f9fafb;
-      --white:       #ffffff;
-      --border:      #e5e7eb;
-      --card-shadow: 0 4px 24px rgba(0,0,0,.07);
-    }
-
+    :root { --brand:#2563eb; --brand-dark:#1d4ed8; --accent:#f59e0b; --text:#111827; --muted:#6b7280; --bg:#f9fafb; --white:#ffffff; --border:#e5e7eb; --card-shadow:0 4px 24px rgba(0,0,0,.07); }
     html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.6;
-    }
-
-    /* ── NAVBAR ── */
-    .navbar {
-      position: sticky; top: 0; z-index: 200;
-      background: var(--white);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 1px 8px rgba(0,0,0,.06);
-    }
-    .navbar-top {
-      display: flex; align-items: center; gap: 1rem;
-      padding: 0 1.5rem; height: 64px;
-    }
-    .nav-logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem; font-weight: 900;
-      color: var(--brand); text-decoration: none;
-      letter-spacing: -.5px; white-space: nowrap;
-      margin-right: .5rem;
-    }
-    .nav-search {
-      flex: 1; max-width: 480px;
-      display: flex; align-items: center;
-      background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 10px; overflow: hidden;
-      transition: border-color .2s;
-    }
-    .nav-search:focus-within { border-color: var(--brand); }
-    .nav-search input {
-      flex: 1; border: none; background: transparent;
-      padding: .55rem 1rem; font-size: .9rem;
-      font-family: inherit; outline: none; color: var(--text);
-    }
-    .nav-search button {
-      background: var(--brand); border: none; cursor: pointer;
-      padding: .55rem .9rem; color: var(--white);
-      display: flex; align-items: center;
-      transition: background .2s;
-    }
-    .nav-search button:hover { background: var(--brand-dark); }
-    .nav-search svg { width: 16px; height: 16px; }
-
-    .nav-actions {
-      display: flex; align-items: center; gap: .75rem;
-      margin-left: auto;
-    }
-    .nav-icon-btn {
-      position: relative;
-      background: none; border: none; cursor: pointer;
-      color: var(--muted); padding: .4rem;
-      border-radius: 8px; display: flex; align-items: center;
-      transition: color .2s, background .2s;
-    }
-    .nav-icon-btn:hover { color: var(--brand); background: #eff6ff; }
-    .nav-icon-btn svg { width: 22px; height: 22px; }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: #ef4444;
-      color: #fff;
-      font-size: .65rem; font-weight: 800;
-      min-width: 18px; height: 18px;
-      border-radius: 999px;
-      display: flex; align-items: center; justify-content: center;
-      border: 2px solid var(--white);
-      padding: 0 3px;
-      animation: badgePop .4s cubic-bezier(.36,2,.6,1) both;
-      box-shadow: 0 2px 6px rgba(239,68,68,.5);
-    }
-    @keyframes badgePop {
-      0%   { transform: scale(0); opacity: 0; }
-      60%  { transform: scale(1.3); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .nav-divider {
-      width: 1px; height: 24px;
-      background: var(--border); margin: 0 .25rem;
-    }
-    .nav-link-btn {
-      background: none; border: none; cursor: pointer;
-      color: var(--muted); font-size: .875rem; font-weight: 500;
-      font-family: inherit; padding: .4rem .6rem;
-      border-radius: 8px; text-decoration: none;
-      transition: color .2s, background .2s;
-      white-space: nowrap;
-    }
-    .nav-link-btn:hover { color: var(--brand); background: #eff6ff; }
-    .nav-cta {
-      background: var(--brand); color: var(--white);
-      padding: .5rem 1.2rem; border-radius: 8px;
-      font-size: .875rem; font-weight: 600;
-      text-decoration: none; border: none; cursor: pointer;
-      font-family: inherit; white-space: nowrap;
-      transition: background .2s;
-    }
-    .nav-cta:hover { background: var(--brand-dark); }
-    .hamburger {
-      display: none; flex-direction: column;
-      gap: 5px; background: none; border: none;
-      cursor: pointer; padding: .4rem;
-    }
-    .hamburger span {
-      display: block; width: 22px; height: 2px;
-      background: var(--text); border-radius: 2px;
-      transition: transform .3s, opacity .3s;
-    }
-    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* Drawer */
-    .nav-drawer {
-      position: fixed; top: 64px; left: 0; bottom: 0;
-      width: 280px; background: var(--white);
-      border-right: 1px solid var(--border);
-      box-shadow: 4px 0 20px rgba(0,0,0,.1);
-      transform: translateX(-100%);
-      transition: transform .3s ease;
-      z-index: 190; padding: 1.5rem;
-      display: flex; flex-direction: column; gap: .5rem;
-    }
-    .nav-drawer.open { transform: translateX(0); }
-    .drawer-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,.3); z-index: 180;
-    }
-    .drawer-overlay.open { display: block; }
-    .drawer-link {
-      display: flex; align-items: center; gap: .75rem;
-      padding: .8rem 1rem; border-radius: 10px;
-      color: var(--text); text-decoration: none;
-      font-weight: 500; font-size: .95rem;
-      transition: background .2s, color .2s;
-    }
-    .drawer-link:hover, .drawer-link.active {
-      background: #eff6ff; color: var(--brand);
-    }
-    .drawer-link svg { width: 18px; height: 18px; opacity: .7; }
-    .drawer-divider {
-      height: 1px; background: var(--border);
-      margin: .5rem 0;
-    }
-    .drawer-cta {
-      display: block; text-align: center;
-      background: var(--brand); color: var(--white);
-      padding: .8rem; border-radius: 10px;
-      font-weight: 600; text-decoration: none;
-      margin-top: auto; transition: background .2s;
-    }
-    .drawer-cta:hover { background: var(--brand-dark); }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .nav-search { display: none; }
-      .nav-divider, .nav-link-btn { display: none; }
-      .hamburger { display: flex; }
-    }
-    @media (max-width: 480px) {
-      .nav-cta { display: none; }
-    }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative; overflow: hidden;
-      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #3b82f6 100%);
-      color: var(--white);
-      padding: 7rem 2rem 6rem;
-      text-align: center;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,.15);
-      border: 1px solid rgba(255,255,255,.3);
-      color: var(--white);
-      font-size: .8rem; font-weight: 600;
-      letter-spacing: .08em; text-transform: uppercase;
-      padding: .4rem 1rem; border-radius: 999px;
-      margin-bottom: 1.5rem;
-      backdrop-filter: blur(8px);
-    }
-    .hero h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      font-weight: 900; line-height: 1.1;
-      margin-bottom: 1.25rem;
-    }
-    .hero h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 1.15rem; font-weight: 300;
-      max-width: 600px; margin: 0 auto 2.5rem;
-      opacity: .9;
-    }
-    .hero-stats {
-      display: flex; justify-content: center; flex-wrap: wrap;
-      gap: 2.5rem; margin-top: 3.5rem;
-    }
-    .stat {
-      text-align: center;
-      animation: fadeUp .6s ease both;
-    }
-    .stat:nth-child(1) { animation-delay: .1s; }
-    .stat:nth-child(2) { animation-delay: .2s; }
-    .stat:nth-child(3) { animation-delay: .3s; }
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem; font-weight: 700;
-      color: var(--accent);
-    }
-    .stat-label { font-size: .85rem; opacity: .8; font-weight: 400; }
-
-    /* ── SECTIONS ── */
-    section { padding: 5rem 2rem; }
-    .container { max-width: 1100px; margin: 0 auto; }
-    .section-tag {
-      display: inline-block;
-      background: #eff6ff; color: var(--brand);
-      font-size: .78rem; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      padding: .35rem .9rem; border-radius: 999px;
-      margin-bottom: 1rem;
-    }
-    h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 4vw, 2.8rem);
-      font-weight: 700; line-height: 1.2;
-      margin-bottom: 1rem;
-    }
-    .lead {
-      font-size: 1.05rem; color: var(--muted);
-      max-width: 640px; margin-bottom: 2.5rem;
-    }
-
-    /* ── STORY ── */
-    .story-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem; align-items: center;
-    }
-    .story-visual {
-      position: relative;
-      background: linear-gradient(135deg, #dbeafe, #eff6ff);
-      border-radius: 20px;
-      padding: 3rem 2.5rem;
-      overflow: hidden;
-    }
-    .story-visual::after {
-      content: '';
-      position: absolute; bottom: -30px; right: -30px;
-      width: 160px; height: 160px;
-      background: var(--brand);
-      border-radius: 50%; opacity: .08;
-    }
-    .story-year {
-      font-family: 'Playfair Display', serif;
-      font-size: 5rem; font-weight: 900;
-      color: var(--brand); opacity: .15;
-      line-height: 1;
-    }
-    .story-quote {
-      font-size: 1.2rem; font-weight: 600;
-      color: var(--brand-dark);
-      margin-top: .5rem; line-height: 1.5;
-    }
-    .story-author {
-      margin-top: 1.5rem; font-size: .875rem;
-      color: var(--muted); font-style: italic;
-    }
-    .story-text p { margin-bottom: 1.25rem; color: #374151; line-height: 1.8; }
-
-    /* ── OFFERINGS ── */
-    .offerings { background: var(--white); }
-    .offerings-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.75rem;
-    }
-    .offering-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      transition: transform .25s, box-shadow .25s;
-    }
-    .offering-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--card-shadow);
-    }
-    .offering-icon {
-      width: 52px; height: 52px;
-      background: #dbeafe;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .offering-card h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.2rem; font-weight: 700;
-      margin-bottom: .5rem;
-    }
-    .offering-card p { font-size: .9rem; color: var(--muted); line-height: 1.6; }
-
-    /* ── VALUES ── */
-    .values-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-    }
-    .value-item {
-      display: flex; gap: 1rem; align-items: flex-start;
-    }
-    .value-dot {
-      width: 10px; height: 10px; min-width: 10px;
-      background: var(--accent);
-      border-radius: 50%; margin-top: 6px;
-    }
-    .value-item strong { display: block; font-size: .95rem; margin-bottom: .25rem; }
-    .value-item span { font-size: .875rem; color: var(--muted); }
-
-    /* ── TIMELINE ── */
-    .timeline { background: var(--white); }
-    .timeline-track {
-      position: relative;
-      padding-left: 2.5rem;
-    }
-    .timeline-track::before {
-      content: '';
-      position: absolute; left: 8px; top: 0; bottom: 0;
-      width: 2px; background: var(--border);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 2.5rem;
-    }
-    .timeline-item::before {
-      content: '';
-      position: absolute; left: -2.5rem; top: 4px;
-      width: 18px; height: 18px;
-      background: var(--brand); border-radius: 50%;
-      border: 3px solid var(--white);
-      box-shadow: 0 0 0 2px var(--brand);
-    }
-    .timeline-date {
-      font-size: .78rem; font-weight: 700;
-      color: var(--brand); letter-spacing: .06em;
-      text-transform: uppercase; margin-bottom: .3rem;
-    }
-    .timeline-item h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.05rem; font-weight: 700; margin-bottom: .25rem;
-    }
-    .timeline-item p { font-size: .88rem; color: var(--muted); }
-
-    /* ── CTA ── */
-    .cta-section {
-      background: linear-gradient(135deg, #1e3a8a, #2563eb);
-      color: var(--white); text-align: center;
-    }
-    .cta-section h2 { color: var(--white); }
-    .cta-section .lead { color: rgba(255,255,255,.8); margin: 0 auto 2rem; }
-    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--accent); color: #1c1917;
-      font-weight: 700; font-size: .95rem;
-      padding: .85rem 2rem; border-radius: 10px;
-      text-decoration: none; transition: filter .2s;
-    }
-    .btn-primary:hover { filter: brightness(1.1); }
-    .btn-outline {
-      background: transparent; color: var(--white);
-      border: 2px solid rgba(255,255,255,.5);
-      font-weight: 600; font-size: .95rem;
-      padding: .85rem 2rem; border-radius: 10px;
-      text-decoration: none; transition: border-color .2s, background .2s;
-    }
-    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
-
-    /* ── FOOTER ── */
-    footer {
-      background: #111827; color: #9ca3af;
-      text-align: center; padding: 2rem;
-      font-size: .85rem;
-    }
-    footer a { color: #d1d5db; text-decoration: none; }
-    footer a:hover { color: var(--white); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .reveal {
-      opacity: 0; transform: translateY(20px);
-      transition: opacity .6s ease, transform .6s ease;
-    }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .story-grid { grid-template-columns: 1fr; gap: 2rem; }
-    }
+    body { font-family:"DM Sans",sans-serif; color:var(--text); background:var(--bg); line-height:1.6; }
+    .navbar { position:sticky; top:0; z-index:200; background:var(--white); border-bottom:1px solid var(--border); box-shadow:0 1px 8px rgba(0,0,0,.06); }
+    .navbar-top { display:flex; align-items:center; gap:1rem; padding:0 1.5rem; height:64px; }
+    .nav-logo { font-family:"Playfair Display",serif; font-size:1.6rem; font-weight:900; color:var(--brand); text-decoration:none; letter-spacing:-.5px; white-space:nowrap; margin-right:.5rem; }
+    .nav-search { flex:1; max-width:480px; display:flex; align-items:center; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; overflow:hidden; transition:border-color .2s; }
+    .nav-search:focus-within { border-color:var(--brand); }
+    .nav-search input { flex:1; border:none; background:transparent; padding:.55rem 1rem; font-size:.9rem; font-family:inherit; outline:none; color:var(--text); }
+    .nav-search button { background:var(--brand); border:none; cursor:pointer; padding:.55rem .9rem; color:var(--white); display:flex; align-items:center; transition:background .2s; }
+    .nav-search button:hover { background:var(--brand-dark); }
+    .nav-search svg { width:16px; height:16px; }
+    .nav-actions { display:flex; align-items:center; gap:.75rem; margin-left:auto; }
+    .nav-icon-btn { position:relative; background:none; border:none; cursor:pointer; color:var(--muted); padding:.4rem; border-radius:8px; display:flex; align-items:center; transition:color .2s,background .2s; }
+    .nav-icon-btn:hover { color:var(--brand); background:#eff6ff; }
+    .nav-icon-btn svg { width:22px; height:22px; }
+    .cart-badge { position:absolute; top:-6px; right:-6px; background:#ef4444; color:#fff; font-size:.65rem; font-weight:800; min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content:center; border:2px solid var(--white); padding:0 3px; }
+    .nav-divider { width:1px; height:24px; background:var(--border); margin:0 .25rem; }
+    .nav-link-btn { background:none; border:none; cursor:pointer; color:var(--muted); font-size:.875rem; font-weight:500; font-family:inherit; padding:.4rem .6rem; border-radius:8px; text-decoration:none; transition:color .2s,background .2s; white-space:nowrap; }
+    .nav-link-btn:hover { color:var(--brand); background:#eff6ff; }
+    .nav-cta { background:var(--brand); color:var(--white); padding:.5rem 1.2rem; border-radius:8px; font-size:.875rem; font-weight:600; text-decoration:none; border:none; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .2s; }
+    .nav-cta:hover { background:var(--brand-dark); }
+    .hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:.4rem; }
+    .hamburger span { display:block; width:22px; height:2px; background:var(--text); border-radius:2px; transition:transform .3s,opacity .3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .nav-drawer { position:fixed; top:64px; left:0; bottom:0; width:280px; background:var(--white); border-right:1px solid var(--border); box-shadow:4px 0 20px rgba(0,0,0,.1); transform:translateX(-100%); transition:transform .3s ease; z-index:190; padding:1.5rem; display:flex; flex-direction:column; gap:.5rem; }
+    .nav-drawer.open { transform:translateX(0); }
+    .drawer-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:180; }
+    .drawer-overlay.open { display:block; }
+    .drawer-link { display:flex; align-items:center; gap:.75rem; padding:.8rem 1rem; border-radius:10px; color:var(--text); text-decoration:none; font-weight:500; font-size:.95rem; transition:background .2s,color .2s; }
+    .drawer-link:hover,.drawer-link.active { background:#eff6ff; color:var(--brand); }
+    .drawer-link svg { width:18px; height:18px; opacity:.7; }
+    .drawer-divider { height:1px; background:var(--border); margin:.5rem 0; }
+    .drawer-cta { display:block; text-align:center; background:var(--brand); color:var(--white); padding:.8rem; border-radius:10px; font-weight:600; text-decoration:none; margin-top:auto; transition:background .2s; }
+    .drawer-cta:hover { background:var(--brand-dark); }
+    @media(max-width:768px) { .nav-search,.nav-divider,.nav-link-btn { display:none; } .hamburger { display:flex; } }
+    @media(max-width:480px) { .nav-cta { display:none; } }
+    .hero { position:relative; overflow:hidden; background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#3b82f6 100%); color:var(--white); padding:6rem 2rem 5rem; text-align:center; }
+    .hero-badge { display:inline-block; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.3); color:var(--white); font-size:.8rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:.4rem 1rem; border-radius:999px; margin-bottom:1.5rem; backdrop-filter:blur(8px); }
+    .hero h1 { font-family:"Playfair Display",serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.1; margin-bottom:1rem; }
+    .hero h1 span { color:var(--accent); }
+    .hero p { font-size:1.05rem; font-weight:300; max-width:560px; margin:0 auto; opacity:.9; }
+    section { padding:4.5rem 2rem; }
+    .container { max-width:1000px; margin:0 auto; }
+    .section-tag { display:inline-block; background:#eff6ff; color:var(--brand); font-size:.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:.35rem .9rem; border-radius:999px; margin-bottom:1rem; }
+    h2 { font-family:"Playfair Display",serif; font-size:clamp(1.8rem,3.5vw,2.5rem); font-weight:700; line-height:1.2; margin-bottom:1rem; }
+    .founder-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    .founder-card { background:linear-gradient(135deg,#dbeafe,#eff6ff); border-radius:20px; padding:2.5rem; position:relative; overflow:hidden; }
+    .founder-card::after { content:""; position:absolute; bottom:-30px; right:-30px; width:140px; height:140px; background:var(--brand); border-radius:50%; opacity:.08; }
+    .founder-initial { font-family:"Playfair Display",serif; font-size:5rem; font-weight:900; color:var(--brand); opacity:.15; line-height:1; }
+    .founder-quote { font-size:1.1rem; font-weight:600; color:var(--brand-dark); margin-top:.5rem; line-height:1.5; }
+    .founder-name { margin-top:1.25rem; font-size:.875rem; color:var(--muted); font-style:italic; }
+    .founder-text p { margin-bottom:1.1rem; color:#374151; line-height:1.8; font-size:.97rem; }
+    .founder-chips { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.5rem; }
+    .chip { background:#dbeafe; color:var(--brand); font-size:.78rem; font-weight:600; padding:.3rem .8rem; border-radius:999px; }
+    .offerings { background:var(--white); }
+    .offerings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.5rem; }
+    .offering-card { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:1.75rem; transition:transform .25s,box-shadow .25s; }
+    .offering-card:hover { transform:translateY(-4px); box-shadow:var(--card-shadow); }
+    .offering-icon { width:48px; height:48px; background:#dbeafe; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:1rem; }
+    .offering-card h3 { font-family:"Playfair Display",serif; font-size:1.1rem; font-weight:700; margin-bottom:.4rem; }
+    .offering-card p { font-size:.88rem; color:var(--muted); line-height:1.6; }
+    .cta-section { background:linear-gradient(135deg,#1e3a8a,#2563eb); color:var(--white); text-align:center; }
+    .cta-section h2 { color:var(--white); }
+    .cta-lead { font-size:1rem; color:rgba(255,255,255,.8); margin:0 auto 2rem; max-width:500px; }
+    .cta-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .btn-primary { background:var(--accent); color:#1c1917; font-weight:700; font-size:.95rem; padding:.85rem 2rem; border-radius:10px; text-decoration:none; transition:filter .2s; }
+    .btn-primary:hover { filter:brightness(1.1); }
+    .btn-outline { background:transparent; color:var(--white); border:2px solid rgba(255,255,255,.5); font-weight:600; font-size:.95rem; padding:.85rem 2rem; border-radius:10px; text-decoration:none; transition:border-color .2s,background .2s; }
+    .btn-outline:hover { border-color:var(--white); background:rgba(255,255,255,.08); }
+    footer { background:#111827; color:#9ca3af; text-align:center; padding:2rem; font-size:.85rem; }
+    footer a { color:#d1d5db; text-decoration:none; }
+    footer a:hover { color:var(--white); }
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+    @media(max-width:768px) { .founder-grid { grid-template-columns:1fr; gap:2rem; } }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <div class="navbar">
     <div class="navbar-top">
-      <!-- Hamburger -->
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-
-      <!-- Logo -->
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <a class="nav-logo" href="../index.html">ShopFlow</a>
-
-      <!-- Search -->
       <div class="nav-search">
-        <input type="text" placeholder="Search products…" id="nav-search-input" />
+        <input type="text" placeholder="Search products..." id="nav-search-input" />
         <button onclick="handleSearch()" aria-label="Search">
-          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
       </div>
-
-      <!-- Right actions -->
       <div class="nav-actions">
         <a href="login.html" class="nav-link-btn" id="nav-login-link">Login</a>
         <div class="nav-divider"></div>
-
-        <!-- Cart -->
         <button class="nav-icon-btn" onclick="window.location.href='cart.html'" aria-label="Cart">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-          </svg>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span class="cart-badge" id="cart-count" style="display:none">0</span>
         </button>
-
-        <!-- Profile -->
         <button class="nav-icon-btn" onclick="window.location.href='profile.html'" aria-label="Profile">
-          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-          </svg>
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </button>
-
         <a class="nav-cta" id="nav-auth-btn" href="register.html">Get Started</a>
       </div>
     </div>
   </div>
 
-  <!-- Drawer overlay -->
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-
-  <!-- Side Drawer -->
   <nav class="nav-drawer" id="nav-drawer">
-    <a class="drawer-link" href="../index.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Home
-    </a>
-    <a class="drawer-link active" href="about.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      About
-    </a>
-    <a class="drawer-link" href="purchases.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-      My Orders
-    </a>
-    <a class="drawer-link" href="profile.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Profile
-    </a>
-    <a class="drawer-link" href="dashboard.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a class="drawer-link" href="my-products.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-      Seller Dashboard
-    </a>
-    <a class="drawer-link" href="settings.html">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
-      Settings
-    </a>
+    <a class="drawer-link" href="../index.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</a>
+    <a class="drawer-link active" href="about.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>About</a>
+    <a class="drawer-link" href="purchases.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>My Orders</a>
+    <a class="drawer-link" href="profile.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</a>
+    <a class="drawer-link" href="dashboard.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+    <a class="drawer-link" href="my-products.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Seller Dashboard</a>
+    <a class="drawer-link" href="settings.html"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Settings</a>
     <div class="drawer-divider"></div>
-    <a class="drawer-link" href="login.html" id="drawer-login-link">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-      Login
-    </a>
+    <a class="drawer-link" href="login.html" id="drawer-login-link"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Login</a>
     <a class="drawer-cta" href="register.html" id="drawer-cta-btn">Create Account</a>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
-    <div class="hero-badge">✦ Est. 2026 &nbsp;·&nbsp; Built with purpose</div>
-    <h1>Shopping made<br><span>effortless</span></h1>
-    <p>ShopFlow is the modern marketplace connecting buyers and sellers through a fast, secure, and beautifully simple platform.</p>
-    <div class="hero-stats">
-      <div class="stat">
-        <div class="stat-num">2026</div>
-        <div class="stat-label">Founded</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">100%</div>
-        <div class="stat-label">Full-Stack Built</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num">∞</div>
-        <div class="stat-label">Products to Discover</div>
-      </div>
-    </div>
+    <div class="hero-badge">&#10022; Est. 2026 &nbsp;&middot;&nbsp; Built from scratch</div>
+    <h1>Built by one.<br><span>Built for everyone.</span></h1>
+    <p>ShopFlow is a production-grade e-commerce platform designed, developed, and deployed by Damon Bly Jr &mdash; a full-stack developer based in Kansas City, Missouri.</p>
   </section>
 
-  <!-- OUR STORY -->
   <section>
     <div class="container">
-      <div class="story-grid">
-        <div class="story-visual reveal">
-          <div class="story-year">2026</div>
-          <div class="story-quote">"We built the platform we always wished existed."</div>
-          <div class="story-author">— The ShopFlow Team</div>
+      <div class="founder-grid">
+        <div class="founder-card reveal">
+          <div class="founder-initial">D</div>
+          <div class="founder-quote">"I didn't wait for an opportunity &mdash; I built one."</div>
+          <div class="founder-name">&mdash; Damon Bly Jr, Founder</div>
         </div>
-        <div class="story-text reveal">
-          <div class="section-tag">Our Story</div>
-          <h2>Born from a simple idea</h2>
-          <p>ShopFlow was founded in 2026 with one goal in mind: make buying and selling online feel as natural as shopping at your favorite local store — without the friction, the hidden fees, or the clunky interfaces that plague so many marketplaces.</p>
-          <p>We set out to build a full-stack e-commerce platform from scratch — a real product with real users, real transactions, and real trust at its core. Every feature, from secure authentication to seller onboarding to order tracking, was designed with people first.</p>
-          <p>Today, ShopFlow is a growing marketplace where anyone can list products, reach customers, and get paid — and where shoppers can discover unique items with confidence.</p>
+        <div class="founder-text reveal">
+          <div class="section-tag">The Founder</div>
+          <h2>Damon Bly Jr</h2>
+          <p>After 10+ years in operations and logistics, Damon transitioned full-time into software development &mdash; teaching himself full-stack engineering while working as a rideshare driver in Kansas City.</p>
+          <p>ShopFlow is the result: a complete, production-deployed e-commerce platform built independently from the ground up, featuring JWT authentication, role-based access control, a normalized PostgreSQL database, and a RESTful API spanning 15+ endpoints.</p>
+          <p>Currently pursuing a B.S. in Computer Science at Columbia College, with IBM certificates in Front-End Development and Network Security completed in 2026.</p>
+          <div class="founder-chips">
+            <span class="chip">Node.js</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">JavaScript</span>
+            <span class="chip">React.js</span>
+            <span class="chip">REST APIs</span>
+            <span class="chip">JWT Auth</span>
+            <span class="chip">Vercel</span>
+            <span class="chip">Docker</span>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- WHAT WE OFFER -->
   <section class="offerings">
     <div class="container">
-      <div style="text-align:center; margin-bottom: 3rem;" class="reveal">
-        <div class="section-tag">What We Offer</div>
-        <h2>Everything you need, nothing you don't</h2>
-        <p class="lead" style="margin: 0 auto;">ShopFlow brings together the full shopping experience — browsing, buying, selling, and managing — in one seamless platform.</p>
+      <div style="text-align:center;margin-bottom:2.5rem;" class="reveal">
+        <div class="section-tag">What's Built In</div>
+        <h2>A full platform, not a prototype</h2>
       </div>
       <div class="offerings-grid">
         <div class="offering-card reveal">
-          <div class="offering-icon">🛍️</div>
-          <h3>Curated Marketplace</h3>
-          <p>Browse thousands of products across categories — electronics, clothing, home goods, and more — with smart search and filters that actually work.</p>
+          <div class="offering-icon">&#128274;</div>
+          <h3>JWT Authentication</h3>
+          <p>Secure login, email verification via Resend API, and role-based access for buyers, sellers, and admins.</p>
         </div>
         <div class="offering-card reveal">
-          <div class="offering-icon">🏪</div>
-          <h3>Seller Tools</h3>
-          <p>List products, manage inventory, track orders, and grow your business with a full-featured seller dashboard built for real merchants.</p>
+          <div class="offering-icon">&#128452;</div>
+          <h3>Normalized Database</h3>
+          <p>7-table PostgreSQL schema with indexes, a place_order() stored procedure, and a top products view.</p>
         </div>
         <div class="offering-card reveal">
-          <div class="offering-icon">🔒</div>
-          <h3>Secure Accounts</h3>
-          <p>Verified accounts, email confirmation, and robust authentication keep your data and transactions protected every step of the way.</p>
+          <div class="offering-icon">&#127978;</div>
+          <h3>Seller Dashboard</h3>
+          <p>Full seller onboarding with 4-step registration, product management, payout tracking, and 1099 tax tools.</p>
         </div>
         <div class="offering-card reveal">
-          <div class="offering-icon">📦</div>
+          <div class="offering-icon">&#128230;</div>
           <h3>Order Management</h3>
-          <p>Track every purchase from placement to delivery. Full order history, status updates, and buyer protection are built right in.</p>
+          <p>Cart, checkout, and inventory decrement handled atomically in a single transaction. Full order history included.</p>
         </div>
         <div class="offering-card reveal">
-          <div class="offering-icon">⭐</div>
-          <h3>Reviews & Ratings</h3>
-          <p>Honest reviews from real buyers help you shop with confidence and help sellers build the reputation they deserve.</p>
+          <div class="offering-icon">&#11088;</div>
+          <h3>Reviews &amp; Ratings</h3>
+          <p>Verified buyer reviews with aggregate ratings surfaced directly in the product listing query via SQL JOIN.</p>
         </div>
         <div class="offering-card reveal">
-          <div class="offering-icon">💳</div>
-          <h3>Banking & Payouts</h3>
-          <p>Sellers can connect banking details, track earnings, and manage 1099 tax information — all from within the ShopFlow dashboard.</p>
+          <div class="offering-icon">&#128640;</div>
+          <h3>Deployed on Vercel</h3>
+          <p>Frontend and backend unified on Vercel &mdash; serverless, fast, and always available with zero cold-start delays.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- VALUES -->
-  <section>
-    <div class="container">
-      <div class="reveal" style="max-width: 640px; margin-bottom: 3rem;">
-        <div class="section-tag">Our Values</div>
-        <h2>Principles that guide every decision</h2>
-      </div>
-      <div class="values-list">
-        <div class="value-item reveal">
-          <div class="value-dot"></div>
-          <div>
-            <strong>Transparency</strong>
-            <span>No hidden fees, no buried terms. What you see is what you get on ShopFlow.</span>
-          </div>
-        </div>
-        <div class="value-item reveal">
-          <div class="value-dot"></div>
-          <div>
-            <strong>Simplicity</strong>
-            <span>Complex systems built simply. Every page, every flow is designed for real people.</span>
-          </div>
-        </div>
-        <div class="value-item reveal">
-          <div class="value-dot"></div>
-          <div>
-            <strong>Security</strong>
-            <span>Your data and your money are treated with the same care we'd want for our own.</span>
-          </div>
-        </div>
-        <div class="value-item reveal">
-          <div class="value-dot"></div>
-          <div>
-            <strong>Community</strong>
-            <span>We build for buyers and sellers equally — success on ShopFlow means everyone wins.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TIMELINE -->
-  <section class="timeline">
-    <div class="container">
-      <div class="reveal" style="max-width: 580px; margin-bottom: 3rem;">
-        <div class="section-tag">Milestones</div>
-        <h2>How we got here</h2>
-      </div>
-      <div class="timeline-track">
-        <div class="timeline-item reveal">
-          <div class="timeline-date">Early 2026</div>
-          <h3>Idea & Architecture</h3>
-          <p>ShopFlow began as a blueprint — a full-stack e-commerce platform designed from the ground up with Node.js, PostgreSQL, and a clean vanilla frontend.</p>
-        </div>
-        <div class="timeline-item reveal">
-          <div class="timeline-date">Mid 2026</div>
-          <h3>Core Platform Launch</h3>
-          <p>Authentication, product listings, cart, and checkout went live. The seller registration flow and dashboard were built and tested with real data.</p>
-        </div>
-        <div class="timeline-item reveal">
-          <div class="timeline-date">Late 2026</div>
-          <h3>Seller Ecosystem & Reviews</h3>
-          <p>Seller onboarding, banking details, order management, and the review system were completed, turning ShopFlow into a true two-sided marketplace.</p>
-        </div>
-        <div class="timeline-item reveal">
-          <div class="timeline-date">2027 & Beyond</div>
-          <h3>Growing the Community</h3>
-          <p>ShopFlow continues to grow — improving the buyer experience, expanding seller tools, and welcoming new users to the platform every day.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
   <section class="cta-section">
     <div class="container reveal" style="text-align:center;">
-      <div class="section-tag" style="background:rgba(255,255,255,.15); color:#fff;">Join Us</div>
-      <h2>Ready to start shopping — or selling?</h2>
-      <p class="lead">Create your free ShopFlow account today and experience the marketplace built with you in mind.</p>
+      <div class="section-tag" style="background:rgba(255,255,255,.15);color:#fff;">Explore</div>
+      <h2>See it in action</h2>
+      <p class="cta-lead">Browse the marketplace, create an account, or view the full source on GitHub.</p>
       <div class="cta-buttons">
         <a href="register.html" class="btn-primary">Create an Account</a>
         <a href="products.html" class="btn-outline">Browse Products</a>
@@ -694,130 +218,48 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
-    <p>&copy; <span id="year"></span> ShopFlow. All rights reserved. &nbsp;·&nbsp;
-      <a href="about.html">About Us</a> &nbsp;·&nbsp;
-      <a href="settings.html">Settings</a> &nbsp;·&nbsp;
+    <p>&copy; <span id="year"></span> ShopFlow &nbsp;&middot;&nbsp; Built by Damon Bly Jr &nbsp;&middot;&nbsp;
+      <a href="about.html">About</a> &nbsp;&middot;&nbsp;
+      <a href="settings.html">Settings</a> &nbsp;&middot;&nbsp;
       <a href="login.html">Login</a>
     </p>
   </footer>
 
-    <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // Drawer
-    const hamburger = document.getElementById('hamburger');
-    const drawer    = document.getElementById('nav-drawer');
-    const overlay   = document.getElementById('drawer-overlay');
-    function openDrawer() {
-      drawer.classList.add('open');
-      overlay.classList.add('open');
-      hamburger.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeDrawer() {
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      hamburger.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    hamburger.addEventListener('click', () => {
-      drawer.classList.contains('open') ? closeDrawer() : openDrawer();
-    });
-
-    // Search
-    function handleSearch() {
-      const q = document.getElementById('nav-search-input').value.trim();
-      if (q) window.location.href = '../index.html?search=' + encodeURIComponent(q);
-    }
-    document.getElementById('nav-search-input').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') handleSearch();
-    });
-
-    // Auth-aware navbar
-    function handleLogout() {
-      localStorage.removeItem('sf_token');
-      localStorage.removeItem('sf_user');
-      sessionStorage.removeItem('sf_token');
-      sessionStorage.removeItem('sf_user');
-      window.location.href = 'login.html';
-    }
-
-    (function updateNavAuth() {
-      const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
-      const navAuthBtn      = document.getElementById('nav-auth-btn');
-      const navLoginLink    = document.getElementById('nav-login-link');
-      const drawerLoginLink = document.getElementById('drawer-login-link');
-      const drawerCtaBtn    = document.getElementById('drawer-cta-btn');
-
-      if (token) {
-        navLoginLink.style.display = 'none';
-        document.querySelector('.nav-divider').style.display = 'none';
-        navAuthBtn.textContent = 'Logout';
-        navAuthBtn.href = '#';
-        navAuthBtn.style.background = 'transparent';
-        navAuthBtn.style.color = '#dc2626';
-        navAuthBtn.style.border = '2px solid #dc2626';
-        navAuthBtn.addEventListener('click', function(e) { e.preventDefault(); handleLogout(); });
-
-        drawerLoginLink.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout';
-        drawerLoginLink.href = '#';
-        drawerLoginLink.addEventListener('click', function(e) { e.preventDefault(); handleLogout(); });
-        drawerCtaBtn.textContent = 'Go to Dashboard';
-        drawerCtaBtn.href = 'dashboard.html';
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    const observer = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting){e.target.classList.add("visible");observer.unobserve(e.target);} }); }, {threshold:0.12});
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    const hamburger=document.getElementById("hamburger"),drawer=document.getElementById("nav-drawer"),overlay=document.getElementById("drawer-overlay");
+    function openDrawer(){drawer.classList.add("open");overlay.classList.add("open");hamburger.classList.add("open");document.body.style.overflow="hidden";}
+    function closeDrawer(){drawer.classList.remove("open");overlay.classList.remove("open");hamburger.classList.remove("open");document.body.style.overflow="";}
+    hamburger.addEventListener("click",()=>drawer.classList.contains("open")?closeDrawer():openDrawer());
+    function handleSearch(){const q=document.getElementById("nav-search-input").value.trim();if(q)window.location.href="../index.html?search="+encodeURIComponent(q);}
+    document.getElementById("nav-search-input").addEventListener("keydown",function(e){if(e.key==="Enter")handleSearch();});
+    function handleLogout(){localStorage.removeItem("sf_token");localStorage.removeItem("sf_user");sessionStorage.removeItem("sf_token");sessionStorage.removeItem("sf_user");window.location.href="login.html";}
+    (function updateNavAuth(){
+      const token=localStorage.getItem("sf_token")||sessionStorage.getItem("sf_token");
+      const navAuthBtn=document.getElementById("nav-auth-btn"),navLoginLink=document.getElementById("nav-login-link"),drawerLoginLink=document.getElementById("drawer-login-link"),drawerCtaBtn=document.getElementById("drawer-cta-btn");
+      if(token){
+        navLoginLink.style.display="none";document.querySelector(".nav-divider").style.display="none";
+        navAuthBtn.textContent="Logout";navAuthBtn.href="#";navAuthBtn.style.background="transparent";navAuthBtn.style.color="#dc2626";navAuthBtn.style.border="2px solid #dc2626";
+        navAuthBtn.addEventListener("click",function(e){e.preventDefault();handleLogout();});
+        drawerLoginLink.textContent="Logout";drawerLoginLink.href="#";drawerLoginLink.addEventListener("click",function(e){e.preventDefault();handleLogout();});
+        drawerCtaBtn.textContent="Go to Dashboard";drawerCtaBtn.href="dashboard.html";
       }
     })();
-
-    // Cart count from API
-    (async function loadCart() {
-      try {
-        const sfToken = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
-        if (!sfToken) return;
-        const res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', {
-          headers: { 'Authorization': 'Bearer ' + sfToken }
-        });
-        if (!res.ok) return;
-        const data = await res.json();
-        const items = Array.isArray(data) ? data : (data.items || data.cart || []);
-        const total = items.reduce(function(sum, item) { return sum + (item.quantity || 1); }, 0);
-        const badge = document.getElementById('cart-count');
-        if (total > 0) {
-          badge.textContent = total;
-          badge.style.display = 'flex';
-        }
-      } catch(e) { console.error('Cart error:', e); }
-    })();
-  
-    // Show Seller's Profile link for sellers
-    (function() {
-      var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
-      if (user.isSeller || user.role === 'seller') {
-        var link = document.getElementById('seller-drawer-link');
-        if (link) link.style.display = 'flex';
-      }
-    })();
-  
-    // Show Seller's Profile link for sellers
-    (function() {
-      try {
-        var user = JSON.parse(localStorage.getItem('sf_user') || '{}');
-        if (user.role === 'seller' || user.role === 'admin') {
-          var el = document.getElementById('drawer-seller-link');
-          if (el) el.style.display = 'flex';
-        }
-      } catch(e) {}
+    (async function loadCart(){
+      try{
+        const t=localStorage.getItem("sf_token")||sessionStorage.getItem("sf_token");
+        if(!t)return;
+        const res=await fetch("/api/cart",{headers:{"Authorization":"Bearer "+t}});
+        if(!res.ok)return;
+        const data=await res.json();
+        const items=Array.isArray(data)?data:(data.items||data.cart||[]);
+        const total=items.reduce(function(s,i){return s+(i.quantity||1);},0);
+        const badge=document.getElementById("cart-count");
+        if(total>0){badge.textContent=total;badge.style.display="flex";}
+      }catch(e){}
     })();
   </script>
 </body>
