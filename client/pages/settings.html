@@ -173,7 +173,7 @@
     </div>
 
     <div style="text-align:center;margin-top:1.5rem;">
-      <button class="btn-save" style="padding:.75rem 2.5rem;font-size:1rem;" onclick="saveSettings()">Save Settings</button>
+      <button class="btn-save" style="padding:.75rem 2.5rem;font-size:1rem;" id="save-settings-btn" onclick="saveSettings()">Save Settings</button>
     </div>
   </div>
 
@@ -272,6 +272,8 @@
       if (!token) {
         privateSections.forEach(s => s.style.display = 'none');
         if (guestMsg) guestMsg.style.display = 'block';
+        const saveBtn = document.getElementById('save-settings-btn');
+        if (saveBtn) saveBtn.style.display = 'none';
       }
     })();
 
