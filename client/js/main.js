@@ -40,7 +40,7 @@ function renderProducts(products) {
              Clear Search
            </button>
          </div>`
-      : '<p class="loading">No products found.</p>';
+      : '<p class="loading">No products in inventory.</p>';
     return;
   }
   grid.innerHTML = products.map(p => {
