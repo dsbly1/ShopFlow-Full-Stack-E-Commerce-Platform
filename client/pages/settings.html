@@ -99,8 +99,13 @@
       <p>Manage your account preferences</p>
     </div>
 
+    <div id="guest-msg" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:1.5rem;text-align:center;margin-bottom:1rem;">
+      <p style="color:#1d4ed8;font-weight:600;margin-bottom:.5rem;">You are not logged in</p>
+      <p style="color:#3b82f6;font-size:.9rem;margin-bottom:1rem;">Please log in to access your settings.</p>
+      <a href="login.html" style="background:#2563eb;color:#fff;padding:.6rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:600;font-size:.9rem;">Log In</a>
+    </div>
     <!-- Notifications -->
-    <div class="settings-card">
+    <div class="settings-card section-private">
       <div class="settings-card-header"><span class="icon">🔔</span><h2>Notifications</h2></div>
       <div class="settings-row">
         <div class="settings-row-info"><strong>Email notifications</strong><span>Receive order updates and promotions by email</span></div>
@@ -138,7 +143,7 @@
     </div>
 
     <!-- Privacy -->
-    <div class="settings-card">
+    <div class="settings-card section-private">
       <div class="settings-card-header"><span class="icon">🔒</span><h2>Privacy</h2></div>
       <div class="settings-row">
         <div class="settings-row-info"><strong>Profile visibility</strong><span>Allow other users to view your profile</span></div>
@@ -151,7 +156,7 @@
     </div>
 
     <!-- Account -->
-    <div class="settings-card">
+    <div class="settings-card section-private">
       <div class="settings-card-header"><span class="icon">👤</span><h2>Account</h2></div>
       <div class="settings-row">
         <div class="settings-row-info"><strong>Change password</strong><span>Update your account password</span></div>
@@ -260,6 +265,14 @@
       const token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
       const btn = document.getElementById('delete-account-btn');
       if (token && btn) btn.style.display = 'inline-block';
+
+      // Hide private sections from guests
+      const privateSections = document.querySelectorAll('.section-private');
+      const guestMsg = document.getElementById('guest-msg');
+      if (!token) {
+        privateSections.forEach(s => s.style.display = 'none');
+        if (guestMsg) guestMsg.style.display = 'block';
+      }
     })();
 
     function confirmDelete() {
