@@ -45,7 +45,7 @@ function renderProducts(products) {
   }
   grid.innerHTML = products.map(p => {
     const sellerLink = p.seller_id
-      ? `<a href="pages/seller-profile.html?id=${p.seller_id}" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.25rem;margin-top:.2rem;">${p.seller_name || 'View Seller'}</a>`
+      ? `<a href="pages/seller-profile.html?id=${p.seller_id}" onclick="event.stopPropagation()" style="font-size:.78rem;color:#2563eb;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.35rem;margin-top:.2rem;"><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(p.seller_name||'S')}&size=20&rounded=true&background=random&color=fff&bold=true&font-size=0.5" style="width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;" />${p.seller_name || 'View Seller'}</a>`
       : '';
     const rating = p.avg_rating && p.avg_rating > 0
       ? `⭐ ${p.avg_rating} (${p.review_count || 0})`
