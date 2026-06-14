@@ -159,3 +159,13 @@ updateCartCount();
     }, 600);
   }
 })();
+
+// Show friendly message during Render cold start
+(function() {
+  const THRESHOLD = 3000;
+  let timer = setTimeout(() => {
+    const el = document.getElementById('loading-msg');
+    if (el) el.textContent = 'Waking up server, please wait a moment...';
+  }, THRESHOLD);
+  document.addEventListener('products-loaded', () => clearTimeout(timer));
+})();

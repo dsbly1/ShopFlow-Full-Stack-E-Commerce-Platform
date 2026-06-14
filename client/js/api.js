@@ -26,5 +26,5 @@ const api = {
       .catch(function(){});
   }
   ping();
-  setInterval(ping, 14 * 60 * 1000);
+  setInterval(ping, 10 * 60 * 1000);
 })();
