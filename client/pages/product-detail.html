@@ -318,7 +318,7 @@
         var currentUser = JSON.parse(localStorage.getItem('sf_user') || 'null');
         var isOwnProduct = currentUser && p.seller_id && currentUser.id === p.seller_id;
         var sellerHtml = p.seller_id
-          ? '<a class="seller-link" href="' + (isOwnProduct ? 'my-products.html' : 'seller-profile.html?id=' + p.seller_id) + '">' + (isOwnProduct ? 'View Your Profile' : (p.seller_name || 'View Seller')) + '</a>'
+          ? '<a class="seller-link" href="' + (isOwnProduct ? 'my-products.html' : 'seller-profile.html?id=' + p.seller_id) + '" style="display:inline-flex;align-items:center;gap:.35rem;"><img src="https://ui-avatars.com/api/?name=' + encodeURIComponent(p.seller_name||'S') + '&size=20&rounded=true&background=random&color=fff&bold=true&font-size=0.5" style="width:20px;height:20px;border-radius:50%;object-fit:cover;flex-shrink:0;" />' + (isOwnProduct ? 'View Your Profile' : (p.seller_name || 'View Seller')) + '</a>'
           : '';
 
         var inStock = p.stock_qty > 0;
