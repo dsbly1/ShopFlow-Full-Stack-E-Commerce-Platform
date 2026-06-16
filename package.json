@@ -7,8 +7,16 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "client": "live-server client",
+    "test": "jest --testPathPatterns=server/__tests__",
+    "test:coverage": "jest --testPathPatterns=server/__tests__ --coverage",
     "db:migrate": "psql $DATABASE_URL -f database/schema.sql",
     "db:seed": "psql $DATABASE_URL -f database/seeds/seed.sql"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/server/__tests__/**/*.test.js"],
+    "testTimeout": 10000,
+    "setupFiles": ["./server/__tests__/setup.js"]
   },
   "keywords": [
     "ecommerce",
@@ -16,7 +24,7 @@
     "nodejs",
     "express"
   ],
-  "author": "",
+  "author": "Damon Bly Jr.",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -29,6 +37,8 @@
     "resend": "^6.12.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "jest": "^30.4.2",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.2.2"
   }
 }
