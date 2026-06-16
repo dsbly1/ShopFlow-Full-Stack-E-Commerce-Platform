@@ -122,6 +122,14 @@ Set environment variables in your Vercel project dashboard before deploying.
 - GitHub: [@dsbly1](https://github.com/dsbly1)
 - Live Project: https://shopflow-client.vercel.app
 
+## What I Learned
+
+- Designing atomic DB transactions with PostgreSQL stored procedures
+- Implementing AES-256 encryption for sensitive financial data at rest
+- Building multi-step seller onboarding with role-based dashboards
+- Structuring a RESTful API across 15+ endpoints with JWT middleware
+- Deploying a unified full-stack app on Vercel with custom routing via vercel.json
+
 ## License
 
 MIT
