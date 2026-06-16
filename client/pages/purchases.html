@@ -36,7 +36,9 @@
     .filter-btn { padding:.45rem 1rem; border-radius:20px; border:1.5px solid #e2e8f0; background:#fff; font-size:.82rem; font-weight:600; cursor:pointer; color:#64748b; transition:all .15s; }
     .filter-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
     .back-link { display:inline-flex; align-items:center; gap:.4rem; color:#2563eb; font-size:.9rem; font-weight:500; text-decoration:none; margin-bottom:1.5rem; }
-  
+    .realtime-badge { display:inline-flex; align-items:center; gap:.4rem; font-size:.75rem; color:#16a34a; font-weight:600; }
+    .realtime-dot { width:8px; height:8px; background:#16a34a; border-radius:50%; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
     @media (max-width:900px) {
       #nav-search-input { width:120px; }
@@ -121,6 +123,9 @@
     <div class="page-header">
       <h1>My Purchases</h1>
       <p>Your complete order history</p>
+      <div id="realtime-status" class="realtime-badge" style="justify-content:center;margin-top:.5rem;display:none;">
+        <span class="realtime-dot"></span> Live updates on
+      </div>
     </div>
 
     <div class="filters">
@@ -134,12 +139,12 @@
     <div id="ordersList"></div>
   </div></div>
 
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script src="../js/api.js"></script>
   <script>
     const stored = localStorage.getItem('sf_user');
     if (!stored) window.location.href = 'login.html';
     const user = JSON.parse(stored);
-    // authLink removed - handled by nav-auth-btn
 
     let allOrders = [];
 
@@ -147,6 +152,10 @@
       const orders = await api.get('/orders');
       allOrders = Array.isArray(orders) ? orders : [];
       renderOrders(allOrders);
+      // Join a socket room for each order after they load
+      if (socket && socket.connected) {
+        allOrders.forEach(order => socket.emit('join_order_room', order.id));
+      }
     }
 
     function renderOrders(orders) {
@@ -162,14 +171,14 @@
         return;
       }
       el.innerHTML = orders.map(o => `
-        <div class="order-card" data-status="${o.status}">
+        <div class="order-card" id="order-card-${o.id}" data-status="${o.status}">
           <div class="order-header">
             <div>
               <div class="order-id">Order #${o.id}</div>
               <div class="order-date">${new Date(o.created_at).toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'})}</div>
             </div>
             <div style="display:flex;align-items:center;gap:1rem;">
-              <span class="badge ${o.status}">${o.status}</span>
+              <span class="badge ${o.status}" id="badge-${o.id}">${o.status}</span>
               <span class="order-total">$${parseFloat(o.total_price).toFixed(2)}</span>
             </div>
           </div>
@@ -197,8 +206,47 @@
       renderOrders(filtered);
     }
 
+    // ── Socket.io real-time order tracking ──────────────────────────────────
+    const API_URL = 'https://shopflow-client.vercel.app';
+    const socket = io(API_URL, { transports: ['websocket', 'polling'] });
+
+    socket.on('connect', () => {
+      console.log('Connected to ShopFlow real-time server:', socket.id);
+      document.getElementById('realtime-status').style.display = 'flex';
+      // Join rooms for all loaded orders
+      allOrders.forEach(order => socket.emit('join_order_room', order.id));
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('realtime-status').style.display = 'none';
+    });
+
+    socket.on('order_status_updated', (data) => {
+      console.log('Order status updated:', data);
+
+      // Update badge in DOM without page reload
+      const badge = document.getElementById(`badge-${data.orderId}`);
+      const card  = document.getElementById(`order-card-${data.orderId}`);
+      if (badge) {
+        badge.className = `badge ${data.status}`;
+        badge.textContent = data.status;
+      }
+      if (card) card.dataset.status = data.status;
+
+      // Update in allOrders array
+      const order = allOrders.find(o => o.id == data.orderId);
+      if (order) order.status = data.status;
+
+      // Show toast notification
+      const toast = document.createElement('div');
+      toast.textContent = `Order #${data.orderId} updated to: ${data.status}`;
+      toast.style.cssText = 'position:fixed;bottom:2rem;right:2rem;background:#2563eb;color:#fff;padding:.75rem 1.25rem;border-radius:10px;font-weight:600;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:fadeIn .3s ease;';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    });
+
     loadOrders();
-  
+
     // Drawer
     function toggleDrawer() {
       const drawer = document.getElementById('nav-drawer');
@@ -251,7 +299,7 @@
       try {
         const sfToken = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
         if (!sfToken) return;
-        const res = await fetch('https://shopflow-full-stack-e-commerce-platform.onrender.com/api/cart', {
+        const res = await fetch('https://shopflow-client.vercel.app/api/cart', {
           headers: { 'Authorization': 'Bearer ' + sfToken }
         });
         if (!res.ok) return;
@@ -271,7 +319,7 @@
         if (link) link.style.display = 'flex';
       }
     })();
-  
+
     // Show Settings only when logged in
     (function showSettingsIfLoggedIn() {
       var token = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
