@@ -1,5 +1,7 @@
 # ShopFlow — Full-Stack E-Commerce Platform
 
+![CI](https://github.com/dsbly1/ShopFlow-Full-Stack-E-Commerce-Platform/actions/workflows/ci.yml/badge.svg)
+
 A production-grade marketplace built with Node.js, PostgreSQL, and vanilla HTML/CSS/JS — deployed on Vercel.
 
 ## Live Demo
@@ -17,10 +19,11 @@ A production-grade marketplace built with Node.js, PostgreSQL, and vanilla HTML/
 ## Tech Stack
 
 - **Frontend:** HTML5, CSS3, Vanilla JavaScript
-- **Backend:** Node.js, Express.js
+- **Backend:** Node.js, Express.js, Socket.io
 - **Database:** PostgreSQL
 - **Auth:** JWT (JSON Web Tokens)
 - **Email:** Resend API
+- **Testing:** Jest, Supertest
 - **Deployment:** Vercel (frontend + backend), Render (PostgreSQL)
 
 ## Features
@@ -29,12 +32,14 @@ A production-grade marketplace built with Node.js, PostgreSQL, and vanilla HTML/
 - Seller onboarding with 4-step registration, product management, payout tracking, and 1099 tax tools
 - Normalized PostgreSQL schema — 7 tables, 6 indexes, a place_order() stored procedure for atomic order placement
 - RESTful API with 15+ endpoints across auth, products, cart, orders, reviews, categories, sellers, and admin
+- Real-time order status tracking via Socket.io — live badge updates and toast notifications
 - Shopping cart, checkout, order history, and real-time inventory decrement
 - Buyer reviews and aggregate star ratings
 - AES-256 encrypted banking information storage
 - Seller profile pages with avatar generation
 - Admin dashboard for user and product moderation
 - Responsive mobile-first UI
+- API test suite with Jest + Supertest (5 passing tests, CI via GitHub Actions)
 
 ## Getting Started
 
@@ -77,6 +82,13 @@ Create a .env file in the root directory:
 
 Open client/index.html in your browser or use Live Server on port 5500.
 
+### Running Tests
+
+    npm test
+
+    # With coverage report
+    npm run test:coverage
+
 ## API Endpoints
 
 | Method | Endpoint                  | Description             |
@@ -87,6 +99,7 @@ Open client/index.html in your browser or use Live Server on port 5500.
 | GET    | /api/products/:id         | Get product detail      |
 | POST   | /api/cart                 | Add item to cart        |
 | POST   | /api/orders               | Place an order          |
+| PATCH  | /api/orders/:id/status    | Update order status (emits real-time event) |
 | GET    | /api/reviews/:product_id  | Get product reviews     |
 | GET    | /api/categories           | List all categories     |
 | GET    | /api/sellers/:id          | Seller profile          |
@@ -110,7 +123,11 @@ Set environment variables in your Vercel project dashboard before deploying.
     ├── server/           # Express backend
     │   ├── index.js
     │   ├── routes/
-    │   └── middleware/
+    │   ├── middleware/
+    │   └── __tests__/    # Jest + Supertest test suite
+    ├── .github/
+    │   └── workflows/
+    │       └── ci.yml    # GitHub Actions CI pipeline
     ├── database/         # SQL schema and seeds
     ├── public/           # Static assets and screenshots
     ├── vercel.json       # Vercel deployment config
@@ -128,6 +145,8 @@ Set environment variables in your Vercel project dashboard before deploying.
 - Implementing AES-256 encryption for sensitive financial data at rest
 - Building multi-step seller onboarding with role-based dashboards
 - Structuring a RESTful API across 15+ endpoints with JWT middleware
+- Integrating Socket.io for real-time WebSocket communication
+- Writing API tests with Jest + Supertest and automating CI with GitHub Actions
 - Deploying a unified full-stack app on Vercel with custom routing via vercel.json
 
 ## License
