@@ -110,7 +110,7 @@
         document.getElementById('cartTotal').innerHTML =
           '<div style="margin-top:1rem;">Total: $' + total.toFixed(2) + '</div>' +
           '<div style="margin-top:1rem;">' +
-          '<a href="login.html" style="display:block;text-align:center;background:#2563eb;color:#fff;padding:.8rem;border-radius:9px;font-weight:600;text-decoration:none;margin-bottom:.75rem;">Checkout</a>' +
+          '<button onclick="showDemoMessage()" style="display:block;width:100%;text-align:center;background:#2563eb;color:#fff;padding:.8rem;border-radius:9px;font-weight:600;border:none;cursor:pointer;margin-bottom:.75rem;">Checkout</button>' +
           '<a href="register.html" style="display:block;text-align:center;background:#f8fafc;color:#1e293b;border:1.5px solid #e2e8f0;padding:.8rem;border-radius:9px;font-weight:600;text-decoration:none;">Create Account</a>' +
           '</div>' +
           '<div style="margin-top:.75rem;text-align:center;">' +
@@ -135,6 +135,9 @@
       const total = items.reduce((s,i) => s + parseFloat(i.subtotal), 0);
       document.getElementById('cartTotal').textContent = `Total: $${total.toFixed(2)}`;
       document.getElementById('checkoutBtn').style.display='block';
+    }
+    function showDemoMessage() {
+      alert(' THIS IS A DEMO! Checkout coming soon...');
     }
     function guestCheckout() {
       sessionStorage.setItem('guest_mode', 'true');
