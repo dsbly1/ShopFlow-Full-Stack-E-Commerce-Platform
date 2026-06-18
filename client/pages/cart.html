@@ -74,7 +74,7 @@
     <h2 style="margin-bottom:1.5rem;">Your Cart</h2>
     <div id="cartItems"><p class="loading">Loading cart…</p></div>
     <div class="cart-total" id="cartTotal"></div>
-    <button class="btn-primary" id="checkoutBtn" style="display:none;width:100%;padding:.85rem;">Checkout</button>
+    <button class="btn-primary" id="checkoutBtn" onclick="showDemoMessage()" style="display:none;width:100%;padding:.85rem;">Checkout</button>
   </div>
   <script src="../js/api.js"></script>
   <script>
@@ -137,7 +137,14 @@
       document.getElementById('checkoutBtn').style.display='block';
     }
     function showDemoMessage() {
-      alert(' THIS IS A DEMO! Checkout coming soon...');
+      const existing = document.getElementById('demoMsg');
+      if (existing) return;
+      const msg = document.createElement('div');
+      msg.id = 'demoMsg';
+      msg.innerHTML = '🚧 <strong>THIS IS A DEMO!</strong> Checkout coming soon...';
+      msg.style.cssText = 'background:#fef9c3;border:2px solid #f59e0b;color:#92400e;padding:1rem 1.25rem;border-radius:10px;font-size:1rem;text-align:center;margin-top:1rem;';
+      document.getElementById('checkoutBtn').insertAdjacentElement('afterend', msg);
+      setTimeout(() => msg.remove(), 4000);
     }
     function guestCheckout() {
       sessionStorage.setItem('guest_mode', 'true');
