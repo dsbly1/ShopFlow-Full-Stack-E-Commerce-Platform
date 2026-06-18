@@ -144,22 +144,6 @@
       msg.innerHTML = '🚧 <strong>THIS IS A DEMO!</strong> Checkout coming soon...';
       msg.style.cssText = 'background:#fef9c3;border:2px solid #f59e0b;color:#92400e;padding:1rem 1.25rem;border-radius:10px;font-size:1rem;text-align:center;margin-top:1rem;';
       document.getElementById('checkoutBtn').insertAdjacentElement('afterend', msg);
-      sessionStorage.setItem('showDemoMsg', '1');
-    }
-    // Restore demo message after page reload
-    if (sessionStorage.getItem('showDemoMsg')) {
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          const btn = document.getElementById('checkoutBtn');
-          if (btn && !document.getElementById('demoMsg')) {
-            const msg = document.createElement('div');
-            msg.id = 'demoMsg';
-            msg.innerHTML = '🚧 <strong>THIS IS A DEMO!</strong> Checkout coming soon...';
-            msg.style.cssText = 'background:#fef9c3;border:2px solid #f59e0b;color:#92400e;padding:1rem 1.25rem;border-radius:10px;font-size:1rem;text-align:center;margin-top:1rem;';
-            btn.insertAdjacentElement('afterend', msg);
-          }
-        }, 500);
-      });
     }
     function guestCheckout() {
       sessionStorage.setItem('guest_mode', 'true');
