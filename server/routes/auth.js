@@ -6,20 +6,18 @@ const db       = require('../db');
 const { sendVerificationEmail } = require('../email');
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, dob, city, state } = req.body;
   if (!name || !email || !password)
     return res.status(400).json({ error: 'All fields required' });
   try {
-    const hash    = await bcrypt.hash(password, 10);
-    const token   = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const hash = await bcrypt.hash(password, 10);
     const { rows } = await db.query(
-      `INSERT INTO users (name, email, password_hash, email_verified)
-       VALUES ($1,$2,$3,TRUE) RETURNING id, name, email, role, email_verified`,
-      [name, email, hash]
+      `INSERT INTO users (name, email, password_hash, email_verified, dob, city, state)
+       VALUES ($1,$2,$3,TRUE,$4,$5,$6) RETURNING id, name, email, role, email_verified, dob, city, state`,
+      [name, email, hash, dob || null, city || null, state || null]
     );
     const jwtToken = jwt.sign(rows[0], process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    res.status(201).json({ user: rows[0], token: jwtToken, message: 'Check your email to verify your account.' });
+    res.status(201).json({ user: rows[0], token: jwtToken, message: 'Registration successful!' });
   } catch (err) {
     if (err.code === '23505') return res.status(409).json({ error: 'Email already in use' });
     console.error(err); res.status(500).json({ error: 'Server error' });
