@@ -20,4 +20,15 @@ async function sendVerificationSuccessEmail(toEmail, userName) {
   });
 }
 
-module.exports = { sendVerificationEmail, sendVerificationSuccessEmail };
+
+async function sendPasswordResetEmail(toEmail, userName, token) {
+  if (!resend) { console.log('[Email disabled] sendPasswordResetEmail to:', toEmail); return; }
+  const resetUrl = `https://shopflow-client.vercel.app/pages/reset-password.html?token=${token}`;
+  await resend.emails.send({
+    from: 'onboarding@resend.dev', to: toEmail,
+    subject: 'Reset your ShopFlow password',
+    html: `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto;padding:2rem;"><h1 style="color:#2563eb;">Reset Your Password</h1><p>Hi ${userName}, we received a request to reset your password.</p><a href="${resetUrl}" style="display:inline-block;background:#2563eb;color:#fff;padding:.85rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;">Reset Password</a><p style="color:#94a3b8;font-size:.85rem;margin-top:1.5rem;">This link expires in 1 hour. If you didn't request this, ignore this email.</p></div>`
+  });
+}
+
+module.exports = { sendVerificationEmail, sendVerificationSuccessEmail, sendPasswordResetEmail };

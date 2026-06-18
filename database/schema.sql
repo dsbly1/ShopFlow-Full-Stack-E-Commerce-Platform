@@ -185,3 +185,7 @@ BEGIN
   RETURN v_order_id;
 END;
 $$;
+
+-- Password reset columns (added post-initial schema)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMPTZ;
