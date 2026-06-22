@@ -1,4 +1,4 @@
-const BASE = 'https://shopflow-full-stack-e-commerce-platform.onrender.com/api';
+const BASE = 'https://shop-flow-full-stack-e-commerce-pla.vercel.app/api';
 
 function getToken() {
   return localStorage.getItem('sf_token') || localStorage.getItem('token') || '';
