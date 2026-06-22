@@ -238,7 +238,7 @@
     <p>&copy; <span id="year"></span> ShopFlow &nbsp;&middot;&nbsp;
       <a href="about.html">About</a> &nbsp;&middot;&nbsp;
       <a href="settings.html">Settings</a> &nbsp;&middot;&nbsp;
-      <a href="login.html">Login</a>
+      <a href="login.html" id="footer-login-link">Login</a>
     </p>
   </footer>
 
@@ -277,5 +277,6 @@
       }catch(e){}
     })();
   </script>
+<script>if(localStorage.getItem("token")){var l=document.getElementById("footer-login-link");if(l)l.style.display="none";}</script>
 </body>
 </html>
