@@ -86,8 +86,7 @@
         <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         <span id="cartCount" style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:.72rem;font-weight:700;align-items:center;justify-content:center;padding:0 3px;border:2px solid #1d4ed8;"></span>
       </a>
-      <img id="navAvatar" src="" alt="" style="display:none;width:28px;height:28px;border-radius:50%;object-fit:cover;margin-right:.5rem;vertical-align:middle;" />
-      <a href="pages/login.html" id="authLink">Login</a>
+      <a href="pages/login.html" id="authLink" style="border:2px solid #fff;border-radius:20px;padding:.35rem .9rem;transition:background .15s;">Login</a>
       <a href="pages/register.html" id="registerLink" style="margin-left:.75rem;">Register</a>
     </div>
   </nav>
@@ -164,9 +163,6 @@
       // Navbar
       authLink.textContent = u.name.split(' ')[0];
       authLink.href = 'pages/dashboard.html'; authLink.style.cursor = 'pointer';
-      const navAvatar = document.getElementById('navAvatar');
-      navAvatar.src = u.avatar_url || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(u.name) + '&size=56&rounded=true&background=2563eb&color=fff&bold=true');
-      navAvatar.style.display = 'inline-block';
       document.getElementById('registerLink').style.display = 'none';
       // Drawer user info
       document.getElementById('drawerUser').style.display = 'block';
