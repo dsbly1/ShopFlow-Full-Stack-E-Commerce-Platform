@@ -128,7 +128,7 @@
         <button class="nav-icon-btn" onclick="window.location.href='profile.html'" aria-label="Profile">
           <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </button>
-        <a class="nav-cta" id="nav-auth-btn" href="register.html">Get Started</a>
+        <a class="nav-cta" id="nav-auth-btn" href="register.html" style="display:none;">Get Started</a>
       </div>
     </div>
   </div>
@@ -152,7 +152,7 @@
     <h1>The marketplace built<br>on <em>trust &amp; simplicity.</em></h1>
     <p class="hero-sub">ShopFlow connects buyers and sellers through a platform designed from the ground up to be fast, transparent, and genuinely easy to use.</p>
     <div class="btn-row">
-      <a href="register.html" class="btn-gold" onclick="window.location.href='register.html';return false;">Start Selling Today</a>
+      <a href="register.html" class="btn-gold" onclick="const t=localStorage.getItem('sf_token')||sessionStorage.getItem('sf_token');window.location.href=t?'seller.html':'login.html?redirect=seller.html';return false;">Start Selling Today</a>
       <a href="products.html" class="btn-ghost" onclick="window.location.href='products.html';return false;">Browse the Marketplace</a>
     </div>
   </section>
@@ -256,6 +256,7 @@
       const token=localStorage.getItem("sf_token")||sessionStorage.getItem("sf_token");
       if(!token)return;
       const a=document.getElementById("nav-auth-btn"),l=document.getElementById("nav-login-link"),dl=document.getElementById("drawer-login-link"),dc=document.getElementById("drawer-cta-btn");
+      a.style.display="inline-block";
       l.style.display="none"; document.querySelector(".nav-divider").style.display="none";
       a.textContent="Logout";a.href="#";a.style.cssText="background:transparent;color:#dc2626;border:2px solid #dc2626;";
       a.onclick=e=>{e.preventDefault();handleLogout();};
