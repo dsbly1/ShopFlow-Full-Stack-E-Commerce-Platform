@@ -20,7 +20,11 @@ CREATE TABLE users (
   name          VARCHAR(100)        NOT NULL,
   email         VARCHAR(255) UNIQUE NOT NULL,
   password_hash TEXT                NOT NULL,
-  role          VARCHAR(20)         NOT NULL DEFAULT 'customer' CHECK (role IN ('customer', 'admin')),
+  role            VARCHAR(20)         NOT NULL DEFAULT 'customer' CHECK (role IN ('customer', 'admin')),
+  email_verified  BOOLEAN             NOT NULL DEFAULT FALSE,
+  dob             DATE,
+  city            VARCHAR(100),
+  state           VARCHAR(100),
   created_at    TIMESTAMP           NOT NULL DEFAULT NOW()
 );
 
