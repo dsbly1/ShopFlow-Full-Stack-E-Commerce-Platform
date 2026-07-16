@@ -87,6 +87,7 @@
         <span id="cartCount" style="display:none;position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;border-radius:50%;min-width:18px;height:18px;font-size:.72rem;font-weight:700;align-items:center;justify-content:center;padding:0 3px;border:2px solid #1d4ed8;"></span>
       </a>
       <a href="pages/login.html" id="authLink">Login</a>
+      <a href="pages/register.html" id="registerLink" style="margin-left:.75rem;">Register</a>
     </div>
   </nav>
 
@@ -104,7 +105,6 @@
     <p>Electronics, Clothing, Books &amp; More</p>
     <div class="hero-btns">
       <a href="pages/products.html" class="btn-primary">Browse Now</a>
-      <a href="pages/register.html" class="btn-secondary" style="color:#fff;font-weight:700;">Create Account</a>
     </div>
   </section>
 
@@ -163,6 +163,7 @@
       // Navbar
       authLink.textContent = u.name.split(' ')[0];
       authLink.href = 'pages/dashboard.html'; authLink.style.cursor = 'pointer';
+      document.getElementById('registerLink').style.display = 'none';
       // Drawer user info
       document.getElementById('drawerUser').style.display = 'block';
       document.getElementById('drawerName').textContent  = u.name;
