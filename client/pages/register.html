@@ -94,9 +94,19 @@
     <div class="divider">or sign up with email</div>
 
     <div class="form-group">
-      <label>Name</label>
-      <div class="input-wrap"><input id="name" type="text" placeholder="Your name" /></div>
-      <span class="hint" id="nameHint"></span>
+      <label>First Name</label>
+      <div class="input-wrap"><input id="firstName" type="text" placeholder="First name" /></div>
+      <span class="hint" id="firstNameHint"></span>
+    </div>
+    <div class="form-group">
+      <label>Middle Name (optional)</label>
+      <div class="input-wrap"><input id="middleName" type="text" placeholder="Middle name" /></div>
+      <span class="hint" id="middleNameHint"></span>
+    </div>
+    <div class="form-group">
+      <label>Last Name</label>
+      <div class="input-wrap"><input id="lastName" type="text" placeholder="Last name" /></div>
+      <span class="hint" id="lastNameHint"></span>
     </div>
     <div class="form-group">
       <label>Email</label>
@@ -138,7 +148,9 @@
   <script src="../js/api.js"></script>
   <script>
     const fields = {
-      name:     { el: document.getElementById('name'),     hint: document.getElementById('nameHint') },
+      firstName:  { el: document.getElementById('firstName'),  hint: document.getElementById('firstNameHint') },
+      middleName: { el: document.getElementById('middleName'), hint: document.getElementById('middleNameHint') },
+      lastName:   { el: document.getElementById('lastName'),   hint: document.getElementById('lastNameHint') },
       email:    { el: document.getElementById('email'),    hint: document.getElementById('emailHint') },
       password: { el: document.getElementById('password'), hint: document.getElementById('passwordHint') },
       confirm:  { el: document.getElementById('confirm'),  hint: document.getElementById('confirmHint') },
@@ -157,8 +169,11 @@
 
     function validate() {
       let allOk = true;
-      if (fields.name.el.value.trim().length < 2) { setField('name', false, 'Enter your full name'); allOk = false; }
-      else setField('name', true, '✓ Looks good');
+      if (fields.firstName.el.value.trim().length < 1) { setField('firstName', false, 'Enter your first name'); allOk = false; }
+      else setField('firstName', true, '✓ Looks good');
+
+      if (fields.lastName.el.value.trim().length < 1) { setField('lastName', false, 'Enter your last name'); allOk = false; }
+      else setField('lastName', true, '✓ Looks good');
 
       const emailVal = fields.email.el.value.trim();
       if (!emailVal) { setField('email', null, ''); allOk = false; }
@@ -192,7 +207,7 @@
     document.getElementById('registerBtn').addEventListener('click', async () => {
       document.getElementById('globalError').textContent = '';
       const res = await api.post('/auth/register', {
-        name:     fields.name.el.value.trim(),
+        name:     [fields.firstName.el.value.trim(), fields.middleName.el.value.trim(), fields.lastName.el.value.trim()].filter(Boolean).join(' '),
         email:    fields.email.el.value.trim(),
         password: fields.password.el.value,
       });
