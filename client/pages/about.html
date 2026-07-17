@@ -152,8 +152,8 @@
     <h1>The marketplace built<br>on <em>trust &amp; simplicity.</em></h1>
     <p class="hero-sub">ShopFlow connects buyers and sellers through a platform designed from the ground up to be fast, transparent, and genuinely easy to use.</p>
     <div class="btn-row">
-      <a href="register.html" class="btn-gold" onclick="const t=localStorage.getItem('sf_token')||sessionStorage.getItem('sf_token');window.location.href=t?'seller.html':'login.html?redirect=seller.html';return false;">Start Selling Today</a>
-      <a href="products.html" class="btn-ghost" onclick="window.location.href='products.html';return false;">Browse the Marketplace</a>
+      <a href="register.html" class="btn-gold" id="startSellingBtn">Start Selling Today</a>
+      <a href="products.html" class="btn-ghost" id="browseMarketplaceBtn">Browse the Marketplace</a>
     </div>
   </section>
 
@@ -214,7 +214,7 @@
     <div class="founder-inner">
       <div class="reveal">
         <div class="founder-label">Founder</div>
-        <div class="founder-name">Damon Bly Jr.</div>
+        <div class="founder-name">Damon S. Bly Jr.</div>
         <p class="founder-bio">Damon spent 8+ years in operations and logistics before making a full commitment to software development &mdash; building ShopFlow independently while working full-time in Kansas City, Missouri.</p>
         <p class="founder-bio">ShopFlow was built based on the principles of what buyers and sellers actually need: reliability, clarity, and a platform that is just simple.</p>
         <div class="founder-quote-block">
@@ -249,6 +249,15 @@
     function openDrawer(){dr.classList.add("open");ov.classList.add("open");hb.classList.add("open");document.body.style.overflow="hidden";}
     function closeDrawer(){dr.classList.remove("open");ov.classList.remove("open");hb.classList.remove("open");document.body.style.overflow="";}
     hb.addEventListener("click",()=>dr.classList.contains("open")?closeDrawer():openDrawer());
+    document.getElementById("startSellingBtn").addEventListener("click", function(e){
+      e.preventDefault();
+      const t = localStorage.getItem("sf_token") || sessionStorage.getItem("sf_token");
+      window.location.href = t ? "seller.html" : "login.html?redirect=seller.html";
+    });
+    document.getElementById("browseMarketplaceBtn").addEventListener("click", function(e){
+      e.preventDefault();
+      window.location.href = "products.html";
+    });
     function handleSearch(){const q=document.getElementById("nav-search-input").value.trim();if(q)window.location.href="../index.html?search="+encodeURIComponent(q);}
     document.getElementById("nav-search-input").addEventListener("keydown",e=>{if(e.key==="Enter")handleSearch();});
     function handleLogout(){["sf_token","sf_user"].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});window.location.href="login.html";}
