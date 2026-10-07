@@ -1,4 +1,4 @@
-# ShopFlow — Full-Stack E-Commerce Platform
+# ShopFlow — Full-Stack E-Commerce Platform DEMO
 
 > **Portfolio demo:** use test data only. No real payments are processed, and banking fields are for demonstrating encryption.
 
