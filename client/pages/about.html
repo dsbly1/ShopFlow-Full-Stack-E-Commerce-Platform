@@ -152,8 +152,8 @@
     <h1>The marketplace built<br>on <em>trust &amp; simplicity.</em></h1>
     <p class="hero-sub">ShopFlow connects buyers and sellers through a platform designed from the ground up to be fast, transparent, and genuinely easy to use.</p>
     <div class="btn-row">
-      <a href="register.html" class="btn-gold" id="startSellingBtn">Start Selling Today</a>
-      <a href="products.html" class="btn-ghost" id="browseMarketplaceBtn">Browse the Marketplace</a>
+      <a href="/pages/seller.html" class="btn-gold" id="startSellingBtn">Start Selling Today</a>
+      <a href="/pages/products.html" class="btn-ghost" id="browseMarketplaceBtn">Browse the Marketplace</a>
     </div>
   </section>
 
@@ -229,7 +229,7 @@
     <p class="reveal">Whether you are here to shop or to sell, getting started takes less than two minutes.</p>
     <div class="btn-row reveal">
       <a href="register.html" class="btn-gold">Create a Free Account</a>
-      <a href="products.html" class="btn-ghost">Explore the Marketplace</a>
+      <a href="/pages/products.html" class="btn-ghost">Explore the Marketplace</a>
     </div>
   </div>
 
@@ -252,11 +252,11 @@
     document.getElementById("startSellingBtn").addEventListener("click", function(e){
       e.preventDefault();
       const t = localStorage.getItem("sf_token") || sessionStorage.getItem("sf_token");
-      window.location.href = t ? "seller.html" : "login.html?redirect=seller.html";
+      window.location.href = t ? "/pages/seller.html" : "/pages/login.html?redirect=/pages/seller.html";
     });
     document.getElementById("browseMarketplaceBtn").addEventListener("click", function(e){
       e.preventDefault();
-      window.location.href = "products.html";
+      window.location.href = "/pages/products.html";
     });
     function handleSearch(){const q=document.getElementById("nav-search-input").value.trim();if(q)window.location.href="../index.html?search="+encodeURIComponent(q);}
     document.getElementById("nav-search-input").addEventListener("keydown",e=>{if(e.key==="Enter")handleSearch();});
