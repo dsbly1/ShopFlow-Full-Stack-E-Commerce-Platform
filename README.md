@@ -6,8 +6,8 @@ A production-grade marketplace built with Node.js, PostgreSQL, and vanilla HTML/
 
 ## Live Demo
 
-- **Frontend:** https://shopflow-client.vercel.app
-- **API Health:** https://shopflow-client.vercel.app/api/health
+- **Frontend:** https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app
+- **API Health:** https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app/api/health
 
 ## Screenshots
 
@@ -137,7 +137,7 @@ Set environment variables in your Vercel project dashboard before deploying.
 
 **Damon Bly Jr.** — Full-Stack Developer, Kansas City, MO
 - GitHub: [@dsbly1](https://github.com/dsbly1)
-- Live Project: https://shopflow-client.vercel.app
+- Live Project: https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app
 
 ## What I Learned
 

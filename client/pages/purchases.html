@@ -207,7 +207,7 @@
     }
 
     // ── Socket.io real-time order tracking ──────────────────────────────────
-    const API_URL = 'https://shopflow-client.vercel.app';
+    const API_URL = 'https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app';
     const socket = io(API_URL, { transports: ['websocket', 'polling'] });
 
     socket.on('connect', () => {
@@ -299,7 +299,7 @@
       try {
         const sfToken = localStorage.getItem('sf_token') || sessionStorage.getItem('sf_token');
         if (!sfToken) return;
-        const res = await fetch('https://shopflow-client.vercel.app/api/cart', {
+        const res = await fetch('https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app/api/cart', {
           headers: { 'Authorization': 'Bearer ' + sfToken }
         });
         if (!res.ok) return;

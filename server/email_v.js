@@ -3,7 +3,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 async function sendVerificationEmail(toEmail, userName, token) {
   if (!resend) { console.log('[Email disabled] sendVerificationEmail to:', toEmail); return; }
-  const verifyUrl = `https://shopflow-client.vercel.app/pages/verify-email.html?token=${token}`;
+  const verifyUrl = `https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app/pages/verify-email.html?token=${token}`;
   await resend.emails.send({
     from: 'onboarding@resend.dev', to: toEmail,
     subject: 'Verify your ShopFlow email address',
@@ -16,14 +16,14 @@ async function sendVerificationSuccessEmail(toEmail, userName) {
   await resend.emails.send({
     from: 'onboarding@resend.dev', to: toEmail,
     subject: 'Your ShopFlow email has been verified',
-    html: `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto;padding:2rem;"><h1 style="color:#22c55e;">Email Verified!</h1><p>Hi ${userName}, your account is now fully active.</p><a href="https://shopflow-client.vercel.app" style="display:inline-block;background:#2563eb;color:#fff;padding:.85rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;margin-top:1.5rem;">Start Shopping</a></div>`
+    html: `<div style="font-family:system-ui,sans-serif;max-width:480px;margin:0 auto;padding:2rem;"><h1 style="color:#22c55e;">Email Verified!</h1><p>Hi ${userName}, your account is now fully active.</p><a href="https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app" style="display:inline-block;background:#2563eb;color:#fff;padding:.85rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;margin-top:1.5rem;">Start Shopping</a></div>`
   });
 }
 
 
 async function sendPasswordResetEmail(toEmail, userName, token) {
   if (!resend) { console.log('[Email disabled] sendPasswordResetEmail to:', toEmail); return; }
-  const resetUrl = `https://shopflow-client.vercel.app/pages/reset-password.html?token=${token}`;
+  const resetUrl = `https://shop-flow-full-stack-e-commerce-pla-theta.vercel.app/pages/reset-password.html?token=${token}`;
   await resend.emails.send({
     from: 'onboarding@resend.dev', to: toEmail,
     subject: 'Reset your ShopFlow password',
