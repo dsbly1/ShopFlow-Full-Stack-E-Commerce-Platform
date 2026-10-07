@@ -1,8 +1,10 @@
 # ShopFlow — Full-Stack E-Commerce Platform
 
+> **Portfolio demo:** use test data only. No real payments are processed, and banking fields are for demonstrating encryption.
+
 ![CI](https://github.com/dsbly1/ShopFlow-Full-Stack-E-Commerce-Platform/actions/workflows/ci.yml/badge.svg)
 
-A production-grade marketplace built with Node.js, PostgreSQL, and vanilla HTML/CSS/JS — deployed on Vercel.
+A production-style demo marketplace built with Node.js, PostgreSQL, and vanilla HTML/CSS/JS — deployed on Vercel.
 
 ## Live Demo
 
